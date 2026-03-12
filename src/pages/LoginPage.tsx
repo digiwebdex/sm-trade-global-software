@@ -1,0 +1,76 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { toast } from 'sonner';
+import { Lock, User } from 'lucide-react';
+
+export default function LoginPage() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (login(username, password)) {
+      toast.success('Login successful!');
+      navigate('/dashboard');
+    } else {
+      toast.error('Invalid username or password');
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-primary p-4">
+      <Card className="w-full max-w-md shadow-2xl">
+        <CardHeader className="text-center space-y-2">
+          <div className="mx-auto w-16 h-16 bg-primary rounded-xl flex items-center justify-center mb-2">
+            <span className="text-primary-foreground font-bold text-xl">SM</span>
+          </div>
+          <CardTitle className="text-2xl">S. M. Trade International</CardTitle>
+          <CardDescription>Sign in to your account</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground">Username</label>
+              <div className="relative">
+                <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Enter username"
+                  className="pl-10"
+                  required
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground">Password</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter password"
+                  className="pl-10"
+                  required
+                />
+              </div>
+            </div>
+            <Button type="submit" className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground">
+              Sign In
+            </Button>
+          </form>
+          <p className="mt-4 text-xs text-center text-muted-foreground">
+            Default: admin / admin123
+          </p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
