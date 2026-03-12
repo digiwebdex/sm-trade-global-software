@@ -44,11 +44,11 @@ export const storage = {
   // Company settings
   getSettings: () => getItem('companySettings', {
     name: 'S. M. Trade International',
-    tagline: 'Your Trusted Business Partner',
-    address: 'Dhaka, Bangladesh',
-    phone: '+880-1XXX-XXXXXX',
-    email: 'info@smtrade.com',
-    website: 'www.smtrade.com',
+    tagline: '1st Class Govt. Contractor, Supplier & Importer',
+    address: 'House # 7, Road # 19/A, Sector # 4, Uttara, Dhaka-1230',
+    phone: '+8801886766688',
+    email: 'info@smtradeint.com',
+    website: 'smtradeint.com',
     logo: '',
   }),
   saveSettings: (settings: any) => setItem('companySettings', settings),
