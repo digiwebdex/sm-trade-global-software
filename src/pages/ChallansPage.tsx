@@ -191,7 +191,14 @@ function ChallanView({ id, onBack }: { id: string; onBack: () => void }) {
   if (!c) return <div>Not found</div>;
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4 no-print"><Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button><h1 className="text-2xl font-bold">{c.challanNumber}</h1><Button onClick={printDocument} variant="outline"><Printer className="h-4 w-4 mr-2" /> Print</Button></div>
+      <div className="flex items-center gap-4 no-print">
+        <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
+        <h1 className="text-2xl font-bold">{c.challanNumber}</h1>
+        <Badge variant="outline" className={c.status === 'delivered' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'}>
+          {c.status.charAt(0).toUpperCase() + c.status.slice(1)}
+        </Badge>
+        <Button onClick={printDocument} variant="outline"><Printer className="h-4 w-4 mr-2" /> Print / PDF</Button>
+      </div>
       <DocumentPreview type="challan" documentNumber={c.challanNumber} date={c.date} customerName={c.customerName} customerAddress={c.customerAddress} customerPhone={c.customerPhone} challanItems={c.items} totalQuantity={c.totalQuantity} orderNo={c.orderNo} notes={c.notes} />
     </div>
   );
