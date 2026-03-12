@@ -79,4 +79,145 @@ export function initializeData() {
       createdAt: new Date().toISOString(),
     });
   }
+
+  // Sample Customers
+  const customers = storage.getAll(KEYS.CUSTOMERS);
+  if (customers.length === 0) {
+    const sampleCustomers = [
+      {
+        id: 'cust-1',
+        name: 'Course Director, 79th Foundation Training Course',
+        organization: 'Bangladesh Public Administration Training Centre',
+        address: 'BPATC, Savar, Dhaka-1343',
+        phone: '+8801711000001',
+        email: 'bpatc79@gov.bd',
+        createdAt: '2026-01-15T10:00:00.000Z',
+      },
+      {
+        id: 'cust-2',
+        name: 'Md. Rafiqul Islam',
+        organization: 'Dhaka City Corporation',
+        address: 'Nagar Bhaban, Dhaka-1000',
+        phone: '+8801711000002',
+        email: 'rafiq@dcc.gov.bd',
+        createdAt: '2026-01-16T10:00:00.000Z',
+      },
+      {
+        id: 'cust-3',
+        name: 'Fatema Begum',
+        organization: 'Ministry of Education',
+        address: 'Bangladesh Secretariat, Dhaka-1000',
+        phone: '+8801711000003',
+        email: 'fatema@moe.gov.bd',
+        createdAt: '2026-01-17T10:00:00.000Z',
+      },
+    ];
+    sampleCustomers.forEach(c => storage.create(KEYS.CUSTOMERS, c));
+  }
+
+  // Sample Products
+  const products = storage.getAll(KEYS.PRODUCTS);
+  if (products.length === 0) {
+    const sampleProducts = [
+      { id: 'prod-1', name: '79th FTC Ribbon 2 CM', description: 'Foundation Training Course Ribbon 2 CM width', unitPrice: 150, unitType: 'Pcs', createdAt: '2026-01-10T10:00:00.000Z' },
+      { id: 'prod-2', name: 'Transparent VIP ID Card Holder', description: 'Transparent VIP ID Card Holder - Premium Quality', unitPrice: 130, unitType: 'Pcs', createdAt: '2026-01-10T10:00:00.000Z' },
+      { id: 'prod-3', name: 'Pad', description: 'Writing Pad - A4 Size', unitPrice: 150, unitType: 'Pcs', createdAt: '2026-01-10T10:00:00.000Z' },
+      { id: 'prod-4', name: 'Seminar File', description: 'Seminar File - Premium Quality', unitPrice: 150, unitType: 'Pcs', createdAt: '2026-01-10T10:00:00.000Z' },
+      { id: 'prod-5', name: 'Pen', description: 'Ball Point Pen - Blue Ink', unitPrice: 150, unitType: 'Pcs', createdAt: '2026-01-10T10:00:00.000Z' },
+    ];
+    sampleProducts.forEach(p => storage.create(KEYS.PRODUCTS, p));
+  }
+
+  // Sample Invoice
+  const invoices = storage.getAll(KEYS.INVOICES);
+  if (invoices.length === 0) {
+    storage.create(KEYS.INVOICES, {
+      id: 'inv-1',
+      invoiceNumber: 'INV-2026-0012',
+      date: '2026-01-21',
+      customerId: 'cust-1',
+      customerName: 'Course Director, 79th Foundation Training Course',
+      customerAddress: 'Bangladesh Public Administration Training Centre',
+      customerPhone: '+8801711000001',
+      items: [
+        { id: 'li-1', description: '79th FTC Ribbon 2 CM', quantity: 430, unitPrice: 150, total: 64500 },
+        { id: 'li-2', description: 'Transparent VIP ID Card Holder', quantity: 430, unitPrice: 130, total: 55900 },
+      ],
+      totalAmount: 120400,
+      status: 'sent',
+      notes: '',
+      createdAt: '2026-01-21T10:00:00.000Z',
+    });
+  }
+
+  // Sample Quotation
+  const quotations = storage.getAll(KEYS.QUOTATIONS);
+  if (quotations.length === 0) {
+    storage.create(KEYS.QUOTATIONS, {
+      id: 'qt-1',
+      quotationNumber: 'QTS-2026-0001',
+      date: '2026-01-21',
+      customerId: 'cust-1',
+      customerName: 'Course Director, 79th Foundation Training Course',
+      customerAddress: 'Bangladesh Public Administration Training Centre',
+      customerPhone: '+8801711000001',
+      items: [
+        { id: 'qi-1', description: 'Pad', quantity: 150, unitPrice: 150, total: 22500 },
+        { id: 'qi-2', description: 'Seminar File', quantity: 150, unitPrice: 150, total: 22500 },
+        { id: 'qi-3', description: 'Pen', quantity: 150, unitPrice: 150, total: 22500 },
+      ],
+      totalAmount: 67500,
+      status: 'sent',
+      validUntil: '2026-02-21',
+      notes: '',
+      createdAt: '2026-01-21T10:00:00.000Z',
+    });
+  }
+
+  // Sample Challan
+  const challans = storage.getAll(KEYS.CHALLANS);
+  if (challans.length === 0) {
+    storage.create(KEYS.CHALLANS, {
+      id: 'cln-1',
+      challanNumber: 'CLN-2026-0001',
+      date: '2026-01-21',
+      orderNo: '167',
+      customerId: 'cust-1',
+      customerName: 'Course Director, 79th Foundation Training Course',
+      customerAddress: 'Bangladesh Public Administration Training Centre',
+      customerPhone: '+8801711000001',
+      items: [
+        { id: 'ci-1', itemName: 'Pad', details: '', size: '', deliveryQty: 150, balanceQty: 0, unit: 'Pcs' },
+        { id: 'ci-2', itemName: 'Seminar File', details: '', size: '', deliveryQty: 310, balanceQty: 0, unit: 'Pcs' },
+        { id: 'ci-3', itemName: 'Pen', details: '', size: '', deliveryQty: 330, balanceQty: 0, unit: 'Pcs' },
+      ],
+      totalQuantity: 790,
+      status: 'delivered',
+      notes: '',
+      createdAt: '2026-01-21T10:00:00.000Z',
+    });
+  }
+
+  // Sample Purchase Order
+  const purchaseOrders = storage.getAll(KEYS.PURCHASE_ORDERS);
+  if (purchaseOrders.length === 0) {
+    storage.create(KEYS.PURCHASE_ORDERS, {
+      id: 'po-1',
+      poNumber: 'PO-2026-0001',
+      date: '2026-01-18',
+      supplierName: 'ABC Stationery Suppliers',
+      supplierAddress: 'Islampur, Dhaka-1100',
+      supplierPhone: '+8801811000001',
+      supplierEmail: 'abc@supplier.com',
+      items: [
+        { id: 'pi-1', description: 'Pad - A4 Size', quantity: 200, unitPrice: 100, total: 20000 },
+        { id: 'pi-2', description: 'Seminar File', quantity: 200, unitPrice: 100, total: 20000 },
+        { id: 'pi-3', description: 'Pen - Blue Ink', quantity: 200, unitPrice: 80, total: 16000 },
+      ],
+      totalAmount: 56000,
+      status: 'sent',
+      notes: '',
+      createdAt: '2026-01-18T10:00:00.000Z',
+    });
+  }
 }
