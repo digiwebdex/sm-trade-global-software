@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
 import { storage, KEYS } from '@/utils/storage';
 import { generateId, generateDocNumber } from '@/utils/documentNumbers';
 import { Invoice, LineItem, Customer } from '@/types';
@@ -43,32 +43,66 @@ export default function InvoicesPage() {
     }
   };
 
+  const statusBadge = (status: string) => {
+    const variants: Record<string, { className: string; label: string }> = {
+      paid: { className: 'bg-emerald-100 text-emerald-700 border-emerald-200', label: 'Paid' },
+      sent: { className: 'bg-blue-100 text-blue-700 border-blue-200', label: 'Due' },
+      draft: { className: 'bg-gray-100 text-gray-600 border-gray-200', label: 'Draft' },
+    };
+    const v = variants[status] || variants.draft;
+    return <Badge variant="outline" className={`${v.className} font-semibold text-xs`}>{v.label}</Badge>;
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <div><h1 className="text-3xl font-bold text-foreground">Invoices</h1><p className="text-muted-foreground">Manage bills and invoices</p></div>
-        <Button onClick={() => navigate('/invoices/new')} className="bg-secondary hover:bg-secondary/90"><Plus className="h-4 w-4 mr-2" /> New Invoice</Button>
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Invoices / Bills</h1>
+          <p className="text-muted-foreground">Manage bills and invoices</p>
+        </div>
+        <Button onClick={() => navigate('/invoices/new')} className="bg-secondary hover:bg-secondary/90">
+          <Plus className="h-4 w-4 mr-2" /> New Invoice
+        </Button>
       </div>
       <Card>
-        <CardHeader><div className="relative max-w-sm"><Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" /><Input placeholder="Search invoices..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" /></div></CardHeader>
+        <CardHeader>
+          <div className="relative max-w-sm">
+            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Input placeholder="Search by invoice # or customer..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
+          </div>
+        </CardHeader>
         <CardContent>
           <Table>
-            <TableHeader><TableRow><TableHead>Invoice #</TableHead><TableHead>Customer</TableHead><TableHead>Date</TableHead><TableHead>Amount</TableHead><TableHead>Status</TableHead><TableHead className="w-32">Actions</TableHead></TableRow></TableHeader>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Invoice #</TableHead>
+                <TableHead>Customer</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead className="text-right">Amount (BDT)</TableHead>
+                <TableHead className="text-center">Status</TableHead>
+                <TableHead className="w-32 text-center">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
             <TableBody>
               {filtered.length === 0 ? (
                 <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">No invoices found</TableCell></TableRow>
               ) : filtered.map((inv) => (
-                <TableRow key={inv.id}>
-                  <TableCell className="font-medium">{inv.invoiceNumber}</TableCell>
-                  <TableCell>{inv.customerName}</TableCell>
-                  <TableCell>{inv.date}</TableCell>
-                  <TableCell>৳{inv.totalAmount.toLocaleString()}</TableCell>
-                  <TableCell><span className={`px-2 py-1 rounded-full text-xs ${inv.status === 'paid' ? 'bg-success/20 text-success' : inv.status === 'sent' ? 'bg-info/20 text-info' : 'bg-muted text-muted-foreground'}`}>{inv.status}</span></TableCell>
+                <TableRow key={inv.id} className="cursor-pointer hover:bg-muted/50" onClick={() => navigate(`/invoices/view-${inv.id}`)}>
+                  <TableCell className="font-bold text-primary">{inv.invoiceNumber}</TableCell>
                   <TableCell>
-                    <div className="flex gap-1">
-                      <Button size="icon" variant="ghost" onClick={() => navigate(`/invoices/view-${inv.id}`)}><Eye className="h-4 w-4" /></Button>
-                      <Button size="icon" variant="ghost" onClick={() => navigate(`/invoices/edit-${inv.id}`)}><Pencil className="h-4 w-4" /></Button>
-                      <Button size="icon" variant="ghost" onClick={() => handleDelete(inv.id)} className="text-destructive"><Trash2 className="h-4 w-4" /></Button>
+                    <div>
+                      <p className="font-medium text-sm">{inv.customerName}</p>
+                      <p className="text-xs text-muted-foreground">{inv.customerAddress}</p>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-sm">{new Date(inv.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</TableCell>
+                  <TableCell className="text-right font-bold">৳{inv.totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</TableCell>
+                  <TableCell className="text-center">{statusBadge(inv.status)}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-1 justify-center" onClick={(e) => e.stopPropagation()}>
+                      <Button size="icon" variant="ghost" onClick={() => navigate(`/invoices/view-${inv.id}`)} title="View"><Eye className="h-4 w-4" /></Button>
+                      <Button size="icon" variant="ghost" onClick={() => navigate(`/invoices/edit-${inv.id}`)} title="Edit"><Pencil className="h-4 w-4" /></Button>
+                      <Button size="icon" variant="ghost" onClick={() => handleDelete(inv.id)} className="text-destructive" title="Delete"><Trash2 className="h-4 w-4" /></Button>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -99,7 +133,7 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
 
   const selectCustomer = (id: string) => {
     const c = customers.find(c => c.id === id);
-    if (c) setForm({ ...form, customerId: c.id, customerName: c.name, customerAddress: c.address, customerPhone: c.phone });
+    if (c) setForm({ ...form, customerId: c.id, customerName: c.name, customerAddress: `${c.organization}\n${c.address}`, customerPhone: c.phone });
   };
 
   const updateItem = (index: number, field: keyof LineItem, value: any) => {
@@ -132,7 +166,7 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
           <CardHeader><CardTitle>Invoice Details</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div><label className="text-sm font-medium">Invoice #</label><Input value={form.invoiceNumber} readOnly className="bg-muted" /></div>
+              <div><label className="text-sm font-medium">Invoice #</label><Input value={form.invoiceNumber} readOnly className="bg-muted font-bold" /></div>
               <div><label className="text-sm font-medium">Date</label><Input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} /></div>
             </div>
             <div>
@@ -142,12 +176,12 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
                 <SelectContent>{customers.map(c => <SelectItem key={c.id} value={c.id}>{c.name} - {c.organization}</SelectItem>)}</SelectContent>
               </Select>
             </div>
-            {form.customerName && <div className="text-xs text-muted-foreground p-2 bg-muted rounded"><p>{form.customerName}</p><p>{form.customerAddress}</p><p>{form.customerPhone}</p></div>}
+            {form.customerName && <div className="text-xs text-muted-foreground p-2 bg-muted rounded"><p className="font-medium">{form.customerName}</p><p>{form.customerAddress}</p><p>{form.customerPhone}</p></div>}
             <div>
               <label className="text-sm font-medium">Status</label>
               <Select value={form.status} onValueChange={(v: 'draft' | 'sent' | 'paid') => setForm({ ...form, status: v })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent><SelectItem value="draft">Draft</SelectItem><SelectItem value="sent">Sent</SelectItem><SelectItem value="paid">Paid</SelectItem></SelectContent>
+                <SelectContent><SelectItem value="draft">Draft</SelectItem><SelectItem value="sent">Due</SelectItem><SelectItem value="paid">Paid</SelectItem></SelectContent>
               </Select>
             </div>
 
@@ -167,14 +201,14 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
                   </div>
                 ))}
               </div>
-              <div className="text-right mt-3 text-lg font-bold">Total: ৳{totalAmount.toLocaleString()}</div>
+              <div className="text-right mt-3 text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
             </div>
             <div><label className="text-sm font-medium">Notes</label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
             <Button onClick={handleSave} className="w-full bg-secondary hover:bg-secondary/90">Save Invoice</Button>
           </CardContent>
         </Card>
         <div className="print-target">
-          <DocumentPreview type="invoice" documentNumber={form.invoiceNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} items={form.items} totalAmount={totalAmount} notes={form.notes} />
+          <DocumentPreview type="invoice" documentNumber={form.invoiceNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} items={form.items} totalAmount={totalAmount} notes={form.notes} status={form.status} />
         </div>
       </div>
     </div>
@@ -190,9 +224,12 @@ function InvoiceView({ id, onBack }: { id: string; onBack: () => void }) {
       <div className="flex items-center gap-4 no-print">
         <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
         <h1 className="text-2xl font-bold">Invoice {inv.invoiceNumber}</h1>
+        <Badge variant="outline" className={inv.status === 'paid' ? 'bg-emerald-100 text-emerald-700' : inv.status === 'sent' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}>
+          {inv.status === 'sent' ? 'Due' : inv.status.charAt(0).toUpperCase() + inv.status.slice(1)}
+        </Badge>
         <Button onClick={printDocument} variant="outline"><Printer className="h-4 w-4 mr-2" /> Print / PDF</Button>
       </div>
-      <DocumentPreview type="invoice" documentNumber={inv.invoiceNumber} date={inv.date} customerName={inv.customerName} customerAddress={inv.customerAddress} customerPhone={inv.customerPhone} items={inv.items} totalAmount={inv.totalAmount} notes={inv.notes} />
+      <DocumentPreview type="invoice" documentNumber={inv.invoiceNumber} date={inv.date} customerName={inv.customerName} customerAddress={inv.customerAddress} customerPhone={inv.customerPhone} items={inv.items} totalAmount={inv.totalAmount} notes={inv.notes} status={inv.status} />
     </div>
   );
 }
