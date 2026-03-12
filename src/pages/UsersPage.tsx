@@ -12,7 +12,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 
-const emptyUser = { username: '', password: '', name: '', role: 'staff' as const, email: '' };
+const emptyUser: { username: string; password: string; name: string; role: 'admin' | 'staff'; email: string } = { username: '', password: '', name: '', role: 'staff', email: '' };
 
 export default function UsersPage() {
   const { isAdmin } = useAuth();
