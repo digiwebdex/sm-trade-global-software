@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 import { storage, KEYS } from '@/utils/storage';
 import { generateId, generateDocNumber } from '@/utils/documentNumbers';
 import { Challan, ChallanItem, Customer } from '@/types';
@@ -37,32 +38,63 @@ export default function ChallansPage() {
     if (confirm('Delete?')) { storage.remove<Challan>(KEYS.CHALLANS, id); toast.success('Deleted'); load(); }
   };
 
+  const statusBadge = (status: string) => {
+    const variants: Record<string, { className: string; label: string }> = {
+      delivered: { className: 'bg-emerald-100 text-emerald-700 border-emerald-200', label: 'Delivered' },
+      draft: { className: 'bg-gray-100 text-gray-600 border-gray-200', label: 'Draft' },
+    };
+    const v = variants[status] || variants.draft;
+    return <Badge variant="outline" className={`${v.className} font-semibold text-xs`}>{v.label}</Badge>;
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <div><h1 className="text-3xl font-bold text-foreground">Challans</h1><p className="text-muted-foreground">Manage delivery notes</p></div>
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Challans</h1>
+          <p className="text-muted-foreground">Manage delivery notes</p>
+        </div>
         <Button onClick={() => navigate('/challans/new')} className="bg-secondary hover:bg-secondary/90"><Plus className="h-4 w-4 mr-2" /> New Challan</Button>
       </div>
       <Card>
-        <CardHeader><div className="relative max-w-sm"><Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" /><Input placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" /></div></CardHeader>
+        <CardHeader>
+          <div className="relative max-w-sm">
+            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Input placeholder="Search by challan # or customer..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
+          </div>
+        </CardHeader>
         <CardContent>
           <Table>
-            <TableHeader><TableRow><TableHead>Challan #</TableHead><TableHead>Customer</TableHead><TableHead>Date</TableHead><TableHead>Order No</TableHead><TableHead>Status</TableHead><TableHead className="w-32">Actions</TableHead></TableRow></TableHeader>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Challan #</TableHead>
+                <TableHead>Customer</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Order No</TableHead>
+                <TableHead className="text-center">Status</TableHead>
+                <TableHead className="w-32 text-center">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
             <TableBody>
               {filtered.length === 0 ? (
                 <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">No challans found</TableCell></TableRow>
               ) : filtered.map((c) => (
-                <TableRow key={c.id}>
-                  <TableCell className="font-medium">{c.challanNumber}</TableCell>
-                  <TableCell>{c.customerName}</TableCell>
-                  <TableCell>{c.date}</TableCell>
-                  <TableCell>{c.orderNo}</TableCell>
-                  <TableCell><span className={`px-2 py-1 rounded-full text-xs ${c.status === 'delivered' ? 'bg-success/20 text-success' : 'bg-muted text-muted-foreground'}`}>{c.status}</span></TableCell>
+                <TableRow key={c.id} className="cursor-pointer hover:bg-muted/50" onClick={() => navigate(`/challans/view-${c.id}`)}>
+                  <TableCell className="font-bold text-primary">{c.challanNumber}</TableCell>
                   <TableCell>
-                    <div className="flex gap-1">
-                      <Button size="icon" variant="ghost" onClick={() => navigate(`/challans/view-${c.id}`)}><Eye className="h-4 w-4" /></Button>
-                      <Button size="icon" variant="ghost" onClick={() => navigate(`/challans/edit-${c.id}`)}><Pencil className="h-4 w-4" /></Button>
-                      <Button size="icon" variant="ghost" onClick={() => handleDelete(c.id)} className="text-destructive"><Trash2 className="h-4 w-4" /></Button>
+                    <div>
+                      <p className="font-medium text-sm">{c.customerName}</p>
+                      <p className="text-xs text-muted-foreground">{c.customerAddress}</p>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-sm">{new Date(c.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</TableCell>
+                  <TableCell className="font-medium">{c.orderNo}</TableCell>
+                  <TableCell className="text-center">{statusBadge(c.status)}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-1 justify-center" onClick={(e) => e.stopPropagation()}>
+                      <Button size="icon" variant="ghost" onClick={() => navigate(`/challans/view-${c.id}`)} title="View"><Eye className="h-4 w-4" /></Button>
+                      <Button size="icon" variant="ghost" onClick={() => navigate(`/challans/edit-${c.id}`)} title="Edit"><Pencil className="h-4 w-4" /></Button>
+                      <Button size="icon" variant="ghost" onClick={() => handleDelete(c.id)} className="text-destructive" title="Delete"><Trash2 className="h-4 w-4" /></Button>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -74,7 +106,6 @@ export default function ChallansPage() {
     </div>
   );
 }
-
 function ChallanForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
   const customers = storage.getAll<Customer>(KEYS.CUSTOMERS);
   const existing = editId ? storage.getById<Challan>(KEYS.CHALLANS, editId) : null;
