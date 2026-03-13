@@ -133,7 +133,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
         </div>
 
         {/* Items Table */}
-        <div style={{ padding: '10px 30px 0', position: 'relative', minHeight: '250px' }}>
+        <div style={{ padding: '10px 30px 0', position: 'relative', minHeight: '250px', flex: 1 }}>
           
           {/* Watermark */}
           <div style={{
