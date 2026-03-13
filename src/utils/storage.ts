@@ -65,6 +65,13 @@ export const KEYS = {
   PURCHASE_ORDERS: 'sm_purchase_orders',
 };
 
+// Reset all data and re-initialize
+export function resetAllData() {
+  Object.values(KEYS).forEach(key => localStorage.removeItem(key));
+  localStorage.removeItem('companySettings');
+  initializeData();
+}
+
 // Initialize default admin user if none exists
 export function initializeData() {
   const users = storage.getAll(KEYS.USERS);
