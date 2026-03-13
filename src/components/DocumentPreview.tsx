@@ -174,15 +174,16 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   </tr>
                 ))}
                 {/* Total Amount Row */}
-                <tr style={{ borderTop: `2px solid ${ORANGE}` }}>
+                <tr style={{ borderTop: `2px solid ${NAVY}` }}>
                   <td colSpan={isQuotation ? 4 : 3} style={{ 
                     padding: '10px 8px', textAlign: 'left', fontWeight: 'bold', 
-                    backgroundColor: ORANGE, color: 'white', fontSize: '13px',
+                    backgroundColor: NAVY, color: 'white', fontSize: '13px',
                   }}>
                     Total Amount
                   </td>
                   <td style={{ 
                     padding: '10px 8px', textAlign: 'right', fontWeight: 'bold', fontSize: '13px',
+                    backgroundColor: NAVY, color: 'white',
                   }}>
                     BDT, {formatNumber(totalAmount || 0)}
                   </td>
