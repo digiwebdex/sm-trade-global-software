@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,11 +12,38 @@ import { generateId, generateDocNumber } from '@/utils/documentNumbers';
 import { Invoice, LineItem, Customer, Payment } from '@/types';
 import DocumentPreview, { printDocument } from '@/components/DocumentPreview';
 import { toast } from 'sonner';
-import { Plus, Trash2, Eye, ArrowLeft, Search, Pencil, Printer } from 'lucide-react';
+import { Plus, Trash2, Eye, ArrowLeft, Search, Pencil, Printer, Upload, X } from 'lucide-react';
 
 const emptyItem = (): LineItem => ({ id: generateId(), description: '', quantity: 1, unitPrice: 0, total: 0 });
 const emptyPayment = (): Payment => ({ id: generateId(), date: new Date().toISOString().split('T')[0], method: 'Cash', description: '', amount: 0 });
 
+function SignatureUploadField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 500 * 1024) return;
+    const reader = new FileReader();
+    reader.onload = () => onChange(reader.result as string);
+    reader.readAsDataURL(file);
+  };
+  return (
+    <div className="text-center">
+      <p className="text-xs text-muted-foreground mb-1">{label}</p>
+      {value ? (
+        <div className="relative border rounded p-1 bg-white">
+          <img src={value} alt={label} className="h-10 mx-auto object-contain" />
+          <button onClick={() => onChange('')} className="absolute -top-1 -right-1 bg-destructive text-white rounded-full w-4 h-4 flex items-center justify-center text-[10px]">×</button>
+        </div>
+      ) : (
+        <button onClick={() => inputRef.current?.click()} className="w-full border border-dashed rounded p-2 text-xs text-muted-foreground hover:bg-muted/50 flex items-center justify-center gap-1">
+          <Upload className="h-3 w-3" /> Upload
+        </button>
+      )}
+      <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+    </div>
+  );
+}
 export default function InvoicesPage() {
   const navigate = useNavigate();
   const { action } = useParams();
@@ -135,6 +162,9 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
     payments: existing?.payments || [],
     notes: existing?.notes || '',
     amountInWords: existing?.amountInWords || '',
+    signatureReceived: existing?.signatureReceived || '',
+    signaturePrepared: existing?.signaturePrepared || '',
+    signatureAuthorize: existing?.signatureAuthorize || '',
   });
 
   const selectCustomer = (id: string) => {
@@ -269,6 +299,21 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
             </div>
 
             <div><label className="text-sm font-medium">Amount in Words</label><Input value={form.amountInWords} onChange={(e) => setForm({ ...form, amountInWords: e.target.value })} placeholder="Auto-generated if empty" /></div>
+            
+            {/* Signature Uploads */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">Signatures (optional - overrides company defaults)</label>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { key: 'signatureReceived' as const, label: 'Received by' },
+                  { key: 'signaturePrepared' as const, label: 'Prepared by' },
+                  { key: 'signatureAuthorize' as const, label: 'Authorize by' },
+                ].map(({ key, label }) => (
+                  <SignatureUploadField key={key} label={label} value={form[key]} onChange={(v) => setForm({ ...form, [key]: v })} />
+                ))}
+              </div>
+            </div>
+
             <div><label className="text-sm font-medium">Notes</label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
             <Button onClick={handleSave} className="w-full bg-secondary hover:bg-secondary/90">Save Invoice</Button>
           </CardContent>
@@ -289,7 +334,10 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
             payments={form.payments}
             notes={form.notes} 
             status={autoStatus} 
-            amountInWords={form.amountInWords} 
+            amountInWords={form.amountInWords}
+            signatureReceived={form.signatureReceived}
+            signaturePrepared={form.signaturePrepared}
+            signatureAuthorize={form.signatureAuthorize}
           />
         </div>
       </div>

@@ -25,6 +25,9 @@ interface DocumentPreviewProps {
   supplierName?: string;
   supplierAddress?: string;
   status?: string;
+  signatureReceived?: string;
+  signaturePrepared?: string;
+  signatureAuthorize?: string;
 }
 
 const formatNumber = (num: number) => num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -299,15 +302,14 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
         {/* ===== SIGNATURE SECTION ===== */}
         <div style={{ padding: '20px 35px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
           {[
-            { label: 'Received by', sig: settings.signatureReceived },
-            { label: 'Prepared by', sig: settings.signaturePrepared },
-            { label: 'Authorize by', sig: settings.signatureAuthorize },
+            { label: 'Received by', sig: props.signatureReceived || settings.signatureReceived },
+            { label: 'Prepared by', sig: props.signaturePrepared || settings.signaturePrepared },
+            { label: 'Authorize by', sig: props.signatureAuthorize || settings.signatureAuthorize },
           ].map((item) => (
             <div key={item.label} style={{ textAlign: 'center', width: '160px' }}>
               <div style={{
-                width: '160px', height: '70px', border: '1.5px solid #333', borderRadius: '4px',
+                width: '160px', height: '70px',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '6px',
-                backgroundColor: '#fafafa',
               }}>
                 {item.sig ? (
                   <img src={item.sig} alt={item.label} style={{ maxWidth: '140px', maxHeight: '60px', objectFit: 'contain' }} />
