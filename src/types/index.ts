@@ -45,6 +45,14 @@ export interface ChallanItem {
   unit: string;
 }
 
+export interface Payment {
+  id: string;
+  date: string;
+  method: 'Cash' | 'Bank' | 'bKash' | 'Nagad' | 'Check';
+  description: string;
+  amount: number;
+}
+
 export interface Invoice {
   id: string;
   invoiceNumber: string;
@@ -53,9 +61,13 @@ export interface Invoice {
   customerName: string;
   customerAddress: string;
   customerPhone: string;
+  customerEmail?: string;
   items: LineItem[];
   totalAmount: number;
-  status: 'draft' | 'sent' | 'paid';
+  tax?: number;
+  totalPaid?: number;
+  payments?: Payment[];
+  status: 'draft' | 'sent' | 'paid' | 'partial';
   amountInWords?: string;
   notes: string;
   createdAt: string;

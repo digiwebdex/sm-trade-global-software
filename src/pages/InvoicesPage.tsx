@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,12 +9,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { storage, KEYS } from '@/utils/storage';
 import { generateId, generateDocNumber } from '@/utils/documentNumbers';
-import { Invoice, LineItem, Customer } from '@/types';
+import { Invoice, LineItem, Customer, Payment } from '@/types';
 import DocumentPreview, { printDocument } from '@/components/DocumentPreview';
 import { toast } from 'sonner';
 import { Plus, Trash2, Eye, ArrowLeft, Search, Pencil, Printer } from 'lucide-react';
 
 const emptyItem = (): LineItem => ({ id: generateId(), description: '', quantity: 1, unitPrice: 0, total: 0 });
+const emptyPayment = (): Payment => ({ id: generateId(), date: new Date().toISOString().split('T')[0], method: 'Cash', description: '', amount: 0 });
 
 export default function InvoicesPage() {
   const navigate = useNavigate();
@@ -46,6 +47,7 @@ export default function InvoicesPage() {
   const statusBadge = (status: string) => {
     const variants: Record<string, { className: string; label: string }> = {
       paid: { className: 'bg-emerald-100 text-emerald-700 border-emerald-200', label: 'Paid' },
+      partial: { className: 'bg-orange-100 text-orange-700 border-orange-200', label: 'Partial' },
       sent: { className: 'bg-blue-100 text-blue-700 border-blue-200', label: 'Due' },
       draft: { className: 'bg-gray-100 text-gray-600 border-gray-200', label: 'Draft' },
     };
@@ -124,17 +126,20 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
     customerName: existing?.customerName || '',
     customerAddress: existing?.customerAddress || '',
     customerPhone: existing?.customerPhone || '',
+    customerEmail: existing?.customerEmail || '',
     date: existing?.date || new Date().toISOString().split('T')[0],
     invoiceNumber: existing?.invoiceNumber || generateDocNumber('INV', storage.getAll<Invoice>(KEYS.INVOICES).map(i => i.invoiceNumber)),
     items: existing?.items || [emptyItem()],
     status: existing?.status || 'draft' as const,
+    tax: existing?.tax || 0,
+    payments: existing?.payments || [],
     notes: existing?.notes || '',
     amountInWords: existing?.amountInWords || '',
   });
 
   const selectCustomer = (id: string) => {
     const c = customers.find(c => c.id === id);
-    if (c) setForm({ ...form, customerId: c.id, customerName: c.name, customerAddress: `${c.organization}\n${c.address}`, customerPhone: c.phone });
+    if (c) setForm({ ...form, customerId: c.id, customerName: c.name, customerAddress: `${c.organization}\n${c.address}`, customerPhone: c.phone, customerEmail: c.email });
   };
 
   const updateItem = (index: number, field: keyof LineItem, value: any) => {
@@ -144,12 +149,30 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
     setForm({ ...form, items });
   };
 
-  const totalAmount = form.items.reduce((s, i) => s + i.total, 0);
+  const updatePayment = (index: number, field: keyof Payment, value: any) => {
+    const payments = [...form.payments];
+    (payments[index] as any)[field] = value;
+    setForm({ ...form, payments });
+  };
+
+  const subtotal = form.items.reduce((s, i) => s + i.total, 0);
+  const grandTotal = subtotal + (form.tax || 0);
+  const totalPaid = form.payments.reduce((s, p) => s + p.amount, 0);
+
+  // Auto-detect status
+  const autoStatus = totalPaid >= grandTotal && grandTotal > 0 ? 'paid' : totalPaid > 0 ? 'partial' : form.status;
 
   const handleSave = () => {
     if (!form.customerName) { toast.error('Select a customer'); return; }
     if (form.items.every(i => !i.description)) { toast.error('Add at least one item'); return; }
-    const data: Invoice = { ...form, id: editId || generateId(), totalAmount, createdAt: existing?.createdAt || new Date().toISOString() };
+    const data: Invoice = { 
+      ...form, 
+      id: editId || generateId(), 
+      totalAmount: subtotal,
+      totalPaid,
+      status: autoStatus as any,
+      createdAt: existing?.createdAt || new Date().toISOString() 
+    };
     if (editId) storage.update<Invoice>(KEYS.INVOICES, editId, data);
     else storage.create<Invoice>(KEYS.INVOICES, data);
     toast.success(editId ? 'Invoice updated' : 'Invoice created');
@@ -179,19 +202,12 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
             </div>
             <div className="grid grid-cols-1 gap-3">
               <div><label className="text-sm font-medium">Customer Name *</label><Input value={form.customerName} onChange={(e) => setForm({ ...form, customerName: e.target.value })} placeholder="Customer name" /></div>
-              <div><label className="text-sm font-medium">Customer Address</label><Textarea value={form.customerAddress} onChange={(e) => setForm({ ...form, customerAddress: e.target.value })} placeholder="Address" rows={2} /></div>
+              <div><label className="text-sm font-medium">Customer Email</label><Input value={form.customerEmail} onChange={(e) => setForm({ ...form, customerEmail: e.target.value })} placeholder="Email" /></div>
               <div><label className="text-sm font-medium">Customer Phone</label><Input value={form.customerPhone} onChange={(e) => setForm({ ...form, customerPhone: e.target.value })} placeholder="Phone" /></div>
-            </div>
-            <div className="grid grid-cols-1 gap-3">
-              <div>
-                <label className="text-sm font-medium">Status</label>
-                <Select value={form.status} onValueChange={(v: 'draft' | 'sent' | 'paid') => setForm({ ...form, status: v })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent><SelectItem value="draft">Draft</SelectItem><SelectItem value="sent">Due</SelectItem><SelectItem value="paid">Paid</SelectItem></SelectContent>
-                </Select>
-              </div>
+              <div><label className="text-sm font-medium">Customer Address</label><Textarea value={form.customerAddress} onChange={(e) => setForm({ ...form, customerAddress: e.target.value })} placeholder="Address" rows={2} /></div>
             </div>
 
+            {/* Line Items */}
             <div>
               <div className="flex justify-between items-center mb-2">
                 <label className="text-sm font-medium">Line Items</label>
@@ -208,15 +224,73 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
                   </div>
                 ))}
               </div>
-              <div className="text-right mt-3 text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+              <div className="text-right mt-3 text-sm" style={{ color: '#1B3A5C' }}>
+                <div>Subtotal: ৳{subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+              </div>
             </div>
+
+            {/* Tax */}
+            <div><label className="text-sm font-medium">Tax Amount</label><Input type="number" value={form.tax} onChange={(e) => setForm({ ...form, tax: parseFloat(e.target.value) || 0 })} placeholder="0.00" /></div>
+            
+            <div className="text-right text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+
+            {/* Payments */}
+            <div>
+              <div className="flex justify-between items-center mb-2">
+                <label className="text-sm font-medium">Payments</label>
+                <Button size="sm" variant="outline" onClick={() => setForm({ ...form, payments: [...form.payments, emptyPayment()] })}><Plus className="h-3 w-3 mr-1" /> Add Payment</Button>
+              </div>
+              {form.payments.map((p, i) => (
+                <div key={p.id} className="grid grid-cols-12 gap-2 items-center mb-2">
+                  <Input className="col-span-3" type="date" value={p.date} onChange={(e) => updatePayment(i, 'date', e.target.value)} />
+                  <Select value={p.method} onValueChange={(v: any) => updatePayment(i, 'method', v)}>
+                    <SelectTrigger className="col-span-2"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Cash">Cash</SelectItem>
+                      <SelectItem value="Bank">Bank</SelectItem>
+                      <SelectItem value="bKash">bKash</SelectItem>
+                      <SelectItem value="Nagad">Nagad</SelectItem>
+                      <SelectItem value="Check">Check</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Input className="col-span-3" placeholder="Description" value={p.description} onChange={(e) => updatePayment(i, 'description', e.target.value)} />
+                  <Input className="col-span-3" type="number" placeholder="Amount" value={p.amount} onChange={(e) => updatePayment(i, 'amount', parseFloat(e.target.value) || 0)} />
+                  <Button size="icon" variant="ghost" className="col-span-1 text-destructive" onClick={() => setForm({ ...form, payments: form.payments.filter((_, j) => j !== i) })}><Trash2 className="h-3 w-3" /></Button>
+                </div>
+              ))}
+              {totalPaid > 0 && (
+                <div className="flex justify-between text-sm mt-2">
+                  <span className="text-muted-foreground">Total Paid: ৳{totalPaid.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                  <span className={`font-bold ${grandTotal - totalPaid > 0 ? 'text-destructive' : 'text-emerald-600'}`}>
+                    Balance: ৳{(grandTotal - totalPaid).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                  </span>
+                </div>
+              )}
+            </div>
+
             <div><label className="text-sm font-medium">Amount in Words</label><Input value={form.amountInWords} onChange={(e) => setForm({ ...form, amountInWords: e.target.value })} placeholder="Auto-generated if empty" /></div>
             <div><label className="text-sm font-medium">Notes</label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
             <Button onClick={handleSave} className="w-full bg-secondary hover:bg-secondary/90">Save Invoice</Button>
           </CardContent>
         </Card>
         <div className="print-target">
-          <DocumentPreview type="invoice" documentNumber={form.invoiceNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} items={form.items} totalAmount={totalAmount} notes={form.notes} status={form.status} amountInWords={form.amountInWords} />
+          <DocumentPreview 
+            type="invoice" 
+            documentNumber={form.invoiceNumber} 
+            date={form.date} 
+            customerName={form.customerName} 
+            customerAddress={form.customerAddress} 
+            customerPhone={form.customerPhone} 
+            customerEmail={form.customerEmail}
+            items={form.items} 
+            totalAmount={subtotal} 
+            tax={form.tax}
+            totalPaid={totalPaid}
+            payments={form.payments}
+            notes={form.notes} 
+            status={autoStatus} 
+            amountInWords={form.amountInWords} 
+          />
         </div>
       </div>
     </div>
@@ -232,12 +306,32 @@ function InvoiceView({ id, onBack }: { id: string; onBack: () => void }) {
       <div className="flex items-center gap-4 no-print">
         <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
         <h1 className="text-2xl font-bold">Invoice {inv.invoiceNumber}</h1>
-        <Badge variant="outline" className={inv.status === 'paid' ? 'bg-emerald-100 text-emerald-700' : inv.status === 'sent' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}>
-          {inv.status === 'sent' ? 'Due' : inv.status.charAt(0).toUpperCase() + inv.status.slice(1)}
+        <Badge variant="outline" className={
+          inv.status === 'paid' ? 'bg-emerald-100 text-emerald-700' : 
+          inv.status === 'partial' ? 'bg-orange-100 text-orange-700' :
+          inv.status === 'sent' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'
+        }>
+          {inv.status === 'sent' ? 'Due' : inv.status === 'partial' ? 'Partial' : inv.status.charAt(0).toUpperCase() + inv.status.slice(1)}
         </Badge>
         <Button onClick={printDocument} variant="outline"><Printer className="h-4 w-4 mr-2" /> Print / PDF</Button>
       </div>
-      <DocumentPreview type="invoice" documentNumber={inv.invoiceNumber} date={inv.date} customerName={inv.customerName} customerAddress={inv.customerAddress} customerPhone={inv.customerPhone} items={inv.items} totalAmount={inv.totalAmount} notes={inv.notes} status={inv.status} />
+      <DocumentPreview 
+        type="invoice" 
+        documentNumber={inv.invoiceNumber} 
+        date={inv.date} 
+        customerName={inv.customerName} 
+        customerAddress={inv.customerAddress} 
+        customerPhone={inv.customerPhone} 
+        customerEmail={inv.customerEmail}
+        items={inv.items} 
+        totalAmount={inv.totalAmount} 
+        tax={inv.tax}
+        totalPaid={inv.totalPaid}
+        payments={inv.payments}
+        notes={inv.notes} 
+        status={inv.status} 
+        amountInWords={inv.amountInWords}
+      />
     </div>
   );
 }
