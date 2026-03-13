@@ -12,7 +12,7 @@ import { generateId, generateDocNumber } from '@/utils/documentNumbers';
 import { Invoice, LineItem, Customer, Payment } from '@/types';
 import DocumentPreview, { printDocument } from '@/components/DocumentPreview';
 import { toast } from 'sonner';
-import { Plus, Trash2, Eye, ArrowLeft, Search, Pencil, Printer } from 'lucide-react';
+import { Plus, Trash2, Eye, ArrowLeft, Search, Pencil, Printer, Upload, X } from 'lucide-react';
 
 const emptyItem = (): LineItem => ({ id: generateId(), description: '', quantity: 1, unitPrice: 0, total: 0 });
 const emptyPayment = (): Payment => ({ id: generateId(), date: new Date().toISOString().split('T')[0], method: 'Cash', description: '', amount: 0 });
