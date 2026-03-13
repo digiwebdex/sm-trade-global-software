@@ -37,15 +37,15 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
 
   const typeConfig: Record<string, { label: string; color: string; bgColor: string; toLabel: string; dateLabel: string }> = {
     invoice: { label: 'BILL', color: '#1B3A5C', bgColor: '#E8792B', toLabel: 'BILL TO', dateLabel: 'INVOICE DATE :' },
-    quotation: { label: 'QUOTATION', color: '#1B3A5C', bgColor: '#6B5B95', toLabel: 'TO', dateLabel: 'QUOTATION DATE :' },
+    quotation: { label: 'QUOTATION', color: '#1B3A5C', bgColor: '#E8792B', toLabel: 'TO', dateLabel: 'QUOTATION DATE :' },
     challan: { label: 'CHALLAN', color: '#1B3A5C', bgColor: '#E8792B', toLabel: 'DELIVERY TO', dateLabel: 'CHALLAN DATE' },
-    purchaseOrder: { label: 'PURCHASE ORDER', color: '#1B3A5C', bgColor: '#1B3A5C', toLabel: 'TO', dateLabel: 'PO DATE :' },
+    purchaseOrder: { label: 'PURCHASE ORDER', color: '#1B3A5C', bgColor: '#E8792B', toLabel: 'TO', dateLabel: 'PO DATE :' },
   };
 
   const config = typeConfig[type];
   const isQuotation = type === 'quotation';
   const isChallan = type === 'challan';
-  const tableHeaderBg = isQuotation ? '#6B5B95' : isChallan ? '#E8792B' : '#1B3A5C';
+  const tableHeaderBg = '#1B3A5C';
 
   // Generate QR code data URL (simple SVG-based placeholder)
   const qrCodeSvg = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="white"/><text x="50" y="45" text-anchor="middle" font-size="8" fill="#333">Made by S.M. Trade</text><text x="50" y="58" text-anchor="middle" font-size="7" fill="#666">Scan for details</text><rect x="10" y="10" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/><rect x="65" y="10" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/><rect x="10" y="65" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/><rect x="15" y="15" width="15" height="15" fill="#333"/><rect x="70" y="15" width="15" height="15" fill="#333"/><rect x="15" y="70" width="15" height="15" fill="#333"/><rect x="40" y="10" width="5" height="5" fill="#333"/><rect x="50" y="15" width="5" height="5" fill="#333"/><rect x="45" y="25" width="5" height="5" fill="#333"/><rect x="40" y="40" width="5" height="5" fill="#333"/><rect x="50" y="45" width="5" height="5" fill="#333"/><rect x="60" y="50" width="5" height="5" fill="#333"/><rect x="70" y="60" width="5" height="5" fill="#333"/><rect x="80" y="70" width="5" height="5" fill="#333"/><rect x="65" y="75" width="5" height="5" fill="#333"/><rect x="75" y="80" width="5" height="5" fill="#333"/></svg>`)}`;
@@ -112,7 +112,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
         {/* Customer Info */}
         <div style={{ padding: '15px 30px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div style={{ 
-            borderLeft: isQuotation ? '4px solid #6B5B95' : isChallan ? '4px solid #E8792B' : '4px solid #1B3A5C', 
+            borderLeft: '4px solid #1B3A5C', 
             paddingLeft: '12px',
             flex: 1
           }}>
