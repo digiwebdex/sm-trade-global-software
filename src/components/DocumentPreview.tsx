@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import QRCode from 'qrcode';
 import { CompanySettings, LineItem, ChallanItem, Payment } from '@/types';
 import { numberToWords } from '@/utils/numberToWords';
 import { storage } from '@/utils/storage';
@@ -55,6 +56,15 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
   };
 
   const config = typeConfig[type];
+
+  // Generate real QR code
+  const [qrDataUrl, setQrDataUrl] = useState('');
+  useEffect(() => {
+    const qrContent = `S.M. TRADE INTERNATIONAL\n${config.label}: ${documentNumber}\nDate: ${date}\nCustomer: ${customerName}\nWebsite: ${settings.website}`;
+    QRCode.toDataURL(qrContent, { width: 120, margin: 1, color: { dark: '#1B3A5C', light: '#ffffff' } })
+      .then(url => setQrDataUrl(url))
+      .catch(() => setQrDataUrl(''));
+  }, [documentNumber, date, customerName, settings.website, config.label]);
   const isChallan = type === 'challan';
   const isInvoice = type === 'invoice';
 
@@ -77,7 +87,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
 
   const statusInfo = statusConfig[props.status || 'draft'] || statusConfig.draft;
 
-  const qrCodeSvg = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="white"/><text x="50" y="45" text-anchor="middle" font-size="8" fill="#333">S.M. Trade</text><text x="50" y="58" text-anchor="middle" font-size="7" fill="#666">Scan to view invoice</text><rect x="10" y="10" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/><rect x="65" y="10" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/><rect x="10" y="65" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/><rect x="15" y="15" width="15" height="15" fill="#333"/><rect x="70" y="15" width="15" height="15" fill="#333"/><rect x="15" y="70" width="15" height="15" fill="#333"/><rect x="40" y="10" width="5" height="5" fill="#333"/><rect x="50" y="15" width="5" height="5" fill="#333"/><rect x="45" y="25" width="5" height="5" fill="#333"/><rect x="40" y="40" width="5" height="5" fill="#333"/><rect x="50" y="45" width="5" height="5" fill="#333"/><rect x="60" y="50" width="5" height="5" fill="#333"/><rect x="70" y="60" width="5" height="5" fill="#333"/><rect x="80" y="70" width="5" height="5" fill="#333"/><rect x="65" y="75" width="5" height="5" fill="#333"/><rect x="75" y="80" width="5" height="5" fill="#333"/></svg>`)}`;
+  // QR code is now generated via useEffect above
 
   return (
     <div className="bg-white mx-auto shadow-lg document-preview-wrapper" id="document-preview" style={{ fontFamily: "'Segoe UI', Arial, sans-serif", color: '#333', fontSize: '13px', width: '794px', minHeight: '1123px' }}>
@@ -343,9 +353,13 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
             </div>
           </div>
           {/* QR Code */}
-          <div style={{ position: 'absolute', right: '25px', top: '50%', transform: 'translateY(-50%)' }}>
-            <img src={qrCodeSvg} alt="QR Code" style={{ width: '55px', height: '55px' }} />
-            <p style={{ fontSize: '6px', textAlign: 'center', margin: '1px 0 0', color: '#999' }}>Scan to view invoice</p>
+          <div style={{ position: 'absolute', right: '25px', top: '50%', transform: 'translateY(-50%)', textAlign: 'center' }}>
+            {qrDataUrl ? (
+              <img src={qrDataUrl} alt="QR Code" style={{ width: '60px', height: '60px', borderRadius: '3px' }} />
+            ) : (
+              <div style={{ width: '60px', height: '60px', backgroundColor: '#f0f0f0', borderRadius: '3px' }} />
+            )}
+            <p style={{ fontSize: '6px', margin: '2px 0 0', color: '#999' }}>Scan for details</p>
           </div>
         </div>
       </div>
