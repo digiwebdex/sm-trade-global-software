@@ -185,7 +185,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                     padding: '10px 8px', textAlign: 'right', fontWeight: 'bold', fontSize: '13px',
                     backgroundColor: NAVY, color: 'white',
                   }}>
-                    BDT, {formatNumber(totalAmount || 0)}
+                    TK. {formatNumber(totalAmount || 0)}
                   </td>
                 </tr>
               </tbody>
