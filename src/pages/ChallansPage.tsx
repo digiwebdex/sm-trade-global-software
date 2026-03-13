@@ -185,7 +185,7 @@ function ChallanForm({ editId, onDone }: { editId?: string; onDone: () => void }
             <Button onClick={handleSave} className="w-full bg-secondary hover:bg-secondary/90">Save Challan</Button>
           </CardContent>
         </Card>
-        <DocumentPreview type="challan" documentNumber={form.challanNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} challanItems={form.items} totalQuantity={totalQuantity} orderNo={form.orderNo} notes={form.notes} />
+        <DocumentPreview type="challan" documentNumber={form.challanNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} challanItems={form.items} totalQuantity={totalQuantity} orderNo={form.orderNo} notes={form.notes} status={form.status} />
       </div>
     </div>
   );
@@ -204,7 +204,7 @@ function ChallanView({ id, onBack }: { id: string; onBack: () => void }) {
         </Badge>
         <Button onClick={printDocument} variant="outline"><Printer className="h-4 w-4 mr-2" /> Print / PDF</Button>
       </div>
-      <DocumentPreview type="challan" documentNumber={c.challanNumber} date={c.date} customerName={c.customerName} customerAddress={c.customerAddress} customerPhone={c.customerPhone} challanItems={c.items} totalQuantity={c.totalQuantity} orderNo={c.orderNo} notes={c.notes} />
+      <DocumentPreview type="challan" documentNumber={c.challanNumber} date={c.date} customerName={c.customerName} customerAddress={c.customerAddress} customerPhone={c.customerPhone} challanItems={c.items} totalQuantity={c.totalQuantity} orderNo={c.orderNo} notes={c.notes} status={c.status} />
     </div>
   );
 }

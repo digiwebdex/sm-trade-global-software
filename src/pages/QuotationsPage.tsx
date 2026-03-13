@@ -190,7 +190,7 @@ function QuotationForm({ editId, onDone }: { editId?: string; onDone: () => void
             <Button onClick={handleSave} className="w-full bg-secondary hover:bg-secondary/90">Save Quotation</Button>
           </CardContent>
         </Card>
-        <DocumentPreview type="quotation" documentNumber={form.quotationNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} items={form.items} totalAmount={totalAmount} notes={form.notes} amountInWords={form.amountInWords} />
+        <DocumentPreview type="quotation" documentNumber={form.quotationNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} items={form.items} totalAmount={totalAmount} notes={form.notes} amountInWords={form.amountInWords} status={form.status} />
       </div>
     </div>
   );
@@ -209,7 +209,7 @@ function QuotationView({ id, onBack }: { id: string; onBack: () => void }) {
         </Badge>
         <Button onClick={printDocument} variant="outline"><Printer className="h-4 w-4 mr-2" /> Print / PDF</Button>
       </div>
-      <DocumentPreview type="quotation" documentNumber={q.quotationNumber} date={q.date} customerName={q.customerName} customerAddress={q.customerAddress} customerPhone={q.customerPhone} items={q.items} totalAmount={q.totalAmount} notes={q.notes} />
+      <DocumentPreview type="quotation" documentNumber={q.quotationNumber} date={q.date} customerName={q.customerName} customerAddress={q.customerAddress} customerPhone={q.customerPhone} items={q.items} totalAmount={q.totalAmount} notes={q.notes} amountInWords={q.amountInWords} status={q.status} />
     </div>
   );
 }
