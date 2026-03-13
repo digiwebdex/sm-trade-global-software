@@ -70,7 +70,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
   return (
     <div className="bg-white mx-auto shadow-lg" id="document-preview" style={{ fontFamily: "'Segoe UI', Arial, sans-serif", color: '#333', fontSize: '13px', width: '794px', minHeight: '1123px' }}>
       {/* Page border */}
-      <div style={{ border: '2px solid #d0d0d0', padding: '0' }}>
+      <div style={{ border: '2px solid #d0d0d0', padding: '0', minHeight: '1119px', display: 'flex', flexDirection: 'column' }}>
         
         {/* Header */}
         <div style={{ padding: '20px 30px 15px', borderBottom: `3px solid ${config.color}` }}>
