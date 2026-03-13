@@ -2,8 +2,8 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { FileText, FilePlus, Truck, ShoppingCart, Users, Package, TrendingUp, DollarSign } from 'lucide-react';
-import { storage, KEYS } from '@/utils/storage';
+import { FileText, FilePlus, Truck, ShoppingCart, Users, Package, TrendingUp, DollarSign, RefreshCw } from 'lucide-react';
+import { storage, KEYS, resetAllData } from '@/utils/storage';
 import { Invoice, Quotation, Challan, PurchaseOrder, Customer, Product } from '@/types';
 
 export default function DashboardPage() {
@@ -36,9 +36,14 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground mt-1">Welcome back! Here's your business overview.</p>
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-muted-foreground mt-1">Welcome back! Here's your business overview.</p>
+        </div>
+        <Button variant="outline" size="sm" onClick={() => { resetAllData(); window.location.reload(); }}>
+          <RefreshCw className="h-4 w-4 mr-2" /> Reset Sample Data
+        </Button>
       </div>
 
       {/* Stats */}
