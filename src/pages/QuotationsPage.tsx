@@ -190,11 +190,21 @@ function QuotationForm({ editId, onDone }: { editId?: string; onDone: () => void
               <div className="text-right mt-3 text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
             </div>
             <div><label className="text-sm font-medium">Amount in Words</label><Input value={form.amountInWords} onChange={(e) => setForm({ ...form, amountInWords: e.target.value })} placeholder="Auto-generated if empty" /></div>
+            {/* Signature Uploads */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">Signatures</label>
+              <div className="grid grid-cols-3 gap-3">
+                {([['signatureReceived','Received by'],['signaturePrepared','Prepared by'],['signatureAuthorize','Authorize by']] as const).map(([key, label]) => (
+                  <SignatureUploadField key={key} label={label} value={(form as any)[key]} onChange={(v) => setForm({ ...form, [key]: v })} />
+                ))}
+              </div>
+            </div>
+
             <div><label className="text-sm font-medium">Notes</label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
             <Button onClick={handleSave} className="w-full bg-secondary hover:bg-secondary/90">Save Quotation</Button>
           </CardContent>
         </Card>
-        <DocumentPreview type="quotation" documentNumber={form.quotationNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} items={form.items} totalAmount={totalAmount} notes={form.notes} amountInWords={form.amountInWords} status={form.status} />
+        <DocumentPreview type="quotation" documentNumber={form.quotationNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} items={form.items} totalAmount={totalAmount} notes={form.notes} amountInWords={form.amountInWords} status={form.status} signatureReceived={form.signatureReceived} signaturePrepared={form.signaturePrepared} signatureAuthorize={form.signatureAuthorize} />
       </div>
     </div>
   );

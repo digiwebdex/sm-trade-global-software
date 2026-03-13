@@ -185,11 +185,21 @@ function ChallanForm({ editId, onDone }: { editId?: string; onDone: () => void }
               ))}
               <div className="text-right mt-3 font-bold">Total Delivery Qty: {totalQuantity}</div>
             </div>
+            {/* Signature Uploads */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">Signatures</label>
+              <div className="grid grid-cols-3 gap-3">
+                {([['signatureReceived','Received by'],['signaturePrepared','Prepared by'],['signatureAuthorize','Authorize by']] as const).map(([key, label]) => (
+                  <SignatureUploadField key={key} label={label} value={(form as any)[key]} onChange={(v) => setForm({ ...form, [key]: v })} />
+                ))}
+              </div>
+            </div>
+
             <div><label className="text-sm font-medium">Notes</label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
             <Button onClick={handleSave} className="w-full bg-secondary hover:bg-secondary/90">Save Challan</Button>
           </CardContent>
         </Card>
-        <DocumentPreview type="challan" documentNumber={form.challanNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} challanItems={form.items} totalQuantity={totalQuantity} orderNo={form.orderNo} notes={form.notes} status={form.status} />
+        <DocumentPreview type="challan" documentNumber={form.challanNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} challanItems={form.items} totalQuantity={totalQuantity} orderNo={form.orderNo} notes={form.notes} status={form.status} signatureReceived={form.signatureReceived} signaturePrepared={form.signaturePrepared} signatureAuthorize={form.signatureAuthorize} />
       </div>
     </div>
   );
