@@ -122,6 +122,9 @@ function ChallanForm({ editId, onDone }: { editId?: string; onDone: () => void }
     items: existing?.items || [emptyItem()],
     status: existing?.status || 'draft' as 'draft' | 'delivered',
     notes: existing?.notes || '',
+    signatureReceived: (existing as any)?.signatureReceived || '',
+    signaturePrepared: (existing as any)?.signaturePrepared || '',
+    signatureAuthorize: (existing as any)?.signatureAuthorize || '',
   });
 
   const selectCustomer = (id: string) => {
