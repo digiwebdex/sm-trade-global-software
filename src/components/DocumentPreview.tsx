@@ -36,7 +36,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
   const { type, documentNumber, date, customerName, customerAddress, customerPhone, items, challanItems, totalAmount, totalQuantity, orderNo, notes, status } = props;
 
   const typeConfig: Record<string, { label: string; color: string; bgColor: string; toLabel: string; dateLabel: string }> = {
-    invoice: { label: 'BILL', color: '#1B3A5C', bgColor: '#1B3A5C', toLabel: 'BILL TO', dateLabel: 'INVOICE DATE :' },
+    invoice: { label: 'BILL', color: '#1B3A5C', bgColor: '#E8792B', toLabel: 'BILL TO', dateLabel: 'INVOICE DATE :' },
     quotation: { label: 'QUOTATION', color: '#1B3A5C', bgColor: '#6B5B95', toLabel: 'TO', dateLabel: 'QUOTATION DATE :' },
     challan: { label: 'CHALLAN', color: '#1B3A5C', bgColor: '#E8792B', toLabel: 'DELIVERY TO', dateLabel: 'CHALLAN DATE' },
     purchaseOrder: { label: 'PURCHASE ORDER', color: '#1B3A5C', bgColor: '#1B3A5C', toLabel: 'TO', dateLabel: 'PO DATE :' },
@@ -47,10 +47,30 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
   const isChallan = type === 'challan';
   const tableHeaderBg = isQuotation ? '#6B5B95' : isChallan ? '#E8792B' : '#1B3A5C';
 
+  // Generate QR code data URL (simple SVG-based placeholder)
+  const qrCodeSvg = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="white"/><text x="50" y="45" text-anchor="middle" font-size="8" fill="#333">Made by S.M. Trade</text><text x="50" y="58" text-anchor="middle" font-size="7" fill="#666">Scan for details</text><rect x="10" y="10" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/><rect x="65" y="10" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/><rect x="10" y="65" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/><rect x="15" y="15" width="15" height="15" fill="#333"/><rect x="70" y="15" width="15" height="15" fill="#333"/><rect x="15" y="70" width="15" height="15" fill="#333"/><rect x="40" y="10" width="5" height="5" fill="#333"/><rect x="50" y="15" width="5" height="5" fill="#333"/><rect x="45" y="25" width="5" height="5" fill="#333"/><rect x="40" y="40" width="5" height="5" fill="#333"/><rect x="50" y="45" width="5" height="5" fill="#333"/><rect x="60" y="50" width="5" height="5" fill="#333"/><rect x="70" y="60" width="5" height="5" fill="#333"/><rect x="80" y="70" width="5" height="5" fill="#333"/><rect x="65" y="75" width="5" height="5" fill="#333"/><rect x="75" y="80" width="5" height="5" fill="#333"/></svg>`)}`;
+
+  const thStyle = (extra?: React.CSSProperties): React.CSSProperties => ({
+    backgroundColor: tableHeaderBg,
+    color: 'white',
+    padding: '8px 12px',
+    fontSize: '12px',
+    fontWeight: 'bold',
+    borderBottom: '2px solid ' + tableHeaderBg,
+    ...extra,
+  });
+
+  const tdStyle = (extra?: React.CSSProperties): React.CSSProperties => ({
+    padding: '7px 12px',
+    borderBottom: '1px solid #e5e5e5',
+    fontSize: '13px',
+    ...extra,
+  });
+
   return (
     <div className="bg-white max-w-[800px] mx-auto shadow-lg" id="document-preview" style={{ fontFamily: "'Segoe UI', Arial, sans-serif", color: '#333', fontSize: '13px' }}>
       {/* Page border */}
-      <div style={{ border: '2px solid #e0e0e0', padding: '0' }}>
+      <div style={{ border: '2px solid #d0d0d0', padding: '0' }}>
         
         {/* Header */}
         <div style={{ padding: '20px 30px 15px', borderBottom: `3px solid ${config.color}` }}>
@@ -132,41 +152,40 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
             <table style={{ width: '100%', borderCollapse: 'collapse', position: 'relative', zIndex: 1 }}>
               <thead>
                 <tr>
-                  <th style={{ backgroundColor: tableHeaderBg, color: 'white', padding: '8px 10px', border: '1px solid #ddd', width: '40px', textAlign: 'center', fontSize: '12px', fontWeight: 'bold' }}>SL.</th>
-                  <th style={{ backgroundColor: tableHeaderBg, color: 'white', padding: '8px 10px', border: '1px solid #ddd', textAlign: 'left', fontSize: '12px', fontWeight: 'bold' }}>Item Name & Details</th>
-                  <th style={{ backgroundColor: tableHeaderBg, color: 'white', padding: '8px 10px', border: '1px solid #ddd', width: '70px', textAlign: 'center', fontSize: '12px', fontWeight: 'bold' }}>Size</th>
-                  <th style={{ backgroundColor: tableHeaderBg, color: 'white', padding: '8px 10px', border: '1px solid #ddd', width: '90px', textAlign: 'center', fontSize: '12px', fontWeight: 'bold' }}>Delivery Qty.</th>
-                  <th style={{ backgroundColor: tableHeaderBg, color: 'white', padding: '8px 10px', border: '1px solid #ddd', width: '90px', textAlign: 'center', fontSize: '12px', fontWeight: 'bold' }}>Balance Qty.</th>
-                  <th style={{ backgroundColor: tableHeaderBg, color: 'white', padding: '8px 10px', border: '1px solid #ddd', width: '50px', textAlign: 'center', fontSize: '12px', fontWeight: 'bold' }}>Unit</th>
+                  <th style={thStyle({ width: '40px', textAlign: 'center' })}>SL.</th>
+                  <th style={thStyle({ textAlign: 'left' })}>Item Name & Details</th>
+                  <th style={thStyle({ width: '70px', textAlign: 'center' })}>Size</th>
+                  <th style={thStyle({ width: '90px', textAlign: 'center' })}>Delivery Qty.</th>
+                  <th style={thStyle({ width: '90px', textAlign: 'center' })}>Balance Qty.</th>
+                  <th style={thStyle({ width: '50px', textAlign: 'center' })}>Unit</th>
                 </tr>
               </thead>
               <tbody>
                 {challanItems.map((item, i) => (
                   <tr key={item.id}>
-                    <td style={{ padding: '6px 10px', border: '1px solid #ddd', textAlign: 'center' }}>{i + 1}</td>
-                    <td style={{ padding: '6px 10px', border: '1px solid #ddd' }}>{item.itemName}{item.details && <><br/><span style={{ fontSize: '11px', color: '#666' }}>{item.details}</span></>}</td>
-                    <td style={{ padding: '6px 10px', border: '1px solid #ddd', textAlign: 'center' }}>{item.size}</td>
-                    <td style={{ padding: '6px 10px', border: '1px solid #ddd', textAlign: 'center' }}>{item.deliveryQty} Paces</td>
-                    <td style={{ padding: '6px 10px', border: '1px solid #ddd', textAlign: 'center' }}>{item.balanceQty}</td>
-                    <td style={{ padding: '6px 10px', border: '1px solid #ddd', textAlign: 'center' }}>{item.unit}</td>
+                    <td style={tdStyle({ textAlign: 'center' })}>{i + 1}</td>
+                    <td style={tdStyle()}>{item.itemName}{item.details && <><br/><span style={{ fontSize: '11px', color: '#666' }}>{item.details}</span></>}</td>
+                    <td style={tdStyle({ textAlign: 'center' })}>{item.size}</td>
+                    <td style={tdStyle({ textAlign: 'center' })}>{item.deliveryQty} Paces</td>
+                    <td style={tdStyle({ textAlign: 'center' })}>{item.balanceQty}</td>
+                    <td style={tdStyle({ textAlign: 'center' })}>{item.unit}</td>
                   </tr>
                 ))}
-                {/* Empty rows for visual padding */}
                 {challanItems.length < 8 && Array.from({ length: 8 - challanItems.length }).map((_, i) => (
                   <tr key={`empty-${i}`}>
-                    <td style={{ padding: '6px 10px', border: '1px solid #ddd' }}>&nbsp;</td>
-                    <td style={{ padding: '6px 10px', border: '1px solid #ddd' }}></td>
-                    <td style={{ padding: '6px 10px', border: '1px solid #ddd' }}></td>
-                    <td style={{ padding: '6px 10px', border: '1px solid #ddd' }}></td>
-                    <td style={{ padding: '6px 10px', border: '1px solid #ddd' }}></td>
-                    <td style={{ padding: '6px 10px', border: '1px solid #ddd' }}></td>
+                    <td style={tdStyle()}>&nbsp;</td>
+                    <td style={tdStyle()}></td>
+                    <td style={tdStyle()}></td>
+                    <td style={tdStyle()}></td>
+                    <td style={tdStyle()}></td>
+                    <td style={tdStyle()}></td>
                   </tr>
                 ))}
                 <tr>
-                  <td colSpan={3} style={{ padding: '8px 10px', border: '1px solid #ddd', textAlign: 'right', fontWeight: 'bold', backgroundColor: '#E8792B', color: 'white' }}>Total Quantity</td>
-                  <td style={{ padding: '8px 10px', border: '1px solid #ddd', textAlign: 'center', fontWeight: 'bold', backgroundColor: '#E8792B', color: 'white' }}>{totalQuantity} PCS</td>
-                  <td style={{ padding: '8px 10px', border: '1px solid #ddd', textAlign: 'center', fontWeight: 'bold', backgroundColor: '#E8792B', color: 'white' }}>00</td>
-                  <td style={{ padding: '8px 10px', border: '1px solid #ddd', textAlign: 'center', fontWeight: 'bold', backgroundColor: '#E8792B', color: 'white' }}>Unit</td>
+                  <td colSpan={3} style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 'bold', backgroundColor: '#E8792B', color: 'white', fontSize: '13px' }}>Total Quantity</td>
+                  <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 'bold', backgroundColor: '#E8792B', color: 'white' }}>{totalQuantity} PCS</td>
+                  <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 'bold', backgroundColor: '#E8792B', color: 'white' }}>00</td>
+                  <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 'bold', backgroundColor: '#E8792B', color: 'white' }}>Unit</td>
                 </tr>
               </tbody>
             </table>
@@ -175,53 +194,53 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
               <thead>
                 <tr>
                   {isQuotation && (
-                    <th style={{ backgroundColor: tableHeaderBg, color: 'white', padding: '8px 10px', border: '1px solid #ddd', width: '40px', textAlign: 'center', fontSize: '12px', fontWeight: 'bold' }}>SL.</th>
+                    <th style={thStyle({ width: '40px', textAlign: 'center' })}>SL.</th>
                   )}
-                  <th style={{ backgroundColor: tableHeaderBg, color: 'white', padding: '8px 10px', border: '1px solid #ddd', textAlign: 'left', fontSize: '12px', fontWeight: 'bold' }}>DESCRIPTION</th>
-                  <th style={{ backgroundColor: tableHeaderBg, color: 'white', padding: '8px 10px', border: '1px solid #ddd', width: '80px', textAlign: 'center', fontSize: '12px', fontWeight: 'bold' }}>QTY</th>
-                  <th style={{ backgroundColor: tableHeaderBg, color: 'white', padding: '8px 10px', border: '1px solid #ddd', width: '100px', textAlign: 'center', fontSize: '12px', fontWeight: 'bold' }}>UNIT PRICE</th>
-                  <th style={{ backgroundColor: tableHeaderBg, color: 'white', padding: '8px 10px', border: '1px solid #ddd', width: '110px', textAlign: 'right', fontSize: '12px', fontWeight: 'bold' }}>TOTAL</th>
+                  <th style={thStyle({ textAlign: 'left' })}>DESCRIPTION</th>
+                  <th style={thStyle({ width: '80px', textAlign: 'center' })}>QTY</th>
+                  <th style={thStyle({ width: '110px', textAlign: 'center' })}>UNIT PRICE</th>
+                  <th style={thStyle({ width: '120px', textAlign: 'right' })}>TOTAL</th>
                 </tr>
               </thead>
               <tbody>
                 {items.map((item, i) => (
                   <tr key={item.id}>
-                    {isQuotation && <td style={{ padding: '6px 10px', border: '1px solid #ddd', textAlign: 'center' }}>{i + 1}</td>}
-                    <td style={{ padding: '6px 10px', border: '1px solid #ddd' }}>{item.description}</td>
-                    <td style={{ padding: '6px 10px', border: '1px solid #ddd', textAlign: 'center' }}>{item.quantity}</td>
-                    <td style={{ padding: '6px 10px', border: '1px solid #ddd', textAlign: 'center' }}>{formatNumber(item.unitPrice)}</td>
-                    <td style={{ padding: '6px 10px', border: '1px solid #ddd', textAlign: 'right', fontWeight: 'bold' }}>{formatNumber(item.total)}</td>
+                    {isQuotation && <td style={tdStyle({ textAlign: 'center' })}>{i + 1}</td>}
+                    <td style={tdStyle()}>{item.description}</td>
+                    <td style={tdStyle({ textAlign: 'center' })}>{item.quantity}</td>
+                    <td style={tdStyle({ textAlign: 'center' })}>{formatNumber(item.unitPrice)}</td>
+                    <td style={tdStyle({ textAlign: 'right', fontWeight: 'bold' })}>{formatNumber(item.total)}</td>
                   </tr>
                 ))}
                 {/* Empty rows */}
                 {items.length < 6 && Array.from({ length: 6 - items.length }).map((_, i) => (
                   <tr key={`empty-${i}`}>
-                    {isQuotation && <td style={{ padding: '6px 10px', border: '1px solid #ddd' }}>&nbsp;</td>}
-                    <td style={{ padding: '6px 10px', border: '1px solid #ddd' }}>&nbsp;</td>
-                    <td style={{ padding: '6px 10px', border: '1px solid #ddd' }}></td>
-                    <td style={{ padding: '6px 10px', border: '1px solid #ddd' }}></td>
-                    <td style={{ padding: '6px 10px', border: '1px solid #ddd' }}></td>
+                    {isQuotation && <td style={tdStyle()}>&nbsp;</td>}
+                    <td style={tdStyle()}>&nbsp;</td>
+                    <td style={tdStyle()}></td>
+                    <td style={tdStyle()}></td>
+                    <td style={tdStyle()}></td>
                   </tr>
                 ))}
                 {/* Total Amount Row */}
                 <tr>
                   <td colSpan={isQuotation ? 4 : 3} style={{ 
-                    padding: '10px', 
-                    border: '1px solid #ddd', 
-                    textAlign: 'right', 
+                    padding: '10px 12px', 
+                    textAlign: 'left', 
                     fontWeight: 'bold', 
                     backgroundColor: '#E8792B', 
                     color: 'white',
-                    fontSize: '13px'
+                    fontSize: '13px',
+                    borderTop: '2px solid #E8792B',
                   }}>
                     Total Amount
                   </td>
                   <td style={{ 
-                    padding: '10px', 
-                    border: '1px solid #ddd', 
+                    padding: '10px 12px', 
                     textAlign: 'right', 
                     fontWeight: 'bold',
-                    fontSize: '13px'
+                    fontSize: '13px',
+                    borderTop: '2px solid #E8792B',
                   }}>
                     BDT, {formatNumber(totalAmount || 0)}
                   </td>
@@ -261,20 +280,27 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
         <div style={{ 
           borderTop: '2px solid #E8792B', 
           padding: '12px 30px', 
-          textAlign: 'center', 
           fontSize: '11px', 
           color: '#555',
-          backgroundColor: '#fafafa'
+          backgroundColor: '#fafafa',
+          position: 'relative',
         }}>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '4px' }}>
-            <span>✉ {settings.email}</span>
-            <span>🌐 {settings.website}</span>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '4px' }}>
+              <span>✉ {settings.email}</span>
+              <span>🌐 {settings.website}</span>
+            </div>
+            <p style={{ margin: '2px 0' }}>📍 Address : {settings.address}</p>
+            <p style={{ margin: '2px 0' }}>📍 B-25/4, Al-Baraka Super Market, Office # 9-10, Mojidpur Road, Savar, Dhaka-1340</p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '4px' }}>
+              <span>📞 {settings.phone}</span>
+              <span>📠 +8802244446664</span>
+            </div>
           </div>
-          <p style={{ margin: '2px 0' }}>📍 Address : {settings.address}</p>
-          <p style={{ margin: '2px 0' }}>📍 B-25/4, Al-Baraka Super Market, Office # 9-10, Mojidpur Road, Savar, Dhaka-1340</p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '4px' }}>
-            <span>📞 {settings.phone}</span>
-            <span>📠 +8802244446664</span>
+          {/* QR Code */}
+          <div style={{ position: 'absolute', right: '20px', bottom: '8px' }}>
+            <img src={qrCodeSvg} alt="QR Code" style={{ width: '60px', height: '60px' }} />
+            <p style={{ fontSize: '7px', textAlign: 'center', margin: '2px 0 0', color: '#888' }}>Made by S.M. Trade<br/>Scan for details</p>
           </div>
         </div>
       </div>
