@@ -36,9 +36,14 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground mt-1">Welcome back! Here's your business overview.</p>
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-muted-foreground mt-1">Welcome back! Here's your business overview.</p>
+        </div>
+        <Button variant="outline" size="sm" onClick={() => { resetAllData(); window.location.reload(); }}>
+          <RefreshCw className="h-4 w-4 mr-2" /> Reset Sample Data
+        </Button>
       </div>
 
       {/* Stats */}
