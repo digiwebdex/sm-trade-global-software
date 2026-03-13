@@ -112,7 +112,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
         {/* Customer Info */}
         <div style={{ padding: '15px 30px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div style={{ 
-            borderLeft: isQuotation ? '4px solid #6B5B95' : isChallan ? '4px solid #E8792B' : '4px solid #1B3A5C', 
+            borderLeft: '4px solid #1B3A5C', 
             paddingLeft: '12px',
             flex: 1
           }}>
