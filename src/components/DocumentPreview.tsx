@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import QRCode from 'qrcode';
 import { CompanySettings, LineItem, ChallanItem, Payment } from '@/types';
 import { numberToWords } from '@/utils/numberToWords';
 import { storage } from '@/utils/storage';
