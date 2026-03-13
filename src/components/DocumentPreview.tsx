@@ -353,9 +353,13 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
             </div>
           </div>
           {/* QR Code */}
-          <div style={{ position: 'absolute', right: '25px', top: '50%', transform: 'translateY(-50%)' }}>
-            <img src={qrCodeSvg} alt="QR Code" style={{ width: '55px', height: '55px' }} />
-            <p style={{ fontSize: '6px', textAlign: 'center', margin: '1px 0 0', color: '#999' }}>Scan to view invoice</p>
+          <div style={{ position: 'absolute', right: '25px', top: '50%', transform: 'translateY(-50%)', textAlign: 'center' }}>
+            {qrDataUrl ? (
+              <img src={qrDataUrl} alt="QR Code" style={{ width: '60px', height: '60px', borderRadius: '3px' }} />
+            ) : (
+              <div style={{ width: '60px', height: '60px', backgroundColor: '#f0f0f0', borderRadius: '3px' }} />
+            )}
+            <p style={{ fontSize: '6px', margin: '2px 0 0', color: '#999' }}>Scan for details</p>
           </div>
         </div>
       </div>
