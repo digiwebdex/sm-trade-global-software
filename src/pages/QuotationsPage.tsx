@@ -123,6 +123,7 @@ function QuotationForm({ editId, onDone }: { editId?: string; onDone: () => void
     status: existing?.status || 'draft' as 'draft' | 'sent' | 'accepted' | 'rejected',
     validUntil: existing?.validUntil || '',
     notes: existing?.notes || '',
+    amountInWords: existing?.amountInWords || '',
   });
 
   const selectCustomer = (id: string) => {
