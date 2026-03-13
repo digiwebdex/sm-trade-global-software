@@ -44,7 +44,7 @@ function SignatureUploadField({ label, value, onChange }: { label: string; value
     </div>
   );
 }
-
+export default function InvoicesPage() {
   const navigate = useNavigate();
   const { action } = useParams();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
