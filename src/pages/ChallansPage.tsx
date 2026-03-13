@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,8 @@ import { generateId, generateDocNumber } from '@/utils/documentNumbers';
 import { Challan, ChallanItem, Customer } from '@/types';
 import DocumentPreview, { printDocument } from '@/components/DocumentPreview';
 import { toast } from 'sonner';
-import { Plus, Trash2, Eye, ArrowLeft, Search, Pencil, Printer } from 'lucide-react';
+import { Plus, Trash2, Eye, ArrowLeft, Search, Pencil, Printer, Upload } from 'lucide-react';
+import SignatureUploadField from '@/components/SignatureUploadField';
 
 const emptyItem = (): ChallanItem => ({ id: generateId(), itemName: '', details: '', size: '', deliveryQty: 0, balanceQty: 0, unit: 'Pcs' });
 
@@ -121,6 +122,9 @@ function ChallanForm({ editId, onDone }: { editId?: string; onDone: () => void }
     items: existing?.items || [emptyItem()],
     status: existing?.status || 'draft' as 'draft' | 'delivered',
     notes: existing?.notes || '',
+    signatureReceived: (existing as any)?.signatureReceived || '',
+    signaturePrepared: (existing as any)?.signaturePrepared || '',
+    signatureAuthorize: (existing as any)?.signatureAuthorize || '',
   });
 
   const selectCustomer = (id: string) => {
@@ -181,11 +185,21 @@ function ChallanForm({ editId, onDone }: { editId?: string; onDone: () => void }
               ))}
               <div className="text-right mt-3 font-bold">Total Delivery Qty: {totalQuantity}</div>
             </div>
+            {/* Signature Uploads */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">Signatures</label>
+              <div className="grid grid-cols-3 gap-3">
+                {([['signatureReceived','Received by'],['signaturePrepared','Prepared by'],['signatureAuthorize','Authorize by']] as const).map(([key, label]) => (
+                  <SignatureUploadField key={key} label={label} value={(form as any)[key]} onChange={(v) => setForm({ ...form, [key]: v })} />
+                ))}
+              </div>
+            </div>
+
             <div><label className="text-sm font-medium">Notes</label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
             <Button onClick={handleSave} className="w-full bg-secondary hover:bg-secondary/90">Save Challan</Button>
           </CardContent>
         </Card>
-        <DocumentPreview type="challan" documentNumber={form.challanNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} challanItems={form.items} totalQuantity={totalQuantity} orderNo={form.orderNo} notes={form.notes} status={form.status} />
+        <DocumentPreview type="challan" documentNumber={form.challanNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} challanItems={form.items} totalQuantity={totalQuantity} orderNo={form.orderNo} notes={form.notes} status={form.status} signatureReceived={form.signatureReceived} signaturePrepared={form.signaturePrepared} signatureAuthorize={form.signatureAuthorize} />
       </div>
     </div>
   );

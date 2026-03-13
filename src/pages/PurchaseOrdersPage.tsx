@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,8 @@ import { generateId, generateDocNumber } from '@/utils/documentNumbers';
 import { PurchaseOrder, LineItem } from '@/types';
 import DocumentPreview, { printDocument } from '@/components/DocumentPreview';
 import { toast } from 'sonner';
-import { Plus, Trash2, Eye, ArrowLeft, Search, Pencil, Printer } from 'lucide-react';
+import { Plus, Trash2, Eye, ArrowLeft, Search, Pencil, Printer, Upload } from 'lucide-react';
+import SignatureUploadField from '@/components/SignatureUploadField';
 
 const emptyItem = (): LineItem => ({ id: generateId(), description: '', quantity: 1, unitPrice: 0, total: 0 });
 
@@ -121,6 +122,9 @@ function POForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
     status: existing?.status || 'draft' as 'draft' | 'sent' | 'received',
     notes: existing?.notes || '',
     amountInWords: existing?.amountInWords || '',
+    signatureReceived: (existing as any)?.signatureReceived || '',
+    signaturePrepared: (existing as any)?.signaturePrepared || '',
+    signatureAuthorize: (existing as any)?.signatureAuthorize || '',
   });
 
   const updateItem = (index: number, field: keyof LineItem, value: any) => {
@@ -174,11 +178,21 @@ function POForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
               <div className="text-right mt-3 text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
             </div>
             <div><label className="text-sm font-medium">Amount in Words</label><Input value={form.amountInWords} onChange={(e) => setForm({ ...form, amountInWords: e.target.value })} placeholder="Auto-generated if empty" /></div>
+            {/* Signature Uploads */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">Signatures</label>
+              <div className="grid grid-cols-3 gap-3">
+                {([['signatureReceived','Received by'],['signaturePrepared','Prepared by'],['signatureAuthorize','Authorize by']] as const).map(([key, label]) => (
+                  <SignatureUploadField key={key} label={label} value={(form as any)[key]} onChange={(v) => setForm({ ...form, [key]: v })} />
+                ))}
+              </div>
+            </div>
+
             <div><label className="text-sm font-medium">Notes</label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
             <Button onClick={handleSave} className="w-full bg-secondary hover:bg-secondary/90">Save PO</Button>
           </CardContent>
         </Card>
-        <DocumentPreview type="purchaseOrder" documentNumber={form.poNumber} date={form.date} customerName={form.supplierName} customerAddress={form.supplierAddress} customerPhone={form.supplierPhone} supplierName={form.supplierName} supplierAddress={form.supplierAddress} items={form.items} totalAmount={totalAmount} notes={form.notes} amountInWords={form.amountInWords} />
+        <DocumentPreview type="purchaseOrder" documentNumber={form.poNumber} date={form.date} customerName={form.supplierName} customerAddress={form.supplierAddress} customerPhone={form.supplierPhone} supplierName={form.supplierName} supplierAddress={form.supplierAddress} items={form.items} totalAmount={totalAmount} notes={form.notes} amountInWords={form.amountInWords} signatureReceived={form.signatureReceived} signaturePrepared={form.signaturePrepared} signatureAuthorize={form.signatureAuthorize} />
       </div>
     </div>
   );
