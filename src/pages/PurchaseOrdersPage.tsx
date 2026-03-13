@@ -122,6 +122,9 @@ function POForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
     status: existing?.status || 'draft' as 'draft' | 'sent' | 'received',
     notes: existing?.notes || '',
     amountInWords: existing?.amountInWords || '',
+    signatureReceived: (existing as any)?.signatureReceived || '',
+    signaturePrepared: (existing as any)?.signaturePrepared || '',
+    signatureAuthorize: (existing as any)?.signatureAuthorize || '',
   });
 
   const updateItem = (index: number, field: keyof LineItem, value: any) => {
