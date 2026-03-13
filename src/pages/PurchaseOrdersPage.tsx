@@ -120,6 +120,7 @@ function POForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
     items: existing?.items || [emptyItem()],
     status: existing?.status || 'draft' as 'draft' | 'sent' | 'received',
     notes: existing?.notes || '',
+    amountInWords: existing?.amountInWords || '',
   });
 
   const updateItem = (index: number, field: keyof LineItem, value: any) => {
