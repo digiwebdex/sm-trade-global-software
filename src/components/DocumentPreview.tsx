@@ -57,14 +57,19 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
 
   const config = typeConfig[type];
 
-  // Generate real QR code
+  // Generate real QR code linking to the document view
   const [qrDataUrl, setQrDataUrl] = useState('');
   useEffect(() => {
-    const qrContent = `S.M. TRADE INTERNATIONAL\n${config.label}: ${documentNumber}\nDate: ${date}\nCustomer: ${customerName}\nWebsite: ${settings.website}`;
-    QRCode.toDataURL(qrContent, { width: 120, margin: 1, color: { dark: '#1B3A5C', light: '#ffffff' } })
+    const routeMap: Record<string, string> = {
+      invoice: 'invoices', quotation: 'quotations', challan: 'challans', purchaseOrder: 'purchase-orders',
+    };
+    const baseUrl = window.location.origin;
+    const docId = documentNumber.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+    const viewUrl = `${baseUrl}/${routeMap[type]}/view-${docId}`;
+    QRCode.toDataURL(viewUrl, { width: 120, margin: 1, color: { dark: '#1B3A5C', light: '#ffffff' } })
       .then(url => setQrDataUrl(url))
       .catch(() => setQrDataUrl(''));
-  }, [documentNumber, date, customerName, settings.website, config.label]);
+  }, [documentNumber, type]);
   const isChallan = type === 'challan';
   const isInvoice = type === 'invoice';
 
