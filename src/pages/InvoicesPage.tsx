@@ -272,6 +272,21 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
             </div>
 
             <div><label className="text-sm font-medium">Amount in Words</label><Input value={form.amountInWords} onChange={(e) => setForm({ ...form, amountInWords: e.target.value })} placeholder="Auto-generated if empty" /></div>
+            
+            {/* Signature Uploads */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">Signatures (optional - overrides company defaults)</label>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { key: 'signatureReceived' as const, label: 'Received by' },
+                  { key: 'signaturePrepared' as const, label: 'Prepared by' },
+                  { key: 'signatureAuthorize' as const, label: 'Authorize by' },
+                ].map(({ key, label }) => (
+                  <SignatureUploadField key={key} label={label} value={form[key]} onChange={(v) => setForm({ ...form, [key]: v })} />
+                ))}
+              </div>
+            </div>
+
             <div><label className="text-sm font-medium">Notes</label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
             <Button onClick={handleSave} className="w-full bg-secondary hover:bg-secondary/90">Save Invoice</Button>
           </CardContent>
@@ -292,7 +307,10 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
             payments={form.payments}
             notes={form.notes} 
             status={autoStatus} 
-            amountInWords={form.amountInWords} 
+            amountInWords={form.amountInWords}
+            signatureReceived={form.signatureReceived}
+            signaturePrepared={form.signaturePrepared}
+            signatureAuthorize={form.signatureAuthorize}
           />
         </div>
       </div>
