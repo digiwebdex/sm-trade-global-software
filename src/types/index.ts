@@ -56,6 +56,7 @@ export interface Invoice {
   items: LineItem[];
   totalAmount: number;
   status: 'draft' | 'sent' | 'paid';
+  amountInWords?: string;
   notes: string;
   createdAt: string;
 }
