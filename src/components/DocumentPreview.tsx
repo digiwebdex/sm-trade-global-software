@@ -25,6 +25,9 @@ interface DocumentPreviewProps {
   supplierName?: string;
   supplierAddress?: string;
   status?: string;
+  signatureReceived?: string;
+  signaturePrepared?: string;
+  signatureAuthorize?: string;
 }
 
 const formatNumber = (num: number) => num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
