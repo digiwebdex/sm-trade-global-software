@@ -130,6 +130,9 @@ export interface CompanySettings {
   email: string;
   website: string;
   logo: string;
+  signatureReceived?: string;
+  signaturePrepared?: string;
+  signatureAuthorize?: string;
 }
 
 export type DocumentType = 'invoice' | 'quotation' | 'challan' | 'purchaseOrder';

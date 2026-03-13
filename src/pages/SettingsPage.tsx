@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,7 +7,41 @@ import { storage } from '@/utils/storage';
 import { CompanySettings } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-import { Save } from 'lucide-react';
+import { Save, Upload, X } from 'lucide-react';
+
+function SignatureUpload({ label, value, onChange }: { label: string; value?: string; onChange: (val: string) => void }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 500 * 1024) { toast.error('File too large (max 500KB)'); return; }
+    const reader = new FileReader();
+    reader.onload = () => onChange(reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  return (
+    <div>
+      <label className="text-sm font-medium">{label}</label>
+      <div className="mt-1 border rounded-lg p-3 flex items-center gap-3 bg-muted/30">
+        {value ? (
+          <>
+            <div className="w-[120px] h-[50px] border rounded flex items-center justify-center bg-white">
+              <img src={value} alt={label} className="max-w-[110px] max-h-[45px] object-contain" />
+            </div>
+            <Button size="sm" variant="ghost" className="text-destructive" onClick={() => onChange('')}><X className="h-4 w-4 mr-1" /> Remove</Button>
+          </>
+        ) : (
+          <Button size="sm" variant="outline" onClick={() => inputRef.current?.click()}>
+            <Upload className="h-4 w-4 mr-1" /> Upload Signature
+          </Button>
+        )}
+        <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+      </div>
+    </div>
+  );
+}
 
 export default function SettingsPage() {
   const { isAdmin } = useAuth();
@@ -27,20 +61,33 @@ export default function SettingsPage() {
         <p className="text-muted-foreground">Configure your company details for documents</p>
       </div>
 
-      <Card className="max-w-2xl">
-        <CardHeader><CardTitle>Company Information</CardTitle></CardHeader>
-        <CardContent className="space-y-4">
-          <div><label className="text-sm font-medium">Company Name</label><Input value={settings.name} onChange={(e) => setSettings({ ...settings, name: e.target.value })} /></div>
-          <div><label className="text-sm font-medium">Tagline</label><Input value={settings.tagline} onChange={(e) => setSettings({ ...settings, tagline: e.target.value })} /></div>
-          <div><label className="text-sm font-medium">Address</label><Textarea value={settings.address} onChange={(e) => setSettings({ ...settings, address: e.target.value })} /></div>
-          <div className="grid grid-cols-2 gap-4">
-            <div><label className="text-sm font-medium">Phone</label><Input value={settings.phone} onChange={(e) => setSettings({ ...settings, phone: e.target.value })} /></div>
-            <div><label className="text-sm font-medium">Email</label><Input value={settings.email} onChange={(e) => setSettings({ ...settings, email: e.target.value })} /></div>
-          </div>
-          <div><label className="text-sm font-medium">Website</label><Input value={settings.website} onChange={(e) => setSettings({ ...settings, website: e.target.value })} /></div>
-          <Button onClick={handleSave} className="bg-secondary hover:bg-secondary/90"><Save className="h-4 w-4 mr-2" /> Save Settings</Button>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader><CardTitle>Company Information</CardTitle></CardHeader>
+          <CardContent className="space-y-4">
+            <div><label className="text-sm font-medium">Company Name</label><Input value={settings.name} onChange={(e) => setSettings({ ...settings, name: e.target.value })} /></div>
+            <div><label className="text-sm font-medium">Tagline</label><Input value={settings.tagline} onChange={(e) => setSettings({ ...settings, tagline: e.target.value })} /></div>
+            <div><label className="text-sm font-medium">Address</label><Textarea value={settings.address} onChange={(e) => setSettings({ ...settings, address: e.target.value })} /></div>
+            <div className="grid grid-cols-2 gap-4">
+              <div><label className="text-sm font-medium">Phone</label><Input value={settings.phone} onChange={(e) => setSettings({ ...settings, phone: e.target.value })} /></div>
+              <div><label className="text-sm font-medium">Email</label><Input value={settings.email} onChange={(e) => setSettings({ ...settings, email: e.target.value })} /></div>
+            </div>
+            <div><label className="text-sm font-medium">Website</label><Input value={settings.website} onChange={(e) => setSettings({ ...settings, website: e.target.value })} /></div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader><CardTitle>Document Signatures</CardTitle></CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">Upload signature images to appear on all documents (Invoice, Quotation, Challan, PO).</p>
+            <SignatureUpload label="Received by - Signature" value={settings.signatureReceived} onChange={(v) => setSettings({ ...settings, signatureReceived: v })} />
+            <SignatureUpload label="Prepared by - Signature" value={settings.signaturePrepared} onChange={(v) => setSettings({ ...settings, signaturePrepared: v })} />
+            <SignatureUpload label="Authorize by - Signature" value={settings.signatureAuthorize} onChange={(v) => setSettings({ ...settings, signatureAuthorize: v })} />
+          </CardContent>
+        </Card>
+      </div>
+
+      <Button onClick={handleSave} className="bg-secondary hover:bg-secondary/90"><Save className="h-4 w-4 mr-2" /> Save Settings</Button>
     </div>
   );
 }
