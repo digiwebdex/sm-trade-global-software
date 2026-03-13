@@ -131,19 +131,27 @@ export function initializeData() {
   // Sample Invoice
   const invoices = storage.getAll(KEYS.INVOICES);
   if (invoices.length === 0) {
+    const vipItems = Array.from({ length: 20 }, (_, i) => ({
+      id: `li-${i + 2}`,
+      description: 'Transparent VIP ID Card Holder',
+      quantity: 430,
+      unitPrice: 130,
+      total: 55900,
+    }));
+    const allItems = [
+      { id: 'li-1', description: '79th FTC Ribbon 2 CM', quantity: 430, unitPrice: 150, total: 64500 },
+      ...vipItems,
+    ];
     storage.create(KEYS.INVOICES, {
       id: 'inv-1',
-      invoiceNumber: 'INV-2026-0012',
+      invoiceNumber: 'INV-2026-012',
       date: '2026-01-21',
       customerId: 'cust-1',
       customerName: 'Course Director, 79th Foundation Training Course',
       customerAddress: 'Bangladesh Public Administration Training Centre',
       customerPhone: '+8801711000001',
-      items: [
-        { id: 'li-1', description: '79th FTC Ribbon 2 CM', quantity: 430, unitPrice: 150, total: 64500 },
-        { id: 'li-2', description: 'Transparent VIP ID Card Holder', quantity: 430, unitPrice: 130, total: 55900 },
-      ],
-      totalAmount: 120400,
+      items: allItems,
+      totalAmount: allItems.reduce((s, i) => s + i.total, 0),
       status: 'sent',
       notes: '',
       createdAt: '2026-01-21T10:00:00.000Z',
