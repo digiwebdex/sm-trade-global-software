@@ -72,6 +72,7 @@ export interface Quotation {
   items: LineItem[];
   totalAmount: number;
   status: 'draft' | 'sent' | 'accepted' | 'rejected';
+  amountInWords?: string;
   validUntil: string;
   notes: string;
   createdAt: string;
