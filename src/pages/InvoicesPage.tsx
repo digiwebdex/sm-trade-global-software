@@ -135,6 +135,9 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
     payments: existing?.payments || [],
     notes: existing?.notes || '',
     amountInWords: existing?.amountInWords || '',
+    signatureReceived: existing?.signatureReceived || '',
+    signaturePrepared: existing?.signaturePrepared || '',
+    signatureAuthorize: existing?.signatureAuthorize || '',
   });
 
   const selectCustomer = (id: string) => {

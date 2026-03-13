@@ -69,6 +69,9 @@ export interface Invoice {
   payments?: Payment[];
   status: 'draft' | 'sent' | 'paid' | 'partial';
   amountInWords?: string;
+  signatureReceived?: string;
+  signaturePrepared?: string;
+  signatureAuthorize?: string;
   notes: string;
   createdAt: string;
 }
