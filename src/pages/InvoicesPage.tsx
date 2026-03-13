@@ -210,6 +210,7 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
               </div>
               <div className="text-right mt-3 text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
             </div>
+            <div><label className="text-sm font-medium">Amount in Words</label><Input value={form.amountInWords} onChange={(e) => setForm({ ...form, amountInWords: e.target.value })} placeholder="Auto-generated if empty" /></div>
             <div><label className="text-sm font-medium">Notes</label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
             <Button onClick={handleSave} className="w-full bg-secondary hover:bg-secondary/90">Save Invoice</Button>
           </CardContent>
