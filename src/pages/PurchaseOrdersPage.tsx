@@ -148,13 +148,14 @@ function POForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
           <CardHeader><CardTitle>PO Details</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div><label className="text-sm font-medium">PO #</label><Input value={form.poNumber} readOnly className="bg-muted" /></div>
+              <div><label className="text-sm font-medium">PO #</label><Input value={form.poNumber} onChange={(e) => setForm({ ...form, poNumber: e.target.value })} className="font-bold" /></div>
               <div><label className="text-sm font-medium">Date</label><Input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} /></div>
             </div>
             <div><label className="text-sm font-medium">Supplier Name *</label><Input value={form.supplierName} onChange={(e) => setForm({ ...form, supplierName: e.target.value })} /></div>
+            <div><label className="text-sm font-medium">Supplier Address</label><Textarea value={form.supplierAddress} onChange={(e) => setForm({ ...form, supplierAddress: e.target.value })} placeholder="Address" rows={2} /></div>
             <div className="grid grid-cols-2 gap-4">
-              <div><label className="text-sm font-medium">Address</label><Input value={form.supplierAddress} onChange={(e) => setForm({ ...form, supplierAddress: e.target.value })} /></div>
               <div><label className="text-sm font-medium">Phone</label><Input value={form.supplierPhone} onChange={(e) => setForm({ ...form, supplierPhone: e.target.value })} /></div>
+              <div><label className="text-sm font-medium">Email</label><Input value={form.supplierEmail} onChange={(e) => setForm({ ...form, supplierEmail: e.target.value })} /></div>
             </div>
             <div><label className="text-sm font-medium">Status</label>
               <Select value={form.status} onValueChange={(v: any) => setForm({ ...form, status: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="draft">Draft</SelectItem><SelectItem value="sent">Sent</SelectItem><SelectItem value="received">Received</SelectItem></SelectContent></Select></div>
@@ -169,7 +170,7 @@ function POForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
                   <Button size="icon" variant="ghost" className="col-span-1 text-destructive" onClick={() => setForm({ ...form, items: form.items.filter((_, j) => j !== i) })}><Trash2 className="h-3 w-3" /></Button>
                 </div>
               ))}
-              <div className="text-right mt-3 text-lg font-bold">Total: ৳{totalAmount.toLocaleString()}</div>
+              <div className="text-right mt-3 text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
             </div>
             <div><label className="text-sm font-medium">Notes</label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
             <Button onClick={handleSave} className="w-full bg-secondary hover:bg-secondary/90">Save PO</Button>

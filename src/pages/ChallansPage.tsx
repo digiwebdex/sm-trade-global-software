@@ -153,12 +153,17 @@ function ChallanForm({ editId, onDone }: { editId?: string; onDone: () => void }
           <CardHeader><CardTitle>Challan Details</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-3 gap-4">
-              <div><label className="text-sm font-medium">Challan #</label><Input value={form.challanNumber} readOnly className="bg-muted" /></div>
+              <div><label className="text-sm font-medium">Challan #</label><Input value={form.challanNumber} onChange={(e) => setForm({ ...form, challanNumber: e.target.value })} className="font-bold" /></div>
               <div><label className="text-sm font-medium">Date</label><Input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} /></div>
               <div><label className="text-sm font-medium">Order No</label><Input value={form.orderNo} onChange={(e) => setForm({ ...form, orderNo: e.target.value })} /></div>
             </div>
-            <div><label className="text-sm font-medium">Customer</label>
+            <div><label className="text-sm font-medium">Select Customer (or type manually below)</label>
               <Select value={form.customerId} onValueChange={selectCustomer}><SelectTrigger><SelectValue placeholder="Select customer" /></SelectTrigger><SelectContent>{customers.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent></Select></div>
+            <div className="grid grid-cols-1 gap-3">
+              <div><label className="text-sm font-medium">Customer Name *</label><Input value={form.customerName} onChange={(e) => setForm({ ...form, customerName: e.target.value })} placeholder="Customer name" /></div>
+              <div><label className="text-sm font-medium">Customer Address</label><Textarea value={form.customerAddress} onChange={(e) => setForm({ ...form, customerAddress: e.target.value })} placeholder="Address" rows={2} /></div>
+              <div><label className="text-sm font-medium">Customer Phone</label><Input value={form.customerPhone} onChange={(e) => setForm({ ...form, customerPhone: e.target.value })} placeholder="Phone" /></div>
+            </div>
             <div><label className="text-sm font-medium">Status</label>
               <Select value={form.status} onValueChange={(v: any) => setForm({ ...form, status: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="draft">Draft</SelectItem><SelectItem value="delivered">Delivered</SelectItem></SelectContent></Select></div>
             <div>

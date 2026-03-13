@@ -156,11 +156,16 @@ function QuotationForm({ editId, onDone }: { editId?: string; onDone: () => void
           <CardHeader><CardTitle>Quotation Details</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div><label className="text-sm font-medium">Quotation #</label><Input value={form.quotationNumber} readOnly className="bg-muted" /></div>
+              <div><label className="text-sm font-medium">Quotation #</label><Input value={form.quotationNumber} onChange={(e) => setForm({ ...form, quotationNumber: e.target.value })} className="font-bold" /></div>
               <div><label className="text-sm font-medium">Date</label><Input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} /></div>
             </div>
-            <div><label className="text-sm font-medium">Customer</label>
+            <div><label className="text-sm font-medium">Select Customer (or type manually below)</label>
               <Select value={form.customerId} onValueChange={selectCustomer}><SelectTrigger><SelectValue placeholder="Select customer" /></SelectTrigger><SelectContent>{customers.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent></Select></div>
+            <div className="grid grid-cols-1 gap-3">
+              <div><label className="text-sm font-medium">Customer Name *</label><Input value={form.customerName} onChange={(e) => setForm({ ...form, customerName: e.target.value })} placeholder="Customer name" /></div>
+              <div><label className="text-sm font-medium">Customer Address</label><Textarea value={form.customerAddress} onChange={(e) => setForm({ ...form, customerAddress: e.target.value })} placeholder="Address" rows={2} /></div>
+              <div><label className="text-sm font-medium">Customer Phone</label><Input value={form.customerPhone} onChange={(e) => setForm({ ...form, customerPhone: e.target.value })} placeholder="Phone" /></div>
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <div><label className="text-sm font-medium">Valid Until</label><Input type="date" value={form.validUntil} onChange={(e) => setForm({ ...form, validUntil: e.target.value })} /></div>
               <div><label className="text-sm font-medium">Status</label>
@@ -177,7 +182,7 @@ function QuotationForm({ editId, onDone }: { editId?: string; onDone: () => void
                   <Button size="icon" variant="ghost" className="col-span-1 text-destructive" onClick={() => setForm({ ...form, items: form.items.filter((_, j) => j !== i) })}><Trash2 className="h-3 w-3" /></Button>
                 </div>
               ))}
-              <div className="text-right mt-3 text-lg font-bold">Total: ৳{totalAmount.toLocaleString()}</div>
+              <div className="text-right mt-3 text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
             </div>
             <div><label className="text-sm font-medium">Notes</label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
             <Button onClick={handleSave} className="w-full bg-secondary hover:bg-secondary/90">Save Quotation</Button>
