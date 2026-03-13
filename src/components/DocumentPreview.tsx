@@ -1,5 +1,5 @@
 import React from 'react';
-import { CompanySettings, LineItem, ChallanItem } from '@/types';
+import { CompanySettings, LineItem, ChallanItem, Payment } from '@/types';
 import { numberToWords } from '@/utils/numberToWords';
 import { storage } from '@/utils/storage';
 import logoImg from '@/assets/logo.png';
@@ -11,6 +11,7 @@ interface DocumentPreviewProps {
   customerName: string;
   customerAddress: string;
   customerPhone: string;
+  customerEmail?: string;
   items?: LineItem[];
   challanItems?: ChallanItem[];
   totalAmount?: number;
@@ -18,6 +19,9 @@ interface DocumentPreviewProps {
   orderNo?: string;
   notes?: string;
   amountInWords?: string;
+  tax?: number;
+  totalPaid?: number;
+  payments?: Payment[];
   supplierName?: string;
   supplierAddress?: string;
   status?: string;
@@ -34,13 +38,14 @@ const formatDate = (dateStr: string) => {
 
 const NAVY = '#1B3A5C';
 const ORANGE = '#E8792B';
+const GREEN = '#16a34a';
 
 export default function DocumentPreview(props: DocumentPreviewProps) {
   const settings: CompanySettings = storage.getSettings();
-  const { type, documentNumber, date, customerName, customerAddress, customerPhone, items, challanItems, totalAmount, totalQuantity, orderNo, notes } = props;
+  const { type, documentNumber, date, customerName, customerAddress, customerPhone, customerEmail, items, challanItems, totalAmount, totalQuantity, orderNo, notes, tax, totalPaid, payments } = props;
 
   const typeConfig: Record<string, { label: string; toLabel: string; dateLabel: string }> = {
-    invoice: { label: 'BILL', toLabel: 'BILL TO', dateLabel: 'INVOICE DATE :' },
+    invoice: { label: 'INVOICE', toLabel: 'BILL TO', dateLabel: 'INVOICE DATE :' },
     quotation: { label: 'QUOTATION', toLabel: 'TO', dateLabel: 'QUOTATION DATE :' },
     challan: { label: 'CHALLAN', toLabel: 'DELIVERY TO', dateLabel: 'CHALLAN DATE :' },
     purchaseOrder: { label: 'PURCHASE ORDER', toLabel: 'TO', dateLabel: 'PO DATE :' },
@@ -48,9 +53,28 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
 
   const config = typeConfig[type];
   const isChallan = type === 'challan';
-  const isQuotation = type === 'quotation';
+  const isInvoice = type === 'invoice';
 
-  const qrCodeSvg = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="white"/><text x="50" y="45" text-anchor="middle" font-size="8" fill="#333">Made by S.M. Trade</text><text x="50" y="58" text-anchor="middle" font-size="7" fill="#666">Scan for details</text><rect x="10" y="10" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/><rect x="65" y="10" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/><rect x="10" y="65" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/><rect x="15" y="15" width="15" height="15" fill="#333"/><rect x="70" y="15" width="15" height="15" fill="#333"/><rect x="15" y="70" width="15" height="15" fill="#333"/><rect x="40" y="10" width="5" height="5" fill="#333"/><rect x="50" y="15" width="5" height="5" fill="#333"/><rect x="45" y="25" width="5" height="5" fill="#333"/><rect x="40" y="40" width="5" height="5" fill="#333"/><rect x="50" y="45" width="5" height="5" fill="#333"/><rect x="60" y="50" width="5" height="5" fill="#333"/><rect x="70" y="60" width="5" height="5" fill="#333"/><rect x="80" y="70" width="5" height="5" fill="#333"/><rect x="65" y="75" width="5" height="5" fill="#333"/><rect x="75" y="80" width="5" height="5" fill="#333"/></svg>`)}`;
+  const subtotal = totalAmount || 0;
+  const taxAmount = tax || 0;
+  const grandTotal = subtotal + taxAmount;
+  const paidAmount = totalPaid || 0;
+  const balance = grandTotal - paidAmount;
+
+  const statusConfig: Record<string, { color: string; bg: string; label: string }> = {
+    paid: { color: GREEN, bg: '#dcfce7', label: 'Paid' },
+    partial: { color: ORANGE, bg: '#fff7ed', label: 'Partial' },
+    sent: { color: '#2563eb', bg: '#dbeafe', label: 'Due' },
+    draft: { color: '#6b7280', bg: '#f3f4f6', label: 'Draft' },
+    accepted: { color: GREEN, bg: '#dcfce7', label: 'Accepted' },
+    rejected: { color: '#dc2626', bg: '#fef2f2', label: 'Rejected' },
+    delivered: { color: GREEN, bg: '#dcfce7', label: 'Delivered' },
+    received: { color: GREEN, bg: '#dcfce7', label: 'Received' },
+  };
+
+  const statusInfo = statusConfig[props.status || 'draft'] || statusConfig.draft;
+
+  const qrCodeSvg = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="white"/><text x="50" y="45" text-anchor="middle" font-size="8" fill="#333">S.M. Trade</text><text x="50" y="58" text-anchor="middle" font-size="7" fill="#666">Scan to view invoice</text><rect x="10" y="10" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/><rect x="65" y="10" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/><rect x="10" y="65" width="25" height="25" fill="none" stroke="#333" stroke-width="2"/><rect x="15" y="15" width="15" height="15" fill="#333"/><rect x="70" y="15" width="15" height="15" fill="#333"/><rect x="15" y="70" width="15" height="15" fill="#333"/><rect x="40" y="10" width="5" height="5" fill="#333"/><rect x="50" y="15" width="5" height="5" fill="#333"/><rect x="45" y="25" width="5" height="5" fill="#333"/><rect x="40" y="40" width="5" height="5" fill="#333"/><rect x="50" y="45" width="5" height="5" fill="#333"/><rect x="60" y="50" width="5" height="5" fill="#333"/><rect x="70" y="60" width="5" height="5" fill="#333"/><rect x="80" y="70" width="5" height="5" fill="#333"/><rect x="65" y="75" width="5" height="5" fill="#333"/><rect x="75" y="80" width="5" height="5" fill="#333"/></svg>`)}`;
 
   return (
     <div className="bg-white mx-auto shadow-lg document-preview-wrapper" id="document-preview" style={{ fontFamily: "'Segoe UI', Arial, sans-serif", color: '#333', fontSize: '13px', width: '794px', minHeight: '1123px' }}>
@@ -80,6 +104,16 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
               }}>
                 {documentNumber}
               </div>
+              {/* Status Badge */}
+              {props.status && (
+                <div style={{
+                  backgroundColor: statusInfo.bg, color: statusInfo.color, padding: '3px 14px', borderRadius: '3px',
+                  fontSize: '11px', fontWeight: 'bold', display: 'inline-block', marginTop: '4px', marginLeft: '6px',
+                  border: `1px solid ${statusInfo.color}`,
+                }}>
+                  {statusInfo.label}
+                </div>
+              )}
               {isChallan && orderNo && (
                 <p style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}>Order No. {orderNo}</p>
               )}
@@ -97,12 +131,18 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
             <p style={{ fontSize: '14px', fontWeight: 'bold', color: '#111', margin: '0 0 2px' }}>
               {props.supplierName || customerName}
             </p>
-            <p style={{ fontSize: '11px', color: '#555', margin: 0, lineHeight: '1.4' }}>
+            {customerEmail && (
+              <p style={{ fontSize: '11px', color: ORANGE, margin: '1px 0', lineHeight: '1.4' }}>{customerEmail}</p>
+            )}
+            {customerPhone && (
+              <p style={{ fontSize: '11px', color: GREEN, margin: '1px 0', lineHeight: '1.4' }}>{customerPhone}</p>
+            )}
+            <p style={{ fontSize: '11px', color: '#555', margin: '1px 0', lineHeight: '1.4' }}>
               {props.supplierAddress || customerAddress}
             </p>
           </div>
           <div style={{ textAlign: 'right', fontSize: '12px', whiteSpace: 'nowrap' }}>
-            <span style={{ color: '#888', fontSize: '11px' }}>{config.dateLabel}</span>{' '}
+            <span style={{ color: '#888', fontSize: '11px', fontStyle: 'italic' }}>{config.dateLabel}</span>{' '}
             <strong style={{ color: '#222' }}>{formatDate(date)}</strong>
           </div>
         </div>
@@ -142,7 +182,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                     <td style={{ padding: '6px 8px', textAlign: 'center', fontSize: '12px' }}>{item.unit}</td>
                   </tr>
                 ))}
-                <tr style={{ backgroundColor: ORANGE }}>
+                <tr style={{ backgroundColor: NAVY }}>
                   <td colSpan={3} style={{ padding: '8px', textAlign: 'right', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>Total Quantity</td>
                   <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>{totalQuantity} PCS</td>
                   <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>00</td>
@@ -152,57 +192,106 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
             </table>
           ) : items ? (
             /* ===== INVOICE / QUOTATION / PO TABLE ===== */
-            <table style={{ width: '100%', borderCollapse: 'collapse', position: 'relative', zIndex: 1 }}>
-              <thead>
-                <tr style={{ borderBottom: `2px solid ${NAVY}` }}>
-                  {isQuotation && (
-                    <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, textTransform: 'uppercase', width: '35px' }}>SL.</th>
-                  )}
-                  <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: '11px', fontWeight: 'bold', color: NAVY, textTransform: 'uppercase' }}>DESCRIPTION</th>
-                  <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, textTransform: 'uppercase', width: '80px' }}>QTY</th>
-                  <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, textTransform: 'uppercase', width: '110px' }}>UNIT PRICE</th>
-                  <th style={{ padding: '8px 8px', textAlign: 'right', fontSize: '11px', fontWeight: 'bold', color: NAVY, textTransform: 'uppercase', width: '120px' }}>TOTAL</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item, i) => (
-                  <tr key={item.id} style={{ borderBottom: '1px solid #e8e8e8' }}>
-                    {isQuotation && <td style={{ padding: '7px 8px', textAlign: 'center', fontSize: '12px' }}>{i + 1}</td>}
-                    <td style={{ padding: '7px 8px', fontSize: '12px' }}>{item.description}</td>
-                    <td style={{ padding: '7px 8px', textAlign: 'center', fontSize: '12px' }}>{item.quantity}</td>
-                    <td style={{ padding: '7px 8px', textAlign: 'center', fontSize: '12px' }}>{formatNumber(item.unitPrice)}</td>
-                    <td style={{ padding: '7px 8px', textAlign: 'right', fontSize: '12px', fontWeight: 'bold' }}>{formatNumber(item.total)}</td>
+            <>
+              <table style={{ width: '100%', borderCollapse: 'collapse', position: 'relative', zIndex: 1 }}>
+                <thead>
+                  <tr style={{ borderBottom: `2px solid ${NAVY}` }}>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: '11px', fontWeight: 'bold', color: NAVY, textTransform: 'uppercase' }}>DESCRIPTION</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, textTransform: 'uppercase', width: '80px' }}>QTY</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, textTransform: 'uppercase', width: '110px' }}>UNIT PRICE</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'right', fontSize: '11px', fontWeight: 'bold', color: NAVY, textTransform: 'uppercase', width: '120px' }}>TOTAL</th>
                   </tr>
-                ))}
-                {/* Total Amount Row */}
-                <tr style={{ borderTop: `2px solid ${NAVY}` }}>
-                  <td colSpan={isQuotation ? 4 : 3} style={{ 
-                    padding: '10px 8px', textAlign: 'left', fontWeight: 'bold', 
-                    backgroundColor: NAVY, color: 'white', fontSize: '13px',
-                  }}>
-                    Total Amount
-                  </td>
-                  <td style={{ 
-                    padding: '10px 8px', textAlign: 'right', fontWeight: 'bold', fontSize: '13px',
-                    backgroundColor: NAVY, color: 'white',
-                  }}>
-                    BDT. {formatNumber(totalAmount || 0)}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {items.map((item) => (
+                    <tr key={item.id} style={{ borderBottom: '1px solid #e8e8e8' }}>
+                      <td style={{ padding: '7px 8px', fontSize: '12px' }}>{item.description}</td>
+                      <td style={{ padding: '7px 8px', textAlign: 'center', fontSize: '12px' }}>{item.quantity}</td>
+                      <td style={{ padding: '7px 8px', textAlign: 'center', fontSize: '12px' }}>৳{formatNumber(item.unitPrice)}</td>
+                      <td style={{ padding: '7px 8px', textAlign: 'right', fontSize: '12px', fontWeight: 'bold' }}>৳{formatNumber(item.total)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              {/* ===== SUMMARY SECTION (right-aligned) ===== */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px', position: 'relative', zIndex: 1 }}>
+                <div style={{ width: '280px' }}>
+                  {/* Subtotal */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #e8e8e8' }}>
+                    <span style={{ fontWeight: 'bold', fontSize: '12px', color: '#333' }}>Subtotal</span>
+                    <span style={{ fontSize: '12px', fontWeight: 'bold' }}>৳{formatNumber(subtotal)}</span>
+                  </div>
+                  {/* Tax */}
+                  {isInvoice && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #e8e8e8' }}>
+                      <span style={{ fontSize: '12px', color: '#555' }}>Tax</span>
+                      <span style={{ fontSize: '12px' }}>৳{formatNumber(taxAmount)}</span>
+                    </div>
+                  )}
+                  {/* Total */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #e8e8e8' }}>
+                    <span style={{ fontWeight: 'bold', fontSize: '13px', color: NAVY }}>Total</span>
+                    <span style={{ fontWeight: 'bold', fontSize: '13px', color: NAVY }}>৳{formatNumber(isInvoice ? grandTotal : subtotal)}</span>
+                  </div>
+                  {/* Total Paid (invoice only) */}
+                  {isInvoice && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #e8e8e8' }}>
+                      <span style={{ fontSize: '12px', color: '#555' }}>Total Paid</span>
+                      <span style={{ fontSize: '12px', color: GREEN }}>৳{formatNumber(paidAmount)}</span>
+                    </div>
+                  )}
+                  {/* Balance (invoice only) */}
+                  {isInvoice && (
+                    <div style={{ 
+                      display: 'flex', justifyContent: 'space-between', padding: '8px 10px', marginTop: '4px',
+                      backgroundColor: balance > 0 ? '#fef2f2' : '#dcfce7',
+                      border: `1px solid ${balance > 0 ? '#fca5a5' : '#86efac'}`,
+                      borderRadius: '4px',
+                    }}>
+                      <span style={{ fontWeight: 'bold', fontSize: '13px', color: balance > 0 ? '#dc2626' : GREEN }}>Balance</span>
+                      <span style={{ fontWeight: 'bold', fontSize: '13px', color: balance > 0 ? '#dc2626' : GREEN }}>৳{formatNumber(balance)}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
           ) : null}
 
           {/* Amount in Words */}
           {totalAmount !== undefined && totalAmount > 0 && !isChallan && (
             <div style={{ textAlign: 'center', padding: '10px 0', fontSize: '11px', color: NAVY, marginTop: '4px' }}>
-              <strong>In Word :</strong> {props.amountInWords || numberToWords(totalAmount)}.
+              <strong>In Word :</strong> {props.amountInWords || numberToWords(isInvoice ? balance : subtotal)}.
+            </div>
+          )}
+
+          {/* ===== PAYMENT HISTORY (invoice only) ===== */}
+          {isInvoice && payments && payments.length > 0 && (
+            <div style={{ marginTop: '16px', position: 'relative', zIndex: 1 }}>
+              <div style={{ border: '1px solid #e0e0e0', borderRadius: '6px', overflow: 'hidden' }}>
+                <div style={{ padding: '8px 14px', backgroundColor: '#f9fafb', borderBottom: '1px solid #e0e0e0' }}>
+                  <strong style={{ fontSize: '12px', color: NAVY }}>PAYMENT HISTORY</strong>
+                </div>
+                {payments.map((p) => (
+                  <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 14px', borderBottom: '1px solid #f0f0f0' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <span style={{ fontSize: '11px', color: '#666' }}>{formatDate(p.date)}</span>
+                      <span style={{ 
+                        backgroundColor: NAVY, color: 'white', padding: '2px 8px', borderRadius: '3px',
+                        fontSize: '10px', fontWeight: 'bold',
+                      }}>{p.method}</span>
+                      <span style={{ fontSize: '11px', color: '#555' }}>{p.description}</span>
+                    </div>
+                    <span style={{ fontWeight: 'bold', fontSize: '12px', color: GREEN }}>৳{formatNumber(p.amount)}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
 
         {notes && (
-          <div style={{ padding: '0 35px', fontSize: '11px', color: '#666' }}>
+          <div style={{ padding: '8px 35px', fontSize: '11px', color: '#666' }}>
             <strong>Notes:</strong> {notes}
           </div>
         )}
@@ -220,17 +309,22 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
           </div>
         </div>
 
+        {/* ===== THANK YOU MESSAGE ===== */}
+        <div style={{ textAlign: 'center', padding: '8px 35px', fontSize: '12px', color: ORANGE, fontStyle: 'italic' }}>
+          Thank you for staying with us.
+        </div>
+
         {/* ===== FOOTER ===== */}
         <div style={{ 
           borderTop: `2px solid ${ORANGE}`, padding: '10px 35px', fontSize: '10px', color: '#666',
           backgroundColor: '#fafafa', position: 'relative',
         }}>
-          <div style={{ textAlign: 'center', paddingRight: '70px' }}>
+          <div style={{ textAlign: 'center' }}>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '18px', marginBottom: '3px' }}>
               <span>✉ {settings.email}</span>
               <span>🌐 {settings.website}</span>
             </div>
-            <p style={{ margin: '2px 0' }}>📍 Address : {settings.address}</p>
+            <p style={{ margin: '2px 0' }}>📍 Address : House # 7, Road # 19/A, Sector # 4, Uttara, Dhaka-1230</p>
             <p style={{ margin: '2px 0' }}>📍 B-25/4, Al-Baraka Super Market, Office # 9-10, Mojidpur Road, Savar, Dhaka-1340</p>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '18px', marginTop: '3px' }}>
               <span>📞 {settings.phone}</span>
@@ -240,7 +334,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
           {/* QR Code */}
           <div style={{ position: 'absolute', right: '25px', top: '50%', transform: 'translateY(-50%)' }}>
             <img src={qrCodeSvg} alt="QR Code" style={{ width: '55px', height: '55px' }} />
-            <p style={{ fontSize: '6px', textAlign: 'center', margin: '1px 0 0', color: '#999' }}>Scan for details</p>
+            <p style={{ fontSize: '6px', textAlign: 'center', margin: '1px 0 0', color: '#999' }}>Scan to view invoice</p>
           </div>
         </div>
       </div>
