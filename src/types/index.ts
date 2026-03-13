@@ -105,6 +105,7 @@ export interface PurchaseOrder {
   items: LineItem[];
   totalAmount: number;
   status: 'draft' | 'sent' | 'received';
+  amountInWords?: string;
   notes: string;
   createdAt: string;
 }
