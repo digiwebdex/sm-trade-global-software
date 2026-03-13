@@ -17,6 +17,8 @@ interface DocumentPreviewProps {
   totalQuantity?: number;
   orderNo?: string;
   notes?: string;
+  amountInWords?: string;
+  supplierName?: string;
   supplierName?: string;
   supplierAddress?: string;
   status?: string;
