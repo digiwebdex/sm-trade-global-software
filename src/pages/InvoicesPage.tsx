@@ -216,7 +216,7 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
           </CardContent>
         </Card>
         <div className="print-target">
-          <DocumentPreview type="invoice" documentNumber={form.invoiceNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} items={form.items} totalAmount={totalAmount} notes={form.notes} status={form.status} />
+          <DocumentPreview type="invoice" documentNumber={form.invoiceNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} items={form.items} totalAmount={totalAmount} notes={form.notes} status={form.status} amountInWords={form.amountInWords} />
         </div>
       </div>
     </div>

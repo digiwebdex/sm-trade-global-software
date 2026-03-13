@@ -178,7 +178,7 @@ function POForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
             <Button onClick={handleSave} className="w-full bg-secondary hover:bg-secondary/90">Save PO</Button>
           </CardContent>
         </Card>
-        <DocumentPreview type="purchaseOrder" documentNumber={form.poNumber} date={form.date} customerName={form.supplierName} customerAddress={form.supplierAddress} customerPhone={form.supplierPhone} supplierName={form.supplierName} supplierAddress={form.supplierAddress} items={form.items} totalAmount={totalAmount} notes={form.notes} />
+        <DocumentPreview type="purchaseOrder" documentNumber={form.poNumber} date={form.date} customerName={form.supplierName} customerAddress={form.supplierAddress} customerPhone={form.supplierPhone} supplierName={form.supplierName} supplierAddress={form.supplierAddress} items={form.items} totalAmount={totalAmount} notes={form.notes} amountInWords={form.amountInWords} />
       </div>
     </div>
   );

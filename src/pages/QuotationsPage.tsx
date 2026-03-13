@@ -190,7 +190,7 @@ function QuotationForm({ editId, onDone }: { editId?: string; onDone: () => void
             <Button onClick={handleSave} className="w-full bg-secondary hover:bg-secondary/90">Save Quotation</Button>
           </CardContent>
         </Card>
-        <DocumentPreview type="quotation" documentNumber={form.quotationNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} items={form.items} totalAmount={totalAmount} notes={form.notes} />
+        <DocumentPreview type="quotation" documentNumber={form.quotationNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} items={form.items} totalAmount={totalAmount} notes={form.notes} amountInWords={form.amountInWords} />
       </div>
     </div>
   );
