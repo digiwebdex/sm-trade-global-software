@@ -56,6 +56,7 @@ export interface Invoice {
   items: LineItem[];
   totalAmount: number;
   status: 'draft' | 'sent' | 'paid';
+  amountInWords?: string;
   notes: string;
   createdAt: string;
 }
@@ -71,6 +72,7 @@ export interface Quotation {
   items: LineItem[];
   totalAmount: number;
   status: 'draft' | 'sent' | 'accepted' | 'rejected';
+  amountInWords?: string;
   validUntil: string;
   notes: string;
   createdAt: string;
@@ -103,6 +105,7 @@ export interface PurchaseOrder {
   items: LineItem[];
   totalAmount: number;
   status: 'draft' | 'sent' | 'received';
+  amountInWords?: string;
   notes: string;
   createdAt: string;
 }

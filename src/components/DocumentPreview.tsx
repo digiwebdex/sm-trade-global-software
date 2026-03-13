@@ -17,6 +17,7 @@ interface DocumentPreviewProps {
   totalQuantity?: number;
   orderNo?: string;
   notes?: string;
+  amountInWords?: string;
   supplierName?: string;
   supplierAddress?: string;
   status?: string;
@@ -195,7 +196,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
           {/* Amount in Words */}
           {totalAmount !== undefined && totalAmount > 0 && !isChallan && (
             <div style={{ textAlign: 'center', padding: '10px 0', fontSize: '11px', color: NAVY, marginTop: '4px' }}>
-              <strong>In Word :</strong> {numberToWords(totalAmount)}.
+              <strong>In Word :</strong> {props.amountInWords || numberToWords(totalAmount)}.
             </div>
           )}
         </div>

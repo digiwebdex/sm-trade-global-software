@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -129,6 +129,7 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
     items: existing?.items || [emptyItem()],
     status: existing?.status || 'draft' as const,
     notes: existing?.notes || '',
+    amountInWords: existing?.amountInWords || '',
   });
 
   const selectCustomer = (id: string) => {
@@ -209,12 +210,13 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
               </div>
               <div className="text-right mt-3 text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
             </div>
+            <div><label className="text-sm font-medium">Amount in Words</label><Input value={form.amountInWords} onChange={(e) => setForm({ ...form, amountInWords: e.target.value })} placeholder="Auto-generated if empty" /></div>
             <div><label className="text-sm font-medium">Notes</label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
             <Button onClick={handleSave} className="w-full bg-secondary hover:bg-secondary/90">Save Invoice</Button>
           </CardContent>
         </Card>
         <div className="print-target">
-          <DocumentPreview type="invoice" documentNumber={form.invoiceNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} items={form.items} totalAmount={totalAmount} notes={form.notes} status={form.status} />
+          <DocumentPreview type="invoice" documentNumber={form.invoiceNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} items={form.items} totalAmount={totalAmount} notes={form.notes} status={form.status} amountInWords={form.amountInWords} />
         </div>
       </div>
     </div>
