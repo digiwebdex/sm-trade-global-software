@@ -48,15 +48,6 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
   const settings: CompanySettings = storage.getSettings();
   const { type, documentNumber, date, customerName, customerAddress, customerPhone, customerEmail, items, challanItems, totalAmount, totalQuantity, orderNo, notes, tax, totalPaid, payments } = props;
 
-  // Generate real QR code
-  const [qrDataUrl, setQrDataUrl] = useState('');
-  useEffect(() => {
-    const qrContent = `S.M. TRADE INTERNATIONAL\n${config?.label || ''}: ${documentNumber}\nDate: ${date}\nCustomer: ${customerName}\nWebsite: ${settings.website}`;
-    QRCode.toDataURL(qrContent, { width: 120, margin: 1, color: { dark: '#1B3A5C', light: '#ffffff' } })
-      .then(url => setQrDataUrl(url))
-      .catch(() => setQrDataUrl(''));
-  }, [documentNumber, date, customerName, settings.website]);
-
   const typeConfig: Record<string, { label: string; toLabel: string; dateLabel: string }> = {
     invoice: { label: 'INVOICE', toLabel: 'BILL TO', dateLabel: 'INVOICE DATE :' },
     quotation: { label: 'QUOTATION', toLabel: 'TO', dateLabel: 'QUOTATION DATE :' },
@@ -65,6 +56,15 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
   };
 
   const config = typeConfig[type];
+
+  // Generate real QR code
+  const [qrDataUrl, setQrDataUrl] = useState('');
+  useEffect(() => {
+    const qrContent = `S.M. TRADE INTERNATIONAL\n${config.label}: ${documentNumber}\nDate: ${date}\nCustomer: ${customerName}\nWebsite: ${settings.website}`;
+    QRCode.toDataURL(qrContent, { width: 120, margin: 1, color: { dark: '#1B3A5C', light: '#ffffff' } })
+      .then(url => setQrDataUrl(url))
+      .catch(() => setQrDataUrl(''));
+  }, [documentNumber, date, customerName, settings.website, config.label]);
   const isChallan = type === 'challan';
   const isInvoice = type === 'invoice';
 
