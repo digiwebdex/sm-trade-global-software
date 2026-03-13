@@ -19,7 +19,6 @@ interface DocumentPreviewProps {
   notes?: string;
   amountInWords?: string;
   supplierName?: string;
-  supplierName?: string;
   supplierAddress?: string;
   status?: string;
 }
