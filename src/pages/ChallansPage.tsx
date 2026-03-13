@@ -185,7 +185,7 @@ function ChallanForm({ editId, onDone }: { editId?: string; onDone: () => void }
             <Button onClick={handleSave} className="w-full bg-secondary hover:bg-secondary/90">Save Challan</Button>
           </CardContent>
         </Card>
-        <DocumentPreview type="challan" documentNumber={form.challanNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} challanItems={form.items} totalQuantity={totalQuantity} orderNo={form.orderNo} notes={form.notes} />
+        <DocumentPreview type="challan" documentNumber={form.challanNumber} date={form.date} customerName={form.customerName} customerAddress={form.customerAddress} customerPhone={form.customerPhone} challanItems={form.items} totalQuantity={totalQuantity} orderNo={form.orderNo} notes={form.notes} status={form.status} />
       </div>
     </div>
   );
