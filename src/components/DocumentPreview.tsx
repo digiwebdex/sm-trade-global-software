@@ -68,7 +68,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
   });
 
   return (
-    <div className="bg-white max-w-[800px] mx-auto shadow-lg" id="document-preview" style={{ fontFamily: "'Segoe UI', Arial, sans-serif", color: '#333', fontSize: '13px' }}>
+    <div className="bg-white mx-auto shadow-lg" id="document-preview" style={{ fontFamily: "'Segoe UI', Arial, sans-serif", color: '#333', fontSize: '13px', width: '794px', minHeight: '1123px' }}>
       {/* Page border */}
       <div style={{ border: '2px solid #d0d0d0', padding: '0' }}>
         
