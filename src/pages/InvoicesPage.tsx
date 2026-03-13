@@ -12,38 +12,11 @@ import { generateId, generateDocNumber } from '@/utils/documentNumbers';
 import { Invoice, LineItem, Customer, Payment } from '@/types';
 import DocumentPreview, { printDocument } from '@/components/DocumentPreview';
 import { toast } from 'sonner';
-import { Plus, Trash2, Eye, ArrowLeft, Search, Pencil, Printer, Upload, X } from 'lucide-react';
+import { Plus, Trash2, Eye, ArrowLeft, Search, Pencil, Printer } from 'lucide-react';
+import SignatureUploadField from '@/components/SignatureUploadField';
 
 const emptyItem = (): LineItem => ({ id: generateId(), description: '', quantity: 1, unitPrice: 0, total: 0 });
 const emptyPayment = (): Payment => ({ id: generateId(), date: new Date().toISOString().split('T')[0], method: 'Cash', description: '', amount: 0 });
-
-function SignatureUploadField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (file.size > 500 * 1024) return;
-    const reader = new FileReader();
-    reader.onload = () => onChange(reader.result as string);
-    reader.readAsDataURL(file);
-  };
-  return (
-    <div className="text-center">
-      <p className="text-xs text-muted-foreground mb-1">{label}</p>
-      {value ? (
-        <div className="relative border rounded p-1 bg-white">
-          <img src={value} alt={label} className="h-10 mx-auto object-contain" />
-          <button onClick={() => onChange('')} className="absolute -top-1 -right-1 bg-destructive text-white rounded-full w-4 h-4 flex items-center justify-center text-[10px]">×</button>
-        </div>
-      ) : (
-        <button onClick={() => inputRef.current?.click()} className="w-full border border-dashed rounded p-2 text-xs text-muted-foreground hover:bg-muted/50 flex items-center justify-center gap-1">
-          <Upload className="h-3 w-3" /> Upload
-        </button>
-      )}
-      <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
-    </div>
-  );
-}
 export default function InvoicesPage() {
   const navigate = useNavigate();
   const { action } = useParams();
