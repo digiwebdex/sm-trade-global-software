@@ -17,10 +17,9 @@ const navItems = [
   { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard },
   { title: 'Customers', url: '/customers', icon: Users },
   { title: 'Products', url: '/products', icon: Package },
-  { title: 'Invoices', url: '/invoices', icon: FileText },
+  { title: 'Bill', url: '/invoices', icon: FileText },
   { title: 'Quotations', url: '/quotations', icon: FilePlus },
   { title: 'Challans', url: '/challans', icon: Truck },
-  { title: 'Purchase Orders', url: '/purchase-orders', icon: ShoppingCart },
 ];
 
 const adminItems = [
