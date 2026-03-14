@@ -145,10 +145,10 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                 }}>
                   {documentNumber}
                 </p>
+                {isChallan && orderNo && (
+                  <p style={{ fontSize: '11px', color: '#666', margin: '2px 0 0', textAlign: 'right' }}>Order No. {orderNo}</p>
+                )}
               </div>
-              {isChallan && orderNo && (
-                <p style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}>Order No. {orderNo}</p>
-              )}
             </div>
           </div>
         </div>
