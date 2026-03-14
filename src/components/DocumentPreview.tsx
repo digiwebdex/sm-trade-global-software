@@ -166,7 +166,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
               <p style={{ fontSize: '11px', color: ORANGE, margin: '1px 0', lineHeight: '1.4' }}>{customerEmail}</p>
             )}
             {customerPhone && (
-              <p style={{ fontSize: '11px', color: GREEN, margin: '1px 0', lineHeight: '1.4' }}>{customerPhone}</p>
+              <p style={{ fontSize: '11px', color: '#111', margin: '1px 0', lineHeight: '1.4' }}>{customerPhone}</p>
             )}
             <p style={{ fontSize: '11px', color: '#555', margin: '1px 0', lineHeight: '1.4' }}>
               {props.supplierAddress || customerAddress}
