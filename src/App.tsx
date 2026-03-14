@@ -41,6 +41,8 @@ function AppRoutes() {
       <Route path="/quotations/:action" element={<ProtectedRoute><QuotationsPage /></ProtectedRoute>} />
       <Route path="/challans" element={<ProtectedRoute><ChallansPage /></ProtectedRoute>} />
       <Route path="/challans/:action" element={<ProtectedRoute><ChallansPage /></ProtectedRoute>} />
+      <Route path="/purchase-orders" element={<ProtectedRoute><PurchaseOrdersPage /></ProtectedRoute>} />
+      <Route path="/purchase-orders/:action" element={<ProtectedRoute><PurchaseOrdersPage /></ProtectedRoute>} />
       <Route path="/users" element={<ProtectedRoute><UsersPage /></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
       <Route path="/verify/:type/:docId" element={<VerifyPage />} />
