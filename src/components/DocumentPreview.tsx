@@ -330,8 +330,8 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
               <div style={{ marginBottom: '2px' }}>
                 <span>{settings.email}</span>, <span>{settings.website}</span>
               </div>
-              <p style={{ margin: '1px 0' }}>Address : House # 7, Road # 19/A, Sector # 4, Uttara, Dhaka-1230</p>
-              <p style={{ margin: '1px 0' }}>B-25/4, Al-Baraka Super Market, Office # 9-10, Mojidpur Road, Savar, Dhaka-1340</p>
+              <p style={{ margin: '1px 0' }}>Address 1 : House # 7, Road # 19/A, Sector # 4, Uttara, Dhaka-1230</p>
+              <p style={{ margin: '1px 0' }}>Address 2 : B-25/4, Al-Baraka Super Market, Office # 9-10, Mojidpur Road, Savar, Dhaka-1340</p>
             </div>
           </div>
           {/* Phone bar with QR */}
