@@ -114,7 +114,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                 <h1 style={{ fontSize: '20px', fontWeight: '800', color: '#1f3b8a', margin: 0, letterSpacing: '0px', fontFamily: "'Arial Black', 'Helvetica', sans-serif", textTransform: 'uppercase' }}>
                   S. M. TRADE INTERNATIONAL
                 </h1>
-                <p style={{ fontSize: '14px', color: '#444', margin: '5px 0 0', fontWeight: 'normal', fontFamily: "'Georgia', 'Times New Roman', serif", letterSpacing: '0.3px' }}>
+                <p style={{ fontSize: '13px', color: '#333', margin: '4px 0 0', fontWeight: 'normal', fontStyle: 'italic', fontFamily: "'Times New Roman', 'Georgia', serif", letterSpacing: '0.2px' }}>
                   1st Class Govt. Contractor, Supplier &amp; Importer
                 </p>
               </div>
