@@ -8,7 +8,7 @@ export function generateDocNumber(prefix: string, existingNumbers: string[], for
       if (match) max = Math.max(max, parseInt(match[1]));
     });
   }
-  const next = ((forceStart || max) + 1).toString().padStart(3, '0');
+  const next = ((forceStart || max) + 1).toString().padStart(4, '0');
   return `${prefix}-${year}-${next}`;
 }
 
