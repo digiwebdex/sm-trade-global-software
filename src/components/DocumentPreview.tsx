@@ -120,15 +120,15 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <div style={{ textAlign: 'right' }}>
+              <div style={{ textAlign: 'right', display: 'inline-block' }}>
                 <h2 style={{
                   fontSize: '36px',
                   fontWeight: '900',
                   color: NAVY,
                   margin: 0,
                   fontFamily: "Arial, Helvetica, sans-serif",
-                  letterSpacing: '4px',
-                  marginRight: '-4px',
+                  letterSpacing: '2px',
+                  marginRight: '-2px',
                   lineHeight: 1.05,
                   whiteSpace: 'nowrap',
                 }}>
@@ -141,9 +141,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   margin: '3px 0 0',
                   lineHeight: 1.1,
                   whiteSpace: 'nowrap',
-                  display: 'block',
-                  textAlign: 'justify',
-                  textAlignLast: 'justify' as any,
+                  textAlign: 'right',
                 }}>
                   {documentNumber}
                 </p>
