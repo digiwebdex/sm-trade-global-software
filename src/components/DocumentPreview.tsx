@@ -122,7 +122,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <div style={{ textAlign: 'right', display: 'inline-block' }}>
                 <h2 style={{
-                  fontSize: '36px',
+                  fontSize: '32px',
                   fontWeight: '900',
                   color: NAVY,
                   margin: 0,
@@ -135,12 +135,13 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                 </h2>
                 <p style={{
                   color: ORANGE,
-                  fontSize: '14px',
+                  fontSize: '15px',
                   fontWeight: 'bold',
                   margin: '3px 0 0',
                   lineHeight: 1.1,
                   whiteSpace: 'nowrap',
                   textAlign: 'right',
+                  letterSpacing: '1.5px',
                 }}>
                   {documentNumber}
                 </p>
