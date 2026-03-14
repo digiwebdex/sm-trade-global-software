@@ -334,11 +334,10 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
           {/* Phone bar with QR */}
           <div style={{ 
             padding: '4px 35px', fontSize: '10px', color: '#555',
-            display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '24px',
+            display: 'flex', justifyContent: 'center', alignItems: 'center',
             position: 'relative',
           }}>
-            <span>{settings.phone}</span>
-            <span>+8802244446664</span>
+            <span>{settings.phone}, +8802244446664</span>
             {qrDataUrl && (
               <img src={qrDataUrl} alt="QR Code" style={{ position: 'absolute', right: '25px', width: '48px', height: '48px', borderRadius: '3px', top: '-30px' }} />
             )}
