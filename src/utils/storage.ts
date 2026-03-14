@@ -48,7 +48,7 @@ export const storage = {
     address: 'House # 7, Road # 19/A, Sector # 4, Uttara, Dhaka-1230',
     phone: '+8801886766688',
     email: 'info@smtradeint.com',
-    website: 'smtradeint.com',
+    website: 'www.smtradeint.com',
     logo: '',
   }),
   saveSettings: (settings: any) => setItem('companySettings', settings),
