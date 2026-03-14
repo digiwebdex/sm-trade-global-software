@@ -151,7 +151,7 @@ export function initializeData() {
     ];
     storage.create(KEYS.INVOICES, {
       id: 'inv-1',
-      invoiceNumber: 'INV-2026-012',
+      invoiceNumber: 'INV-2026-001',
       date: '2026-01-21',
       customerId: 'cust-1',
       customerName: 'Course Director, 79th Foundation Training Course',
