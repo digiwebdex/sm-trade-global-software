@@ -127,9 +127,8 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   color: NAVY,
                   margin: 0,
                   fontFamily: "Arial, Helvetica, sans-serif",
-                  letterSpacing: '8px',
-                  paddingRight: '-8px',
-                  marginRight: '-8px',
+                  letterSpacing: '4px',
+                  marginRight: '-4px',
                   lineHeight: 1.05,
                   whiteSpace: 'nowrap',
                 }}>
