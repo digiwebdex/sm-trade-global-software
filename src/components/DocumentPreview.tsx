@@ -99,7 +99,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
       <div style={{ border: '2px solid #d0d0d0', minHeight: '1119px', maxHeight: '1119px', display: 'flex', flexDirection: 'column' }} className="document-border">
         
         {/* ===== HEADER ===== */}
-        <div style={{ padding: '24px 35px 16px' }}>
+        <div style={{ padding: '18px 35px 12px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
               <div style={{ 
