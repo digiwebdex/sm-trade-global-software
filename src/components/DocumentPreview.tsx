@@ -280,7 +280,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                       }}>{p.method}</span>
                       <span style={{ fontSize: '11px', color: '#555' }}>{p.description}</span>
                     </div>
-                    <span style={{ fontWeight: 'bold', fontSize: '12px', color: GREEN }}>৳{formatNumber(p.amount)}</span>
+                    <span style={{ fontWeight: 'bold', fontSize: '12px', color: GREEN }}>{formatNumber(p.amount)}</span>
                   </div>
                 ))}
               </div>
