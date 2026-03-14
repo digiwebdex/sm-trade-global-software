@@ -282,7 +282,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
         {/* ===== BOTTOM SECTION (always at page bottom) ===== */}
         <div style={{ marginTop: 'auto' }}>
           {/* ===== SIGNATURE SECTION ===== */}
-          <div style={{ padding: '20px 35px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+          <div style={{ padding: '10px 35px 8px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
             {[
               { label: 'Received by', sig: props.signatureReceived || settings.signatureReceived },
               { label: 'Prepared by', sig: props.signaturePrepared || settings.signaturePrepared },
@@ -290,20 +290,20 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
             ].map((item) => (
               <div key={item.label} style={{ textAlign: 'center', width: '160px' }}>
                 <div style={{
-                  width: '160px', height: '70px',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '6px',
+                  width: '160px', height: '50px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '4px',
                 }}>
                   {item.sig ? (
-                    <img src={item.sig} alt={item.label} style={{ maxWidth: '140px', maxHeight: '60px', objectFit: 'contain' }} />
+                    <img src={item.sig} alt={item.label} style={{ maxWidth: '140px', maxHeight: '45px', objectFit: 'contain' }} />
                   ) : null}
                 </div>
-                <div style={{ borderTop: '1.5px solid #333', paddingTop: '5px', fontSize: '11px', color: '#555' }}>{item.label}</div>
+                <div style={{ borderTop: '1.5px solid #333', paddingTop: '4px', fontSize: '11px', color: '#555' }}>{item.label}</div>
               </div>
             ))}
           </div>
 
           {/* ===== THANK YOU MESSAGE ===== */}
-          <div style={{ textAlign: 'center', padding: '8px 35px', fontSize: '12px', color: ORANGE, fontStyle: 'italic' }}>
+          <div style={{ textAlign: 'center', padding: '4px 35px', fontSize: '12px', color: ORANGE, fontStyle: 'italic' }}>
             Thank you for staying with us.
           </div>
 
