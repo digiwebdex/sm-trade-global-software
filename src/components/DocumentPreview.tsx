@@ -228,46 +228,15 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                 </tbody>
               </table>
 
-              {/* ===== SUMMARY SECTION (right-aligned) ===== */}
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px', position: 'relative', zIndex: 1 }}>
-                <div style={{ width: '280px' }}>
-                  {/* Subtotal */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #e8e8e8' }}>
-                    <span style={{ fontWeight: 'bold', fontSize: '12px', color: '#333' }}>Subtotal</span>
-                    <span style={{ fontSize: '12px', fontWeight: 'bold' }}>৳{formatNumber(subtotal)}</span>
-                  </div>
-                  {/* Tax */}
-                  {isInvoice && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #e8e8e8' }}>
-                      <span style={{ fontSize: '12px', color: '#555' }}>Tax</span>
-                      <span style={{ fontSize: '12px' }}>৳{formatNumber(taxAmount)}</span>
-                    </div>
-                  )}
-                  {/* Total */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #e8e8e8' }}>
-                    <span style={{ fontWeight: 'bold', fontSize: '13px', color: NAVY }}>Total</span>
-                    <span style={{ fontWeight: 'bold', fontSize: '13px', color: NAVY }}>৳{formatNumber(isInvoice ? grandTotal : subtotal)}</span>
-                  </div>
-                  {/* Total Paid (invoice only) */}
-                  {isInvoice && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #e8e8e8' }}>
-                      <span style={{ fontSize: '12px', color: '#555' }}>Total Paid</span>
-                      <span style={{ fontSize: '12px', color: GREEN }}>৳{formatNumber(paidAmount)}</span>
-                    </div>
-                  )}
-                  {/* Balance (invoice only) */}
-                  {isInvoice && (
-                    <div style={{ 
-                      display: 'flex', justifyContent: 'space-between', padding: '8px 10px', marginTop: '4px',
-                      backgroundColor: balance > 0 ? '#fef2f2' : '#dcfce7',
-                      border: `1px solid ${balance > 0 ? '#fca5a5' : '#86efac'}`,
-                      borderRadius: '4px',
-                    }}>
-                      <span style={{ fontWeight: 'bold', fontSize: '13px', color: balance > 0 ? '#dc2626' : GREEN }}>Balance</span>
-                      <span style={{ fontWeight: 'bold', fontSize: '13px', color: balance > 0 ? '#dc2626' : GREEN }}>৳{formatNumber(balance)}</span>
-                    </div>
-                  )}
-                </div>
+              {/* ===== TOTAL AMOUNT BAR ===== */}
+              <div style={{ 
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                marginTop: '12px', padding: '10px 16px',
+                backgroundColor: NAVY, borderRadius: '4px',
+                position: 'relative', zIndex: 1
+              }}>
+                <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#fff' }}>Total Amount</span>
+                <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#fff' }}>BDT {formatNumber(isInvoice ? grandTotal : subtotal)}</span>
               </div>
             </>
           ) : null}
