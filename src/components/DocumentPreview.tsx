@@ -329,7 +329,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
 
           {/* ===== FOOTER ===== */}
           <div style={{ 
-            borderTop: '2px solid #aaa', padding: '6px 35px 0', fontSize: '10px', color: '#555',
+            borderTop: '2px solid #1f3b8a', padding: '6px 35px 0', fontSize: '10px', color: '#555',
           }}>
             <div style={{ textAlign: 'center' }}>
               <div style={{ marginBottom: '2px' }}>
