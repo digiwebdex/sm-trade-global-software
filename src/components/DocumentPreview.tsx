@@ -279,62 +279,65 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
           </div>
         )}
 
-        {/* ===== SIGNATURE SECTION ===== */}
-        <div style={{ padding: '20px 35px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-          {[
-            { label: 'Received by', sig: props.signatureReceived || settings.signatureReceived },
-            { label: 'Prepared by', sig: props.signaturePrepared || settings.signaturePrepared },
-            { label: 'Authorize by', sig: props.signatureAuthorize || settings.signatureAuthorize },
-          ].map((item) => (
-            <div key={item.label} style={{ textAlign: 'center', width: '160px' }}>
-              <div style={{
-                width: '160px', height: '70px',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '6px',
-              }}>
-                {item.sig ? (
-                  <img src={item.sig} alt={item.label} style={{ maxWidth: '140px', maxHeight: '60px', objectFit: 'contain' }} />
-                ) : null}
+        {/* ===== BOTTOM SECTION (always at page bottom) ===== */}
+        <div style={{ marginTop: 'auto' }}>
+          {/* ===== SIGNATURE SECTION ===== */}
+          <div style={{ padding: '20px 35px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+            {[
+              { label: 'Received by', sig: props.signatureReceived || settings.signatureReceived },
+              { label: 'Prepared by', sig: props.signaturePrepared || settings.signaturePrepared },
+              { label: 'Authorize by', sig: props.signatureAuthorize || settings.signatureAuthorize },
+            ].map((item) => (
+              <div key={item.label} style={{ textAlign: 'center', width: '160px' }}>
+                <div style={{
+                  width: '160px', height: '70px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '6px',
+                }}>
+                  {item.sig ? (
+                    <img src={item.sig} alt={item.label} style={{ maxWidth: '140px', maxHeight: '60px', objectFit: 'contain' }} />
+                  ) : null}
+                </div>
+                <div style={{ borderTop: '1.5px solid #333', paddingTop: '5px', fontSize: '11px', color: '#555' }}>{item.label}</div>
               </div>
-              <div style={{ borderTop: '1.5px solid #333', paddingTop: '5px', fontSize: '11px', color: '#555' }}>{item.label}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* ===== THANK YOU MESSAGE ===== */}
-        <div style={{ textAlign: 'center', padding: '8px 35px', fontSize: '12px', color: ORANGE, fontStyle: 'italic', marginTop: 'auto' }}>
-          Thank you for staying with us.
-        </div>
-
-        {/* ===== FOOTER ===== */}
-        <div style={{ 
-          borderTop: `2px solid ${ORANGE}`, padding: '10px 35px 0', fontSize: '10px', color: '#555',
-          position: 'relative',
-        }}>
-          <div style={{ textAlign: 'center', paddingRight: '80px' }}>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', marginBottom: '4px' }}>
-              <span><span style={{ color: '#2563eb' }}>✉</span> {settings.email}</span>
-              <span><span style={{ color: '#16a34a' }}>🌐</span> {settings.website}</span>
-            </div>
-            <p style={{ margin: '2px 0' }}><span style={{ color: '#dc2626' }}>📍</span> Address : House # 7, Road # 19/A, Sector # 4, Uttara, Dhaka-1230</p>
-            <p style={{ margin: '2px 0' }}><span style={{ color: '#dc2626' }}>📍</span> B-25/4, Al-Baraka Super Market, Office # 9-10, Mojidpur Road, Savar, Dhaka-1340</p>
+            ))}
           </div>
-          {/* QR Code */}
-          <div style={{ position: 'absolute', right: '25px', top: '8px', textAlign: 'center' }}>
-            {qrDataUrl ? (
-              <img src={qrDataUrl} alt="QR Code" style={{ width: '58px', height: '58px', borderRadius: '3px' }} />
-            ) : (
-              <div style={{ width: '58px', height: '58px', backgroundColor: '#f0f0f0', borderRadius: '3px' }} />
-            )}
-            <p style={{ fontSize: '6px', margin: '2px 0 0', color: '#999' }}>Scan for details</p>
+
+          {/* ===== THANK YOU MESSAGE ===== */}
+          <div style={{ textAlign: 'center', padding: '8px 35px', fontSize: '12px', color: ORANGE, fontStyle: 'italic' }}>
+            Thank you for staying with us.
           </div>
-        </div>
-        {/* Phone bar */}
-        <div style={{ 
-          backgroundColor: '#e5e7eb', padding: '5px 35px', fontSize: '10px', color: '#555',
-          display: 'flex', justifyContent: 'center', gap: '24px',
-        }}>
-          <span><span style={{ color: '#16a34a' }}>📞</span> {settings.phone}</span>
-          <span><span style={{ color: '#2563eb' }}>📠</span> +8802244446664</span>
+
+          {/* ===== FOOTER ===== */}
+          <div style={{ 
+            borderTop: `2px solid ${ORANGE}`, padding: '10px 35px 0', fontSize: '10px', color: '#555',
+            position: 'relative',
+          }}>
+            <div style={{ textAlign: 'center', paddingRight: '80px' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', marginBottom: '4px' }}>
+                <span><span style={{ color: '#2563eb' }}>✉</span> {settings.email}</span>
+                <span><span style={{ color: '#16a34a' }}>🌐</span> {settings.website}</span>
+              </div>
+              <p style={{ margin: '2px 0' }}><span style={{ color: '#dc2626' }}>📍</span> Address : House # 7, Road # 19/A, Sector # 4, Uttara, Dhaka-1230</p>
+              <p style={{ margin: '2px 0' }}><span style={{ color: '#dc2626' }}>📍</span> B-25/4, Al-Baraka Super Market, Office # 9-10, Mojidpur Road, Savar, Dhaka-1340</p>
+            </div>
+            {/* QR Code */}
+            <div style={{ position: 'absolute', right: '25px', top: '8px', textAlign: 'center' }}>
+              {qrDataUrl ? (
+                <img src={qrDataUrl} alt="QR Code" style={{ width: '58px', height: '58px', borderRadius: '3px' }} />
+              ) : (
+                <div style={{ width: '58px', height: '58px', backgroundColor: '#f0f0f0', borderRadius: '3px' }} />
+              )}
+              <p style={{ fontSize: '6px', margin: '2px 0 0', color: '#999' }}>Scan for details</p>
+            </div>
+          </div>
+          {/* Phone bar */}
+          <div style={{ 
+            backgroundColor: '#e5e7eb', padding: '5px 35px', fontSize: '10px', color: '#555',
+            display: 'flex', justifyContent: 'center', gap: '24px',
+          }}>
+            <span><span style={{ color: '#16a34a' }}>📞</span> {settings.phone}</span>
+            <span><span style={{ color: '#2563eb' }}>📠</span> +8802244446664</span>
+          </div>
         </div>
       </div>
     </div>
