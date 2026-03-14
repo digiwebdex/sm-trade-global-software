@@ -90,6 +90,9 @@ export interface Quotation {
   amountInWords?: string;
   validUntil: string;
   notes: string;
+  signatureReceived?: string;
+  signaturePrepared?: string;
+  signatureAuthorize?: string;
   createdAt: string;
 }
 
