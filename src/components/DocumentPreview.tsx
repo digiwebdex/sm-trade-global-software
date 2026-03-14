@@ -120,7 +120,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <div style={{ textAlign: 'right', display: 'inline-block' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
                 <h2 style={{
                   fontSize: '32px',
                   fontWeight: '900',
@@ -130,8 +130,10 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   letterSpacing: '0px',
                   lineHeight: 1.05,
                   whiteSpace: 'nowrap',
+                  textAlign: 'justify',
+                  textAlignLast: 'justify',
                 }}>
-                  {config.label}
+                  {config.label.split('').join('\u200A')}
                 </h2>
                 <p style={{
                   color: ORANGE,
@@ -140,8 +142,8 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   margin: '3px 0 0',
                   lineHeight: 1.1,
                   whiteSpace: 'nowrap',
-                  textAlign: 'right',
-                  letterSpacing: '1.5px',
+                  textAlign: 'justify',
+                  textAlignLast: 'justify',
                 }}>
                   {documentNumber}
                 </p>
