@@ -108,7 +108,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 flexShrink: 0, overflow: 'hidden', backgroundColor: '#fff'
               }}>
-                <img src={logoImg} alt="Logo" style={{ width: '54px', height: '54px', objectFit: 'contain' }} />
+                <img src={logoImg} alt="Logo" style={{ width: '62px', height: '62px', objectFit: 'contain' }} />
               </div>
               <div>
                 <h1 style={{ fontSize: '20px', fontWeight: '900', color: '#1f3b8a', margin: 0, letterSpacing: '0px', fontFamily: "'Arial Black', 'Helvetica', sans-serif", textTransform: 'uppercase' }}>
