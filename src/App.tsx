@@ -43,6 +43,7 @@ function AppRoutes() {
       <Route path="/challans/:action" element={<ProtectedRoute><ChallansPage /></ProtectedRoute>} />
       <Route path="/users" element={<ProtectedRoute><UsersPage /></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+      <Route path="/verify/:type/:docId" element={<VerifyPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
