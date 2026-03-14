@@ -49,7 +49,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
   const { type, documentNumber, date, customerName, customerAddress, customerPhone, customerEmail, items, challanItems, totalAmount, totalQuantity, orderNo, notes, tax, totalPaid, payments } = props;
 
   const typeConfig: Record<string, { label: string; toLabel: string; dateLabel: string }> = {
-    invoice: { label: 'BILL', toLabel: 'BILL TO', dateLabel: 'BILL DATE :' },
+    invoice: { label: 'INVOICE', toLabel: 'BILL TO', dateLabel: 'INVOICE DATE :' },
     quotation: { label: 'QUOTATION', toLabel: 'TO', dateLabel: 'QUOTATION DATE :' },
     challan: { label: 'CHALLAN', toLabel: 'DELIVERY TO', dateLabel: 'CHALLAN DATE :' },
     purchaseOrder: { label: 'PURCHASE ORDER', toLabel: 'TO', dateLabel: 'PO DATE :' },
@@ -82,7 +82,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
   const statusConfig: Record<string, { color: string; bg: string; label: string }> = {
     paid: { color: GREEN, bg: '#dcfce7', label: 'Paid' },
     partial: { color: ORANGE, bg: '#fff7ed', label: 'Partial' },
-    sent: { color: '#2563eb', bg: '#dbeafe', label: 'Due' },
+    sent: { color: '#dc2626', bg: '#fef2f2', label: 'Unpaid' },
     draft: { color: '#6b7280', bg: '#f3f4f6', label: 'Draft' },
     accepted: { color: GREEN, bg: '#dcfce7', label: 'Accepted' },
     rejected: { color: '#dc2626', bg: '#fef2f2', label: 'Rejected' },
@@ -120,21 +120,19 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
               </div>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <h2 style={{ fontSize: '30px', fontWeight: 'bold', color: NAVY, margin: 0 }}>
+              <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: NAVY, margin: 0, fontFamily: "'Arial Black', 'Helvetica', sans-serif" }}>
                 {config.label}
               </h2>
-              <div style={{ 
-                backgroundColor: ORANGE, color: 'white', padding: '3px 14px', borderRadius: '3px', 
-                fontSize: '12px', fontWeight: 'bold', display: 'inline-block', marginTop: '4px'
+              <p style={{ 
+                color: ORANGE, fontSize: '14px', fontWeight: 'bold', marginTop: '6px', margin: '6px 0 0'
               }}>
                 {documentNumber}
-              </div>
+              </p>
               {/* Status Badge */}
               {props.status && (
                 <div style={{
-                  backgroundColor: statusInfo.bg, color: statusInfo.color, padding: '3px 14px', borderRadius: '3px',
-                  fontSize: '11px', fontWeight: 'bold', display: 'inline-block', marginTop: '4px', marginLeft: '6px',
-                  border: `1px solid ${statusInfo.color}`,
+                  backgroundColor: statusInfo.bg, color: statusInfo.color, padding: '4px 16px', borderRadius: '20px',
+                  fontSize: '12px', fontWeight: '600', display: 'inline-block', marginTop: '6px',
                 }}>
                   {statusInfo.label}
                 </div>
