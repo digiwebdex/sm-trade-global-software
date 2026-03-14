@@ -103,12 +103,12 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
               <div style={{ 
-                width: '82px', height: '82px', borderRadius: '50%', 
+                width: '72px', height: '72px', borderRadius: '50%', 
                 border: '2.5px solid #2B5797', 
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 flexShrink: 0, overflow: 'hidden', backgroundColor: '#fff'
               }}>
-                <img src={logoImg} alt="Logo" style={{ width: '82px', height: '82px', objectFit: 'cover' }} />
+                <img src={logoImg} alt="Logo" style={{ width: '95px', height: '95px', objectFit: 'cover' }} />
               </div>
               <div>
                 <h1 style={{ fontSize: '19px', fontWeight: '900', color: '#1f3b8a', margin: 0, letterSpacing: '0px', fontFamily: "Arial, Helvetica, sans-serif", textTransform: 'uppercase' }}>
