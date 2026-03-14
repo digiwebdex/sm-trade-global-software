@@ -171,6 +171,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
             <p style={{ fontSize: '11px', color: '#555', margin: '1px 0', lineHeight: '1.4' }}>
               {props.supplierAddress || customerAddress}
             </p>
+            </div>
           </div>
           <div style={{ textAlign: 'right', fontSize: '12px', whiteSpace: 'nowrap' }}>
             <span style={{ color: '#888', fontSize: '11px' }}>{config.dateLabel}</span>{' '}
