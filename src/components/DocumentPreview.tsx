@@ -163,8 +163,8 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
           <div style={{ display: 'flex', alignItems: 'stretch' }}>
             <div style={{ width: '6px', backgroundColor: '#1f3b8a', borderRadius: '0px', marginRight: '12px', flexShrink: 0 }}></div>
             <div>
-            <p style={{ fontSize: '10px', color: '#888', fontWeight: 'bold', marginBottom: '3px', letterSpacing: '0.5px' }}>{config.toLabel}</p>
-            <p style={{ fontSize: '14px', fontWeight: 'bold', color: '#111', margin: '0 0 2px' }}>
+            <p style={{ fontSize: '10px', color: '#888', fontWeight: 'bold', marginBottom: '1px', letterSpacing: '0.5px' }}>{config.toLabel}</p>
+            <p style={{ fontSize: '14px', fontWeight: 'bold', color: '#111', margin: '0 0 1px' }}>
               {props.supplierName || customerName}
             </p>
             {customerEmail && (
