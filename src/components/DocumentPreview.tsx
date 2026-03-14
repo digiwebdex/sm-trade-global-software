@@ -324,9 +324,8 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
             borderTop: '2px solid #aaa', padding: '6px 35px 0', fontSize: '10px', color: '#555',
           }}>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', marginBottom: '2px' }}>
-                <span>{settings.email}</span>
-                <span>{settings.website}</span>
+              <div style={{ marginBottom: '2px' }}>
+                <span>{settings.email}</span>, <span>{settings.website}</span>
               </div>
               <p style={{ margin: '1px 0' }}>Address : House # 7, Road # 19/A, Sector # 4, Uttara, Dhaka-1230</p>
               <p style={{ margin: '1px 0' }}>B-25/4, Al-Baraka Super Market, Office # 9-10, Mojidpur Road, Savar, Dhaka-1340</p>
