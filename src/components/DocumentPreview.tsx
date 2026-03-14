@@ -372,6 +372,12 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
   );
 }
 
-export function printDocument() {
+export function printDocument(docNumber?: string) {
+  if (docNumber) {
+    document.title = docNumber;
+  }
   window.print();
+  if (docNumber) {
+    document.title = 'S. M. Trade International';
+  }
 }
