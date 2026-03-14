@@ -120,21 +120,19 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
               </div>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <h2 style={{ fontSize: '30px', fontWeight: 'bold', color: NAVY, margin: 0 }}>
+              <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: NAVY, margin: 0, fontFamily: "'Arial Black', 'Helvetica', sans-serif" }}>
                 {config.label}
               </h2>
-              <div style={{ 
-                backgroundColor: ORANGE, color: 'white', padding: '3px 14px', borderRadius: '3px', 
-                fontSize: '12px', fontWeight: 'bold', display: 'inline-block', marginTop: '4px'
+              <p style={{ 
+                color: ORANGE, fontSize: '14px', fontWeight: 'bold', marginTop: '6px', margin: '6px 0 0'
               }}>
                 {documentNumber}
-              </div>
+              </p>
               {/* Status Badge */}
               {props.status && (
                 <div style={{
-                  backgroundColor: statusInfo.bg, color: statusInfo.color, padding: '3px 14px', borderRadius: '3px',
-                  fontSize: '11px', fontWeight: 'bold', display: 'inline-block', marginTop: '4px', marginLeft: '6px',
-                  border: `1px solid ${statusInfo.color}`,
+                  backgroundColor: statusInfo.bg, color: statusInfo.color, padding: '4px 16px', borderRadius: '20px',
+                  fontSize: '12px', fontWeight: '600', display: 'inline-block', marginTop: '6px',
                 }}>
                   {statusInfo.label}
                 </div>
