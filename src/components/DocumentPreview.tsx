@@ -119,17 +119,32 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                 </p>
               </div>
             </div>
-            <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' }}>
-              <h2 style={{ fontSize: '36px', fontWeight: '900', color: NAVY, margin: 0, padding: 0, fontFamily: "'Arial Black', 'Helvetica', sans-serif", letterSpacing: '2px', lineHeight: '1', whiteSpace: 'nowrap' }}>
+            <div style={{ marginLeft: '24px', minWidth: '220px', textAlign: 'left' }}>
+              <h2 style={{
+                fontSize: '36px',
+                fontWeight: '900',
+                color: NAVY,
+                margin: 0,
+                fontFamily: "Arial, Helvetica, sans-serif",
+                letterSpacing: '1.2px',
+                lineHeight: 1.05,
+                whiteSpace: 'nowrap',
+              }}>
                 {config.label}
               </h2>
-              <p style={{ 
-                color: ORANGE, fontSize: '14px', fontWeight: 'bold', margin: '4px 0 0', padding: 0, lineHeight: '1', whiteSpace: 'nowrap'
+              <p style={{
+                color: ORANGE,
+                fontSize: '14px',
+                fontWeight: 'bold',
+                margin: '3px 0 0',
+                lineHeight: 1.1,
+                letterSpacing: '0.2px',
+                whiteSpace: 'nowrap',
               }}>
                 {documentNumber}
               </p>
               {isChallan && orderNo && (
-                <p style={{ fontSize: '11px', color: '#666', marginTop: '4px', lineHeight: '1' }}>Order No. {orderNo}</p>
+                <p style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}>Order No. {orderNo}</p>
               )}
             </div>
           </div>
