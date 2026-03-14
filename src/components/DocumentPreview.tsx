@@ -111,10 +111,10 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                 <img src={logoImg} alt="Logo" style={{ width: '62px', height: '62px', objectFit: 'contain' }} />
               </div>
               <div>
-                <h1 style={{ fontSize: '20px', fontWeight: '900', color: '#1f3b8a', margin: 0, letterSpacing: '0px', fontFamily: "'Arial Black', 'Helvetica', sans-serif", textTransform: 'uppercase' }}>
+                <h1 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1f3b8a', margin: 0, letterSpacing: '0px', fontFamily: "Arial, Helvetica, sans-serif", textTransform: 'uppercase' }}>
                   S. M. TRADE INTERNATIONAL
                 </h1>
-                <p style={{ fontSize: '13px', color: '#333', margin: '4px 0 0', fontWeight: 'normal', fontStyle: 'italic', fontFamily: "'Times New Roman', 'Georgia', serif", letterSpacing: '0.2px' }}>
+                <p style={{ fontSize: '13px', color: ORANGE, margin: '4px 0 0', fontWeight: 'normal', fontStyle: 'italic', fontFamily: "Arial, Helvetica, sans-serif", letterSpacing: '0.2px' }}>
                   1st Class Govt. Contractor, Supplier &amp; Importer
                 </p>
               </div>
