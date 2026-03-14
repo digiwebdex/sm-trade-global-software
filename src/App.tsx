@@ -15,6 +15,7 @@ import ChallansPage from "@/pages/ChallansPage";
 import PurchaseOrdersPage from "@/pages/PurchaseOrdersPage";
 import UsersPage from "@/pages/UsersPage";
 import SettingsPage from "@/pages/SettingsPage";
+import VerifyPage from "@/pages/VerifyPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();

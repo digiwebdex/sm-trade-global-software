@@ -61,11 +61,11 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
   const [qrDataUrl, setQrDataUrl] = useState('');
   useEffect(() => {
     const routeMap: Record<string, string> = {
-      invoice: 'invoices', quotation: 'quotations', challan: 'challans', purchaseOrder: 'purchase-orders',
+      invoice: 'invoice', quotation: 'quotation', challan: 'challan', purchaseOrder: 'purchase-order',
     };
     const baseUrl = window.location.origin;
     const docId = documentNumber.toLowerCase().replace(/[^a-z0-9-]/g, '-');
-    const viewUrl = `${baseUrl}/${routeMap[type]}/view-${docId}`;
+    const viewUrl = `${baseUrl}/verify/${routeMap[type]}/${docId}`;
     QRCode.toDataURL(viewUrl, { width: 120, margin: 1, color: { dark: '#1B3A5C', light: '#ffffff' } })
       .then(url => setQrDataUrl(url))
       .catch(() => setQrDataUrl(''));
