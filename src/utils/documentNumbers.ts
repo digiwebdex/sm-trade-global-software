@@ -6,7 +6,7 @@ export function generateDocNumber(prefix: string, existingNumbers: string[]): st
     const match = num.match(pattern);
     if (match) max = Math.max(max, parseInt(match[1]));
   });
-  const next = (max + 1).toString().padStart(4, '0');
+  const next = (max + 1).toString().padStart(3, '0');
   return `${prefix}-${year}-${next}`;
 }
 
