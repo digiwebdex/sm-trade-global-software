@@ -162,7 +162,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
         </div>
 
         {/* ===== TABLE AREA ===== */}
-        <div style={{ padding: '6px 35px 0', position: 'relative', flex: 1 }}>
+        <div style={{ padding: '6px 35px 0', position: 'relative' }}>
           
           {/* Watermark */}
           <div style={{
