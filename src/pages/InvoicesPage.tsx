@@ -352,6 +352,9 @@ function InvoiceView({ id, onBack }: { id: string; onBack: () => void }) {
         notes={inv.notes} 
         status={inv.status} 
         amountInWords={inv.amountInWords}
+        signatureReceived={inv.signatureReceived}
+        signaturePrepared={inv.signaturePrepared}
+        signatureAuthorize={inv.signatureAuthorize}
       />
     </div>
   );

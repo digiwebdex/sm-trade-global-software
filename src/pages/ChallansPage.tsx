@@ -122,9 +122,9 @@ function ChallanForm({ editId, onDone }: { editId?: string; onDone: () => void }
     items: existing?.items || [emptyItem()],
     status: existing?.status || 'draft' as 'draft' | 'delivered',
     notes: existing?.notes || '',
-    signatureReceived: (existing as any)?.signatureReceived || '',
-    signaturePrepared: (existing as any)?.signaturePrepared || '',
-    signatureAuthorize: (existing as any)?.signatureAuthorize || '',
+    signatureReceived: existing?.signatureReceived || '',
+    signaturePrepared: existing?.signaturePrepared || '',
+    signatureAuthorize: existing?.signatureAuthorize || '',
   });
 
   const selectCustomer = (id: string) => {
@@ -190,7 +190,7 @@ function ChallanForm({ editId, onDone }: { editId?: string; onDone: () => void }
               <label className="text-sm font-medium mb-2 block">Signatures</label>
               <div className="grid grid-cols-3 gap-3">
                 {([['signatureReceived','Received by'],['signaturePrepared','Prepared by'],['signatureAuthorize','Authorize by']] as const).map(([key, label]) => (
-                  <SignatureUploadField key={key} label={label} value={(form as any)[key]} onChange={(v) => setForm({ ...form, [key]: v })} />
+                  <SignatureUploadField key={key} label={label} value={form[key]} onChange={(v) => setForm({ ...form, [key]: v })} />
                 ))}
               </div>
             </div>
@@ -218,7 +218,7 @@ function ChallanView({ id, onBack }: { id: string; onBack: () => void }) {
         </Badge>
         <Button onClick={() => printDocument(c.challanNumber)} variant="outline"><Printer className="h-4 w-4 mr-2" /> Print / PDF</Button>
       </div>
-      <DocumentPreview type="challan" documentNumber={c.challanNumber} date={c.date} customerName={c.customerName} customerAddress={c.customerAddress} customerPhone={c.customerPhone} challanItems={c.items} totalQuantity={c.totalQuantity} orderNo={c.orderNo} notes={c.notes} status={c.status} />
+      <DocumentPreview type="challan" documentNumber={c.challanNumber} date={c.date} customerName={c.customerName} customerAddress={c.customerAddress} customerPhone={c.customerPhone} challanItems={c.items} totalQuantity={c.totalQuantity} orderNo={c.orderNo} notes={c.notes} status={c.status} signatureReceived={c.signatureReceived} signaturePrepared={c.signaturePrepared} signatureAuthorize={c.signatureAuthorize} />
     </div>
   );
 }

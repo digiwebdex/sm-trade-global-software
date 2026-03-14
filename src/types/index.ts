@@ -90,6 +90,9 @@ export interface Quotation {
   amountInWords?: string;
   validUntil: string;
   notes: string;
+  signatureReceived?: string;
+  signaturePrepared?: string;
+  signatureAuthorize?: string;
   createdAt: string;
 }
 
@@ -105,6 +108,9 @@ export interface Challan {
   items: ChallanItem[];
   totalQuantity: number;
   status: 'draft' | 'delivered';
+  signatureReceived?: string;
+  signaturePrepared?: string;
+  signatureAuthorize?: string;
   notes: string;
   createdAt: string;
 }
