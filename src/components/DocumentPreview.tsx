@@ -180,8 +180,8 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, width: '35px' }}>SL.</th>
                   <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: '11px', fontWeight: 'bold', color: NAVY }}>ITEM NAME & DETAILS</th>
                   <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, width: '65px' }}>SIZE</th>
-                  <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, width: '90px' }}>DELIVERY QTY.</th>
-                  <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, width: '90px' }}>BALANCE QTY.</th>
+                  <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, width: '90px' }}>DELIVERY QUANTITY</th>
+                  <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, width: '90px' }}>BALANCE QUANTITY</th>
                   <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, width: '50px' }}>UNIT</th>
                 </tr>
               </thead>
