@@ -49,7 +49,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
   const { type, documentNumber, date, customerName, customerAddress, customerPhone, customerEmail, items, challanItems, totalAmount, totalQuantity, orderNo, notes, tax, totalPaid, payments } = props;
 
   const typeConfig: Record<string, { label: string; toLabel: string; dateLabel: string }> = {
-    invoice: { label: 'BILL', toLabel: 'BILL TO', dateLabel: 'BILL DATE :' },
+    invoice: { label: 'INVOICE', toLabel: 'BILL TO', dateLabel: 'INVOICE DATE :' },
     quotation: { label: 'QUOTATION', toLabel: 'TO', dateLabel: 'QUOTATION DATE :' },
     challan: { label: 'CHALLAN', toLabel: 'DELIVERY TO', dateLabel: 'CHALLAN DATE :' },
     purchaseOrder: { label: 'PURCHASE ORDER', toLabel: 'TO', dateLabel: 'PO DATE :' },
