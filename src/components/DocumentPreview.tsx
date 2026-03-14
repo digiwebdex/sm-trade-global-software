@@ -122,7 +122,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                 <h2 style={{
-                  fontSize: type === 'invoice' ? '32px' : '24px',
+                  fontSize: type === 'invoice' ? '32px' : '20px',
                   fontWeight: '900',
                   color: NAVY,
                   margin: 0,
