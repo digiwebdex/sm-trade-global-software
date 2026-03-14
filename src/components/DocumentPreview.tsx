@@ -101,14 +101,21 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
         {/* ===== HEADER ===== */}
         <div style={{ padding: '24px 35px 16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <img src={logoImg} alt="Logo" style={{ width: '58px', height: '58px', borderRadius: '50%', objectFit: 'contain' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <div style={{ 
+                width: '68px', height: '68px', borderRadius: '50%', 
+                border: `2.5px solid ${NAVY}`, 
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0, overflow: 'hidden', backgroundColor: '#fff'
+              }}>
+                <img src={logoImg} alt="Logo" style={{ width: '52px', height: '52px', objectFit: 'contain' }} />
+              </div>
               <div>
-                <h1 style={{ fontSize: '21px', fontWeight: 'bold', color: NAVY, margin: 0, letterSpacing: '0.5px' }}>
+                <h1 style={{ fontSize: '22px', fontWeight: 'bold', color: NAVY, margin: 0, letterSpacing: '1px', fontFamily: "'Times New Roman', serif" }}>
                   S. M. TRADE INTERNATIONAL
                 </h1>
-                <p style={{ fontSize: '11px', color: ORANGE, margin: '2px 0 0', fontStyle: 'italic' }}>
-                  {settings.tagline}
+                <p style={{ fontSize: '12px', color: NAVY, margin: '3px 0 0', fontWeight: '400', letterSpacing: '0.3px' }}>
+                  1st Class Govt. Contractor, Supplier & Importer
                 </p>
               </div>
             </div>
