@@ -155,7 +155,9 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
 
         {/* ===== CUSTOMER INFO + DATE ===== */}
         <div style={{ padding: '14px 35px 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <div>
+          <div style={{ display: 'flex', alignItems: 'stretch' }}>
+            <div style={{ width: '4px', backgroundColor: '#1f3b8a', borderRadius: '2px', marginRight: '12px', flexShrink: 0 }}></div>
+            <div>
             <p style={{ fontSize: '10px', color: '#888', fontWeight: 'bold', marginBottom: '3px', letterSpacing: '0.5px' }}>{config.toLabel}</p>
             <p style={{ fontSize: '14px', fontWeight: 'bold', color: '#111', margin: '0 0 2px' }}>
               {props.supplierName || customerName}
