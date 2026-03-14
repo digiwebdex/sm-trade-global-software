@@ -171,7 +171,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
             </p>
           </div>
           <div style={{ textAlign: 'right', fontSize: '12px', whiteSpace: 'nowrap' }}>
-            <span style={{ color: '#888', fontSize: '11px', fontStyle: 'italic' }}>{config.dateLabel}</span>{' '}
+            <span style={{ color: '#888', fontSize: '11px' }}>{config.dateLabel}</span>{' '}
             <strong style={{ color: '#222' }}>{formatDate(date)}</strong>
           </div>
         </div>
