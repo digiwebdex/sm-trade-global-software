@@ -74,6 +74,15 @@ export function resetAllData() {
 
 // Initialize default admin user if none exists
 export function initializeData() {
+  // Fix old invoice numbers: replace INV-2026-012 with INV-2026-001
+  try {
+    const raw = localStorage.getItem(KEYS.INVOICES);
+    if (raw) {
+      const updated = raw.replace(/INV-2026-012/g, 'INV-2026-001');
+      if (updated !== raw) localStorage.setItem(KEYS.INVOICES, updated);
+    }
+  } catch { /* ignore */ }
+
   const users = storage.getAll(KEYS.USERS);
   if (users.length === 0) {
     storage.create(KEYS.USERS, {
