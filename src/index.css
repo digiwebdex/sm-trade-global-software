@@ -80,17 +80,23 @@
     padding: 0 !important;
   }
   .document-preview-wrapper {
-    width: 100% !important;
-    max-width: 100% !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
     box-shadow: none !important;
     margin: 0 !important;
-    min-height: 100vh !important;
-    height: 100vh !important;
+    min-height: 297mm !important;
+    height: 297mm !important;
+    max-height: 297mm !important;
+    overflow: hidden !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid-page !important;
   }
   .document-border {
     border: none !important;
-    min-height: 100vh !important;
-    height: 100vh !important;
+    min-height: 297mm !important;
+    height: 297mm !important;
+    max-height: 297mm !important;
+    overflow: hidden !important;
   }
   @page {
     size: A4;
