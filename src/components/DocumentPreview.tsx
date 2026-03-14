@@ -303,7 +303,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
           </div>
 
           {/* ===== THANK YOU MESSAGE ===== */}
-          <div style={{ textAlign: 'center', padding: '8px 35px', fontSize: '12px', color: ORANGE, fontStyle: 'italic' }}>
+          <div style={{ textAlign: 'center', padding: '4px 35px', fontSize: '12px', color: ORANGE, fontStyle: 'italic' }}>
             Thank you for staying with us.
           </div>
 
