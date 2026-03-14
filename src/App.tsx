@@ -15,6 +15,7 @@ import ChallansPage from "@/pages/ChallansPage";
 import PurchaseOrdersPage from "@/pages/PurchaseOrdersPage";
 import UsersPage from "@/pages/UsersPage";
 import SettingsPage from "@/pages/SettingsPage";
+import VerifyPage from "@/pages/VerifyPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,6 +43,7 @@ function AppRoutes() {
       <Route path="/challans/:action" element={<ProtectedRoute><ChallansPage /></ProtectedRoute>} />
       <Route path="/users" element={<ProtectedRoute><UsersPage /></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+      <Route path="/verify/:type/:docId" element={<VerifyPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
