@@ -120,11 +120,11 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
               </div>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: NAVY, margin: 0, fontFamily: "'Arial Black', 'Helvetica', sans-serif" }}>
+              <h2 style={{ fontSize: '36px', fontWeight: '900', color: NAVY, margin: 0, fontFamily: "'Arial Black', 'Helvetica', sans-serif", letterSpacing: '2px', lineHeight: 1 }}>
                 {config.label}
               </h2>
               <p style={{ 
-                color: ORANGE, fontSize: '14px', fontWeight: 'bold', marginTop: '6px', margin: '6px 0 0'
+                color: ORANGE, fontSize: '14px', fontWeight: 'bold', margin: '2px 0 0', lineHeight: 1
               }}>
                 {documentNumber}
               </p>
