@@ -119,7 +119,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                 </p>
               </div>
             </div>
-            <div style={{ marginLeft: '24px', minWidth: '220px', textAlign: 'left' }}>
+            <div style={{ minWidth: '220px', textAlign: 'right' }}>
               <h2 style={{
                 fontSize: '36px',
                 fontWeight: '900',
