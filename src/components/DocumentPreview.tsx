@@ -120,9 +120,9 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                 <h2 style={{
-                  fontSize: '32px',
+                  fontSize: type === 'invoice' ? '32px' : '24px',
                   fontWeight: '900',
                   color: NAVY,
                   margin: 0,
@@ -130,8 +130,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   letterSpacing: '0px',
                   lineHeight: 1.05,
                   whiteSpace: 'nowrap',
-                  textAlign: 'justify',
-                  textAlignLast: 'justify',
+                  textAlign: 'right',
                 }}>
                   {config.label.split('').join('\u200A')}
                 </h2>
@@ -142,8 +141,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   margin: '3px 0 0',
                   lineHeight: 1.1,
                   whiteSpace: 'nowrap',
-                  textAlign: 'justify',
-                  textAlignLast: 'justify',
+                  textAlign: 'right',
                 }}>
                   {documentNumber}
                 </p>
