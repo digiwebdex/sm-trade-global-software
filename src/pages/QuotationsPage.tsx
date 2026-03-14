@@ -223,7 +223,7 @@ function QuotationView({ id, onBack }: { id: string; onBack: () => void }) {
         </Badge>
         <Button onClick={() => printDocument(q.quotationNumber)} variant="outline"><Printer className="h-4 w-4 mr-2" /> Print / PDF</Button>
       </div>
-      <DocumentPreview type="quotation" documentNumber={q.quotationNumber} date={q.date} customerName={q.customerName} customerAddress={q.customerAddress} customerPhone={q.customerPhone} items={q.items} totalAmount={q.totalAmount} notes={q.notes} amountInWords={q.amountInWords} status={q.status} />
+      <DocumentPreview type="quotation" documentNumber={q.quotationNumber} date={q.date} customerName={q.customerName} customerAddress={q.customerAddress} customerPhone={q.customerPhone} items={q.items} totalAmount={q.totalAmount} notes={q.notes} amountInWords={q.amountInWords} status={q.status} signatureReceived={q.signatureReceived} signaturePrepared={q.signaturePrepared} signatureAuthorize={q.signatureAuthorize} />
     </div>
   );
 }
