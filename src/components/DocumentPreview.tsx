@@ -128,15 +128,6 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
               }}>
                 {documentNumber}
               </p>
-              {/* Status Badge */}
-              {props.status && (
-                <div style={{
-                  backgroundColor: statusInfo.bg, color: statusInfo.color, padding: '4px 16px', borderRadius: '20px',
-                  fontSize: '12px', fontWeight: '600', display: 'inline-block', marginTop: '6px',
-                }}>
-                  {statusInfo.label}
-                </div>
-              )}
               {isChallan && orderNo && (
                 <p style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}>Order No. {orderNo}</p>
               )}
