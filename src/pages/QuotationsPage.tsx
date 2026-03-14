@@ -125,9 +125,9 @@ function QuotationForm({ editId, onDone }: { editId?: string; onDone: () => void
     validUntil: existing?.validUntil || '',
     notes: existing?.notes || '',
     amountInWords: existing?.amountInWords || '',
-    signatureReceived: (existing as any)?.signatureReceived || '',
-    signaturePrepared: (existing as any)?.signaturePrepared || '',
-    signatureAuthorize: (existing as any)?.signatureAuthorize || '',
+    signatureReceived: existing?.signatureReceived || '',
+    signaturePrepared: existing?.signaturePrepared || '',
+    signatureAuthorize: existing?.signatureAuthorize || '',
   });
 
   const selectCustomer = (id: string) => {
