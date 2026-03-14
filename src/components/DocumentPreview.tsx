@@ -340,7 +340,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
             display: 'flex', justifyContent: 'center', alignItems: 'center',
             position: 'relative',
           }}>
-            <span>{settings.phone}, +8802244446664</span>
+            <span>+8802224446664, +8801867666888, +8801619959625, +8801619959626</span>
             {qrDataUrl && (
               <img src={qrDataUrl} alt="QR Code" style={{ position: 'absolute', right: '25px', width: '48px', height: '48px', borderRadius: '3px', top: '-30px' }} />
             )}
