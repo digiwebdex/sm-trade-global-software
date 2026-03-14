@@ -195,7 +195,7 @@ function QuotationForm({ editId, onDone }: { editId?: string; onDone: () => void
               <label className="text-sm font-medium mb-2 block">Signatures</label>
               <div className="grid grid-cols-3 gap-3">
                 {([['signatureReceived','Received by'],['signaturePrepared','Prepared by'],['signatureAuthorize','Authorize by']] as const).map(([key, label]) => (
-                  <SignatureUploadField key={key} label={label} value={(form as any)[key]} onChange={(v) => setForm({ ...form, [key]: v })} />
+                  <SignatureUploadField key={key} label={label} value={form[key]} onChange={(v) => setForm({ ...form, [key]: v })} />
                 ))}
               </div>
             </div>
