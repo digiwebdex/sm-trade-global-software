@@ -334,7 +334,7 @@ function InvoiceView({ id, onBack }: { id: string; onBack: () => void }) {
         }>
           {inv.status === 'sent' ? 'Due' : inv.status === 'partial' ? 'Partial' : inv.status.charAt(0).toUpperCase() + inv.status.slice(1)}
         </Badge>
-        <Button onClick={printDocument} variant="outline"><Printer className="h-4 w-4 mr-2" /> Print / PDF</Button>
+        <Button onClick={() => printDocument(inv.invoiceNumber)} variant="outline"><Printer className="h-4 w-4 mr-2" /> Print / PDF</Button>
       </div>
       <DocumentPreview 
         type="invoice" 

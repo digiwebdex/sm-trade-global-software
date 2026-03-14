@@ -209,7 +209,7 @@ function POView({ id, onBack }: { id: string; onBack: () => void }) {
         <Badge variant="outline" className={o.status === 'received' ? 'bg-emerald-100 text-emerald-700' : o.status === 'sent' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}>
           {o.status.charAt(0).toUpperCase() + o.status.slice(1)}
         </Badge>
-        <Button onClick={printDocument} variant="outline"><Printer className="h-4 w-4 mr-2" /> Print / PDF</Button>
+        <Button onClick={() => printDocument(o.poNumber)} variant="outline"><Printer className="h-4 w-4 mr-2" /> Print / PDF</Button>
       </div>
       <DocumentPreview type="purchaseOrder" documentNumber={o.poNumber} date={o.date} customerName={o.supplierName} customerAddress={o.supplierAddress} customerPhone={o.supplierPhone} supplierName={o.supplierName} supplierAddress={o.supplierAddress} items={o.items} totalAmount={o.totalAmount} notes={o.notes} />
     </div>

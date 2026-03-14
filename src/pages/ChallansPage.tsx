@@ -216,7 +216,7 @@ function ChallanView({ id, onBack }: { id: string; onBack: () => void }) {
         <Badge variant="outline" className={c.status === 'delivered' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'}>
           {c.status.charAt(0).toUpperCase() + c.status.slice(1)}
         </Badge>
-        <Button onClick={printDocument} variant="outline"><Printer className="h-4 w-4 mr-2" /> Print / PDF</Button>
+        <Button onClick={() => printDocument(c.challanNumber)} variant="outline"><Printer className="h-4 w-4 mr-2" /> Print / PDF</Button>
       </div>
       <DocumentPreview type="challan" documentNumber={c.challanNumber} date={c.date} customerName={c.customerName} customerAddress={c.customerAddress} customerPhone={c.customerPhone} challanItems={c.items} totalQuantity={c.totalQuantity} orderNo={c.orderNo} notes={c.notes} status={c.status} />
     </div>

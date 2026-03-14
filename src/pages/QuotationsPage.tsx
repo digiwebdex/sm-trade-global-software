@@ -221,7 +221,7 @@ function QuotationView({ id, onBack }: { id: string; onBack: () => void }) {
         <Badge variant="outline" className={q.status === 'accepted' ? 'bg-emerald-100 text-emerald-700' : q.status === 'rejected' ? 'bg-red-100 text-red-700' : q.status === 'sent' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}>
           {q.status.charAt(0).toUpperCase() + q.status.slice(1)}
         </Badge>
-        <Button onClick={printDocument} variant="outline"><Printer className="h-4 w-4 mr-2" /> Print / PDF</Button>
+        <Button onClick={() => printDocument(q.quotationNumber)} variant="outline"><Printer className="h-4 w-4 mr-2" /> Print / PDF</Button>
       </div>
       <DocumentPreview type="quotation" documentNumber={q.quotationNumber} date={q.date} customerName={q.customerName} customerAddress={q.customerAddress} customerPhone={q.customerPhone} items={q.items} totalAmount={q.totalAmount} notes={q.notes} amountInWords={q.amountInWords} status={q.status} />
     </div>
