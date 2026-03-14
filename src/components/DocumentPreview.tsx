@@ -324,25 +324,25 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
 
           {/* ===== FOOTER ===== */}
           <div style={{ 
-            borderTop: `2px solid ${ORANGE}`, padding: '6px 35px 0', fontSize: '10px', color: '#555',
+            borderTop: '2px solid #aaa', padding: '6px 35px 0', fontSize: '10px', color: '#555',
           }}>
             <div style={{ textAlign: 'center' }}>
               <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', marginBottom: '2px' }}>
-                <span><span style={{ color: '#2563eb' }}>✉</span> {settings.email}</span>
-                <span><span style={{ color: '#16a34a' }}>🌐</span> {settings.website}</span>
+                <span>{settings.email}</span>
+                <span>{settings.website}</span>
               </div>
-              <p style={{ margin: '1px 0' }}><span style={{ color: '#dc2626' }}>📍</span> Address : House # 7, Road # 19/A, Sector # 4, Uttara, Dhaka-1230</p>
-              <p style={{ margin: '1px 0' }}><span style={{ color: '#dc2626' }}>📍</span> B-25/4, Al-Baraka Super Market, Office # 9-10, Mojidpur Road, Savar, Dhaka-1340</p>
+              <p style={{ margin: '1px 0' }}>Address : House # 7, Road # 19/A, Sector # 4, Uttara, Dhaka-1230</p>
+              <p style={{ margin: '1px 0' }}>B-25/4, Al-Baraka Super Market, Office # 9-10, Mojidpur Road, Savar, Dhaka-1340</p>
             </div>
           </div>
           {/* Phone bar with QR */}
           <div style={{ 
-            backgroundColor: '#e5e7eb', padding: '4px 35px', fontSize: '10px', color: '#555',
+            padding: '4px 35px', fontSize: '10px', color: '#555',
             display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '24px',
             position: 'relative',
           }}>
-            <span><span style={{ color: '#16a34a' }}>📞</span> {settings.phone}</span>
-            <span><span style={{ color: '#2563eb' }}>📠</span> +8802244446664</span>
+            <span>{settings.phone}</span>
+            <span>+8802244446664</span>
             {qrDataUrl && (
               <img src={qrDataUrl} alt="QR Code" style={{ position: 'absolute', right: '25px', width: '48px', height: '48px', borderRadius: '3px', top: '-30px' }} />
             )}
