@@ -84,12 +84,13 @@
     max-width: 100% !important;
     box-shadow: none !important;
     margin: 0 !important;
-    min-height: auto !important;
-    height: auto !important;
+    min-height: 100vh !important;
+    height: 100vh !important;
   }
   .document-border {
     border: none !important;
-    min-height: auto !important;
+    min-height: 100vh !important;
+    height: 100vh !important;
   }
   @page {
     size: A4;
