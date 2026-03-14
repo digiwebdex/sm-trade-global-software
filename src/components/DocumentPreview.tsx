@@ -82,7 +82,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
   const statusConfig: Record<string, { color: string; bg: string; label: string }> = {
     paid: { color: GREEN, bg: '#dcfce7', label: 'Paid' },
     partial: { color: ORANGE, bg: '#fff7ed', label: 'Partial' },
-    sent: { color: '#2563eb', bg: '#dbeafe', label: 'Due' },
+    sent: { color: '#dc2626', bg: '#fef2f2', label: 'Unpaid' },
     draft: { color: '#6b7280', bg: '#f3f4f6', label: 'Draft' },
     accepted: { color: GREEN, bg: '#dcfce7', label: 'Accepted' },
     rejected: { color: '#dc2626', bg: '#fef2f2', label: 'Rejected' },
