@@ -101,21 +101,21 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
         {/* ===== HEADER ===== */}
         <div style={{ padding: '24px 35px 16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
               <div style={{ 
-                width: '68px', height: '68px', borderRadius: '50%', 
-                border: `2.5px solid ${NAVY}`, 
+                width: '72px', height: '72px', borderRadius: '50%', 
+                border: '2.5px solid #2B5797', 
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 flexShrink: 0, overflow: 'hidden', backgroundColor: '#fff'
               }}>
-                <img src={logoImg} alt="Logo" style={{ width: '52px', height: '52px', objectFit: 'contain' }} />
+                <img src={logoImg} alt="Logo" style={{ width: '54px', height: '54px', objectFit: 'contain' }} />
               </div>
               <div>
-                <h1 style={{ fontSize: '22px', fontWeight: 'bold', color: NAVY, margin: 0, letterSpacing: '1px', fontFamily: "'Times New Roman', serif" }}>
+                <h1 style={{ fontSize: '26px', fontWeight: 'bold', color: '#1B3A5C', margin: 0, letterSpacing: '0.5px', fontFamily: "'Times New Roman', 'Georgia', serif" }}>
                   S. M. TRADE INTERNATIONAL
                 </h1>
-                <p style={{ fontSize: '12px', color: NAVY, margin: '3px 0 0', fontWeight: '400', letterSpacing: '0.3px' }}>
-                  1st Class Govt. Contractor, Supplier & Importer
+                <p style={{ fontSize: '13.5px', color: '#333', margin: '4px 0 0', fontWeight: 'normal', fontFamily: "'Times New Roman', 'Georgia', serif", letterSpacing: '0.2px' }}>
+                  1st Class Govt. Contractor, Supplier &amp; Importer
                 </p>
               </div>
             </div>
