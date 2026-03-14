@@ -280,7 +280,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
         )}
 
         {/* ===== BOTTOM SECTION (always at page bottom) ===== */}
-        <div style={{ marginTop: 'auto' }}>
+        <div style={{ marginTop: 'auto', breakInside: 'avoid', pageBreakInside: 'avoid' }}>
           {/* ===== SIGNATURE SECTION ===== */}
           <div style={{ padding: '10px 35px 8px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
             {[
