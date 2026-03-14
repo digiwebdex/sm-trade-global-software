@@ -120,7 +120,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <div style={{ textAlign: 'center' }}>
+              <div style={{ textAlign: 'right' }}>
                 <h2 style={{
                   fontSize: '36px',
                   fontWeight: '900',
@@ -128,6 +128,8 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   margin: 0,
                   fontFamily: "Arial, Helvetica, sans-serif",
                   letterSpacing: '8px',
+                  paddingRight: '-8px',
+                  marginRight: '-8px',
                   lineHeight: 1.05,
                   whiteSpace: 'nowrap',
                 }}>
