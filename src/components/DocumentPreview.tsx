@@ -139,8 +139,10 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   fontWeight: 'bold',
                   margin: '3px 0 0',
                   lineHeight: 1.1,
-                  letterSpacing: '0.2px',
                   whiteSpace: 'nowrap',
+                  display: 'block',
+                  textAlign: 'justify',
+                  textAlignLast: 'justify' as any,
                 }}>
                   {documentNumber}
                 </p>
