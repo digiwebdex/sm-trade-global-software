@@ -338,30 +338,34 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
 
         {/* ===== FOOTER ===== */}
         <div style={{ 
-          borderTop: `2px solid ${ORANGE}`, padding: '10px 35px', fontSize: '10px', color: '#666',
-          backgroundColor: '#fafafa', position: 'relative',
+          borderTop: `2px solid ${ORANGE}`, padding: '10px 35px 0', fontSize: '10px', color: '#555',
+          position: 'relative',
         }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '18px', marginBottom: '3px' }}>
-              <span>✉ {settings.email}</span>
-              <span>🌐 {settings.website}</span>
+          <div style={{ textAlign: 'center', paddingRight: '80px' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', marginBottom: '4px' }}>
+              <span><span style={{ color: '#2563eb' }}>✉</span> {settings.email}</span>
+              <span><span style={{ color: '#16a34a' }}>🌐</span> {settings.website}</span>
             </div>
-            <p style={{ margin: '2px 0' }}>📍 Address : House # 7, Road # 19/A, Sector # 4, Uttara, Dhaka-1230</p>
-            <p style={{ margin: '2px 0' }}>📍 B-25/4, Al-Baraka Super Market, Office # 9-10, Mojidpur Road, Savar, Dhaka-1340</p>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '18px', marginTop: '3px' }}>
-              <span>📞 {settings.phone}</span>
-              <span>📠 +8802244446664</span>
-            </div>
+            <p style={{ margin: '2px 0' }}><span style={{ color: '#dc2626' }}>📍</span> Address : House # 7, Road # 19/A, Sector # 4, Uttara, Dhaka-1230</p>
+            <p style={{ margin: '2px 0' }}><span style={{ color: '#dc2626' }}>📍</span> B-25/4, Al-Baraka Super Market, Office # 9-10, Mojidpur Road, Savar, Dhaka-1340</p>
           </div>
           {/* QR Code */}
-          <div style={{ position: 'absolute', right: '25px', top: '50%', transform: 'translateY(-50%)', textAlign: 'center' }}>
+          <div style={{ position: 'absolute', right: '25px', top: '8px', textAlign: 'center' }}>
             {qrDataUrl ? (
-              <img src={qrDataUrl} alt="QR Code" style={{ width: '60px', height: '60px', borderRadius: '3px' }} />
+              <img src={qrDataUrl} alt="QR Code" style={{ width: '58px', height: '58px', borderRadius: '3px' }} />
             ) : (
-              <div style={{ width: '60px', height: '60px', backgroundColor: '#f0f0f0', borderRadius: '3px' }} />
+              <div style={{ width: '58px', height: '58px', backgroundColor: '#f0f0f0', borderRadius: '3px' }} />
             )}
             <p style={{ fontSize: '6px', margin: '2px 0 0', color: '#999' }}>Scan for details</p>
           </div>
+        </div>
+        {/* Phone bar */}
+        <div style={{ 
+          backgroundColor: '#e5e7eb', padding: '5px 35px', fontSize: '10px', color: '#555',
+          display: 'flex', justifyContent: 'center', gap: '24px',
+        }}>
+          <span><span style={{ color: '#16a34a' }}>📞</span> {settings.phone}</span>
+          <span><span style={{ color: '#2563eb' }}>📠</span> +8802244446664</span>
         </div>
       </div>
     </div>
