@@ -137,7 +137,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                 </h2>
                 <p style={{
                   color: ORANGE,
-                  fontSize: '15px',
+                  fontSize: '13px',
                   fontWeight: 'bold',
                   margin: '3px 0 0',
                   lineHeight: 1.1,
