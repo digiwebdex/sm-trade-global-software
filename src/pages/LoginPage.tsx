@@ -13,13 +13,23 @@ export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (login(username, password)) {
-      toast.success('Login successful!');
-      navigate('/dashboard');
-    } else {
-      toast.error('Invalid username or password');
+    setLoading(true);
+    try {
+      const success = await login(username, password);
+      if (success) {
+        toast.success('Login successful!');
+        navigate('/dashboard');
+      } else {
+        toast.error('Invalid username or password');
+      }
+    } catch {
+      toast.error('Login failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
