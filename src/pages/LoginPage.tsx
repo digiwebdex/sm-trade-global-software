@@ -13,13 +13,23 @@ export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (login(username, password)) {
-      toast.success('Login successful!');
-      navigate('/dashboard');
-    } else {
-      toast.error('Invalid username or password');
+    setLoading(true);
+    try {
+      const success = await login(username, password);
+      if (success) {
+        toast.success('Login successful!');
+        navigate('/dashboard');
+      } else {
+        toast.error('Invalid username or password');
+      }
+    } catch {
+      toast.error('Login failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -62,8 +72,8 @@ export default function LoginPage() {
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground">
-              Sign In
+            <Button type="submit" disabled={loading} className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground">
+              {loading ? 'Signing in...' : 'Sign In'}
             </Button>
           </form>
           <p className="mt-4 text-xs text-center text-muted-foreground">
