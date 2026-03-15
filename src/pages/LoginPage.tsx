@@ -76,9 +76,6 @@ export default function LoginPage() {
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>
           </form>
-          <p className="mt-4 text-xs text-center text-muted-foreground">
-            Default: admin / admin123
-          </p>
         </CardContent>
       </Card>
     </div>
