@@ -72,8 +72,8 @@ export default function LoginPage() {
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground">
-              Sign In
+            <Button type="submit" disabled={loading} className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground">
+              {loading ? 'Signing in...' : 'Sign In'}
             </Button>
           </form>
           <p className="mt-4 text-xs text-center text-muted-foreground">
