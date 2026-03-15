@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User } from '@/types';
-import { storage, KEYS, initializeData } from '@/utils/storage';
+import { api } from '@/utils/api';
 
 interface AuthContextType {
   user: User | null;
-  login: (username: string, password: string) => boolean;
+  login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
   isAdmin: boolean;
 }
@@ -15,22 +15,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    initializeData();
     const saved = localStorage.getItem('sm_current_user');
     if (saved) {
       try { setUser(JSON.parse(saved)); } catch { /* ignore */ }
     }
   }, []);
 
-  const login = (username: string, password: string): boolean => {
-    const users = storage.getAll<User>(KEYS.USERS);
-    const found = users.find(u => u.username === username && u.password === password);
-    if (found) {
-      setUser(found);
-      localStorage.setItem('sm_current_user', JSON.stringify(found));
-      return true;
+  const login = async (username: string, password: string): Promise<boolean> => {
+    try {
+      const found = await api.login(username, password) as User;
+      if (found) {
+        setUser(found);
+        localStorage.setItem('sm_current_user', JSON.stringify(found));
+        return true;
+      }
+      return false;
+    } catch {
+      // Fallback to localStorage for Lovable preview
+      const { storage, KEYS, initializeData } = await import('@/utils/storage');
+      initializeData();
+      const users = storage.getAll<User>(KEYS.USERS);
+      const found = users.find(u => u.username === username && u.password === password);
+      if (found) {
+        setUser(found);
+        localStorage.setItem('sm_current_user', JSON.stringify(found));
+        return true;
+      }
+      return false;
     }
-    return false;
   };
 
   const logout = () => {
