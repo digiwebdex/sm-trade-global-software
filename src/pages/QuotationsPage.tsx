@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { storage, KEYS } from '@/utils/storage';
+import { api } from '@/utils/api';
 import { generateId, generateDocNumber } from '@/utils/documentNumbers';
 import { Quotation, LineItem, Customer } from '@/types';
 import DocumentPreview, { printDocument } from '@/components/DocumentPreview';
@@ -23,7 +23,12 @@ export default function QuotationsPage() {
   const [quotations, setQuotations] = useState<Quotation[]>([]);
   const [search, setSearch] = useState('');
 
-  const load = () => setQuotations(storage.getAll<Quotation>(KEYS.QUOTATIONS));
+  const load = async () => {
+    try {
+      const data = await api.getQuotations() as Quotation[];
+      setQuotations(data);
+    } catch (err) { toast.error('Failed to load quotations'); }
+  };
   useEffect(() => { load(); }, [action]);
 
   if (action === 'new' || action?.startsWith('edit-')) {
@@ -35,8 +40,14 @@ export default function QuotationsPage() {
 
   const filtered = quotations.filter(q => q.quotationNumber.toLowerCase().includes(search.toLowerCase()) || q.customerName.toLowerCase().includes(search.toLowerCase()));
 
-  const handleDelete = (id: string) => {
-    if (confirm('Delete this quotation?')) { storage.remove<Quotation>(KEYS.QUOTATIONS, id); toast.success('Deleted'); load(); }
+  const handleDelete = async (id: string) => {
+    if (confirm('Delete this quotation?')) {
+      try {
+        await api.deleteQuotation(id);
+        toast.success('Deleted');
+        load();
+      } catch (err) { toast.error('Failed to delete'); }
+    }
   };
 
   const statusBadge = (status: string) => {
@@ -109,26 +120,67 @@ export default function QuotationsPage() {
     </div>
   );
 }
+
 function QuotationForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
-  const customers = storage.getAll<Customer>(KEYS.CUSTOMERS);
-  const existing = editId ? storage.getById<Quotation>(KEYS.QUOTATIONS, editId) : null;
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [existing, setExisting] = useState<Quotation | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const [form, setForm] = useState({
-    customerId: existing?.customerId || '',
-    customerName: existing?.customerName || '',
-    customerAddress: existing?.customerAddress || '',
-    customerPhone: existing?.customerPhone || '',
-    date: existing?.date || new Date().toISOString().split('T')[0],
-    quotationNumber: existing?.quotationNumber || generateDocNumber('QTS', storage.getAll<Quotation>(KEYS.QUOTATIONS).map(q => q.quotationNumber)),
-    items: existing?.items || [emptyItem()],
-    status: existing?.status || 'draft' as 'draft' | 'sent' | 'accepted' | 'rejected',
-    validUntil: existing?.validUntil || '',
-    notes: existing?.notes || '',
-    amountInWords: existing?.amountInWords || '',
-    signatureReceived: existing?.signatureReceived || '',
-    signaturePrepared: existing?.signaturePrepared || '',
-    signatureAuthorize: existing?.signatureAuthorize || '',
+    customerId: '',
+    customerName: '',
+    customerAddress: '',
+    customerPhone: '',
+    date: new Date().toISOString().split('T')[0],
+    quotationNumber: '',
+    items: [emptyItem()],
+    status: 'draft' as 'draft' | 'sent' | 'accepted' | 'rejected',
+    validUntil: '',
+    notes: '',
+    amountInWords: '',
+    signatureReceived: '',
+    signaturePrepared: '',
+    signatureAuthorize: '',
   });
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        const [custs, quots] = await Promise.all([
+          api.getCustomers() as Promise<Customer[]>,
+          api.getQuotations() as Promise<Quotation[]>,
+        ]);
+        setCustomers(custs);
+
+        let editData: Quotation | null = null;
+        if (editId) {
+          editData = await api.getQuotation(editId) as Quotation;
+          setExisting(editData);
+        }
+
+        setForm({
+          customerId: editData?.customerId || '',
+          customerName: editData?.customerName || '',
+          customerAddress: editData?.customerAddress || '',
+          customerPhone: editData?.customerPhone || '',
+          date: editData?.date || new Date().toISOString().split('T')[0],
+          quotationNumber: editData?.quotationNumber || generateDocNumber('QTS', quots.map(q => q.quotationNumber)),
+          items: editData?.items || [emptyItem()],
+          status: editData?.status || 'draft',
+          validUntil: editData?.validUntil || '',
+          notes: editData?.notes || '',
+          amountInWords: editData?.amountInWords || '',
+          signatureReceived: editData?.signatureReceived || '',
+          signaturePrepared: editData?.signaturePrepared || '',
+          signatureAuthorize: editData?.signatureAuthorize || '',
+        });
+      } catch (err) { toast.error('Failed to load data'); }
+      setLoading(false);
+    };
+    init();
+  }, [editId]);
+
+  if (loading) return <div className="p-8 text-center text-muted-foreground">Loading...</div>;
 
   const selectCustomer = (id: string) => {
     const c = customers.find(c => c.id === id);
@@ -144,13 +196,15 @@ function QuotationForm({ editId, onDone }: { editId?: string; onDone: () => void
 
   const totalAmount = form.items.reduce((s, i) => s + i.total, 0);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!form.customerName) { toast.error('Select a customer'); return; }
     const data: Quotation = { ...form, id: editId || generateId(), totalAmount, createdAt: existing?.createdAt || new Date().toISOString() };
-    if (editId) storage.update<Quotation>(KEYS.QUOTATIONS, editId, data);
-    else storage.create<Quotation>(KEYS.QUOTATIONS, data);
-    toast.success(editId ? 'Quotation updated' : 'Quotation created');
-    onDone();
+    try {
+      if (editId) await api.updateQuotation(editId, data);
+      else await api.createQuotation(data);
+      toast.success(editId ? 'Quotation updated' : 'Quotation created');
+      onDone();
+    } catch (err) { toast.error('Failed to save quotation'); }
   };
 
   return (
@@ -190,7 +244,6 @@ function QuotationForm({ editId, onDone }: { editId?: string; onDone: () => void
               <div className="text-right mt-3 text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
             </div>
             <div><label className="text-sm font-medium">Amount in Words</label><Input value={form.amountInWords} onChange={(e) => setForm({ ...form, amountInWords: e.target.value })} placeholder="Auto-generated if empty" /></div>
-            {/* Signature Uploads */}
             <div>
               <label className="text-sm font-medium mb-2 block">Signatures</label>
               <div className="grid grid-cols-3 gap-3">
@@ -199,7 +252,6 @@ function QuotationForm({ editId, onDone }: { editId?: string; onDone: () => void
                 ))}
               </div>
             </div>
-
             <div><label className="text-sm font-medium">Notes</label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
             <Button onClick={handleSave} className="w-full bg-secondary hover:bg-secondary/90">Save Quotation</Button>
           </CardContent>
@@ -212,7 +264,14 @@ function QuotationForm({ editId, onDone }: { editId?: string; onDone: () => void
 
 function QuotationView({ id, onBack }: { id: string; onBack: () => void }) {
   const navigate = useNavigate();
-  const q = storage.getById<Quotation>(KEYS.QUOTATIONS, id);
+  const [q, setQ] = useState<Quotation | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.getQuotation(id).then((d: any) => { setQ(d); setLoading(false); }).catch(() => setLoading(false));
+  }, [id]);
+
+  if (loading) return <div className="p-8 text-center text-muted-foreground">Loading...</div>;
   if (!q) return <div>Not found</div>;
 
   const handleShare = async () => {

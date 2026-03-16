@@ -5,8 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { storage, KEYS } from '@/utils/storage';
-import { generateId } from '@/utils/documentNumbers';
+import { api } from '@/utils/api';
 import { User } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -21,27 +20,34 @@ export default function UsersPage() {
   const [form, setForm] = useState(emptyUser);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const load = () => setUsers(storage.getAll<User>(KEYS.USERS));
+  const load = async () => {
+    try {
+      const data = await api.getUsers() as User[];
+      setUsers(data);
+    } catch (err) { toast.error('Failed to load users'); }
+  };
   useEffect(() => { load(); }, []);
 
   if (!isAdmin) return <div className="p-8 text-center text-muted-foreground">Admin access required</div>;
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!form.username || !form.name) { toast.error('Username and name are required'); return; }
-    if (editing) {
-      const updates: any = { ...form };
-      if (!updates.password) delete updates.password;
-      storage.update<User>(KEYS.USERS, editing.id, updates);
-      toast.success('User updated');
-    } else {
-      if (!form.password) { toast.error('Password is required'); return; }
-      storage.create<User>(KEYS.USERS, { ...form, id: generateId(), createdAt: new Date().toISOString() });
-      toast.success('User added');
-    }
-    setForm(emptyUser);
-    setEditing(null);
-    setDialogOpen(false);
-    load();
+    try {
+      if (editing) {
+        const updates: any = { ...form };
+        if (!updates.password) delete updates.password;
+        await api.updateUser(editing.id, updates);
+        toast.success('User updated');
+      } else {
+        if (!form.password) { toast.error('Password is required'); return; }
+        await api.createUser(form);
+        toast.success('User added');
+      }
+      setForm(emptyUser);
+      setEditing(null);
+      setDialogOpen(false);
+      load();
+    } catch (err) { toast.error('Failed to save user'); }
   };
 
   const handleEdit = (u: User) => {
@@ -50,12 +56,13 @@ export default function UsersPage() {
     setDialogOpen(true);
   };
 
-  const handleDelete = (id: string) => {
-    if (id === 'admin-1') { toast.error('Cannot delete the default admin'); return; }
+  const handleDelete = async (id: string) => {
     if (confirm('Delete this user?')) {
-      storage.remove<User>(KEYS.USERS, id);
-      toast.success('User deleted');
-      load();
+      try {
+        await api.deleteUser(id);
+        toast.success('User deleted');
+        load();
+      } catch (err) { toast.error('Failed to delete user'); }
     }
   };
 

@@ -4,8 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { storage, KEYS } from '@/utils/storage';
-import { generateId } from '@/utils/documentNumbers';
+import { api } from '@/utils/api';
 import { Product } from '@/types';
 import { toast } from 'sonner';
 import { Plus, Search, Pencil, Trash2 } from 'lucide-react';
@@ -19,26 +18,33 @@ export default function ProductsPage() {
   const [form, setForm] = useState(emptyProduct);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const load = () => setProducts(storage.getAll<Product>(KEYS.PRODUCTS));
+  const load = async () => {
+    try {
+      const data = await api.getProducts() as Product[];
+      setProducts(data);
+    } catch (err) { toast.error('Failed to load products'); }
+  };
   useEffect(() => { load(); }, []);
 
   const filtered = products.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!form.name) { toast.error('Name is required'); return; }
-    if (editing) {
-      storage.update<Product>(KEYS.PRODUCTS, editing.id, form);
-      toast.success('Product updated');
-    } else {
-      storage.create<Product>(KEYS.PRODUCTS, { ...form, id: generateId(), createdAt: new Date().toISOString() });
-      toast.success('Product added');
-    }
-    setForm(emptyProduct);
-    setEditing(null);
-    setDialogOpen(false);
-    load();
+    try {
+      if (editing) {
+        await api.updateProduct(editing.id, form);
+        toast.success('Product updated');
+      } else {
+        await api.createProduct(form);
+        toast.success('Product added');
+      }
+      setForm(emptyProduct);
+      setEditing(null);
+      setDialogOpen(false);
+      load();
+    } catch (err) { toast.error('Failed to save product'); }
   };
 
   const handleEdit = (p: Product) => {
@@ -47,11 +53,13 @@ export default function ProductsPage() {
     setDialogOpen(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Delete this product?')) {
-      storage.remove<Product>(KEYS.PRODUCTS, id);
-      toast.success('Product deleted');
-      load();
+      try {
+        await api.deleteProduct(id);
+        toast.success('Product deleted');
+        load();
+      } catch (err) { toast.error('Failed to delete product'); }
     }
   };
 

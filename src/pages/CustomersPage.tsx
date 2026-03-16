@@ -4,8 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { storage, KEYS } from '@/utils/storage';
-import { generateId } from '@/utils/documentNumbers';
+import { api } from '@/utils/api';
 import { Customer } from '@/types';
 import { toast } from 'sonner';
 import { Plus, Search, Pencil, Trash2 } from 'lucide-react';
@@ -19,7 +18,12 @@ export default function CustomersPage() {
   const [form, setForm] = useState(emptyCustomer);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const load = () => setCustomers(storage.getAll<Customer>(KEYS.CUSTOMERS));
+  const load = async () => {
+    try {
+      const data = await api.getCustomers() as Customer[];
+      setCustomers(data);
+    } catch (err) { toast.error('Failed to load customers'); }
+  };
   useEffect(() => { load(); }, []);
 
   const filtered = customers.filter(c =>
@@ -28,19 +32,21 @@ export default function CustomersPage() {
     c.phone.includes(search)
   );
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!form.name) { toast.error('Name is required'); return; }
-    if (editing) {
-      storage.update<Customer>(KEYS.CUSTOMERS, editing.id, form);
-      toast.success('Customer updated');
-    } else {
-      storage.create<Customer>(KEYS.CUSTOMERS, { ...form, id: generateId(), createdAt: new Date().toISOString() });
-      toast.success('Customer added');
-    }
-    setForm(emptyCustomer);
-    setEditing(null);
-    setDialogOpen(false);
-    load();
+    try {
+      if (editing) {
+        await api.updateCustomer(editing.id, form);
+        toast.success('Customer updated');
+      } else {
+        await api.createCustomer(form);
+        toast.success('Customer added');
+      }
+      setForm(emptyCustomer);
+      setEditing(null);
+      setDialogOpen(false);
+      load();
+    } catch (err) { toast.error('Failed to save customer'); }
   };
 
   const handleEdit = (c: Customer) => {
@@ -49,11 +55,13 @@ export default function CustomersPage() {
     setDialogOpen(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Delete this customer?')) {
-      storage.remove<Customer>(KEYS.CUSTOMERS, id);
-      toast.success('Customer deleted');
-      load();
+      try {
+        await api.deleteCustomer(id);
+        toast.success('Customer deleted');
+        load();
+      } catch (err) { toast.error('Failed to delete customer'); }
     }
   };
 
