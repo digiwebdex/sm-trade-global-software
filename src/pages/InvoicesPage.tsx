@@ -319,22 +319,54 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
 }
 
 function InvoiceView({ id, onBack }: { id: string; onBack: () => void }) {
+  const navigate = useNavigate();
   const inv = storage.getById<Invoice>(KEYS.INVOICES, id);
   if (!inv) return <div>Invoice not found</div>;
 
+  const handleDownload = () => {
+    document.title = inv.invoiceNumber;
+    window.print();
+    document.title = 'S. M. Trade International';
+  };
+
+  const handleShare = async () => {
+    const shareData = {
+      title: `Invoice ${inv.invoiceNumber}`,
+      text: `Invoice ${inv.invoiceNumber} - ${inv.customerName} - BDT ${inv.totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
+      url: window.location.href,
+    };
+    if (navigator.share) {
+      try { await navigator.share(shareData); } catch {}
+    } else {
+      await navigator.clipboard.writeText(window.location.href);
+      toast.success('Link copied to clipboard!');
+    }
+  };
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4 no-print">
-        <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
-        <h1 className="text-2xl font-bold">Invoice {inv.invoiceNumber}</h1>
-        <Badge variant="outline" className={
-          inv.status === 'paid' ? 'bg-emerald-100 text-emerald-700' : 
-          inv.status === 'partial' ? 'bg-orange-100 text-orange-700' :
-          inv.status === 'sent' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'
-        }>
-          {inv.status === 'sent' ? 'Due' : inv.status === 'partial' ? 'Partial' : inv.status.charAt(0).toUpperCase() + inv.status.slice(1)}
-        </Badge>
-        <Button onClick={() => printDocument(inv.invoiceNumber)} variant="outline"><Printer className="h-4 w-4 mr-2" /> Print / PDF</Button>
+      <div className="no-print">
+        <div className="flex items-center gap-4 mb-4">
+          <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
+          <div>
+            <h1 className="text-2xl font-bold">{inv.invoiceNumber}</h1>
+            <p className="text-sm text-muted-foreground">Invoice Preview</p>
+          </div>
+          <Badge variant="outline" className={
+            inv.status === 'paid' ? 'bg-emerald-100 text-emerald-700' : 
+            inv.status === 'partial' ? 'bg-orange-100 text-orange-700' :
+            inv.status === 'sent' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-600'
+          }>
+            {inv.status === 'sent' ? 'Unpaid' : inv.status === 'partial' ? 'Partial' : inv.status.charAt(0).toUpperCase() + inv.status.slice(1)}
+          </Badge>
+        </div>
+        <div className="flex flex-wrap gap-3 mb-4">
+          <Button onClick={handleDownload} variant="outline" className="gap-2"><Printer className="h-4 w-4" /> Download Invoice</Button>
+          <Button onClick={() => printDocument(inv.invoiceNumber)} variant="outline" className="gap-2"><Printer className="h-4 w-4" /> Print</Button>
+          <Button onClick={handleShare} variant="outline" className="gap-2"><Eye className="h-4 w-4" /> Share</Button>
+          <Button onClick={() => navigate(`/invoices/edit-${id}`)} variant="outline" className="gap-2"><Pencil className="h-4 w-4" /> Quick Edit</Button>
+          <Button onClick={() => navigate(`/invoices/edit-${id}`)} className="bg-secondary hover:bg-secondary/90 gap-2"><Pencil className="h-4 w-4" /> Full Edit</Button>
+        </div>
       </div>
       <DocumentPreview 
         type="invoice" 
