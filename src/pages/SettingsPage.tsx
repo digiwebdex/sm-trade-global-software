@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { storage } from '@/utils/storage';
+import { api } from '@/utils/api';
 import { CompanySettings } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -43,15 +43,33 @@ function SignatureUpload({ label, value, onChange }: { label: string; value?: st
   );
 }
 
+const defaultSettings: CompanySettings = {
+  name: 'S. M. Trade International',
+  tagline: '1st Class Govt. Contractor, Supplier & Importer',
+  address: 'House # 7, Road # 19/A, Sector # 4, Uttara, Dhaka-1230',
+  phone: '+8801886766688',
+  email: 'info@smtradeint.com',
+  website: 'www.smtradeint.com',
+  logo: '',
+};
+
 export default function SettingsPage() {
   const { isAdmin } = useAuth();
-  const [settings, setSettings] = useState<CompanySettings>(storage.getSettings());
+  const [settings, setSettings] = useState<CompanySettings>(defaultSettings);
+
+  useEffect(() => {
+    api.getSettings().then((d: any) => {
+      if (d && d.name) setSettings(d);
+    }).catch(() => {});
+  }, []);
 
   if (!isAdmin) return <div className="p-8 text-center text-muted-foreground">Admin access required</div>;
 
-  const handleSave = () => {
-    storage.saveSettings(settings);
-    toast.success('Company settings saved');
+  const handleSave = async () => {
+    try {
+      await api.updateSettings(settings);
+      toast.success('Company settings saved');
+    } catch (err) { toast.error('Failed to save settings'); }
   };
 
   return (

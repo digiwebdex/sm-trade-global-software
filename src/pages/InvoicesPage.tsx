@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { storage, KEYS } from '@/utils/storage';
+import { api } from '@/utils/api';
 import { generateId, generateDocNumber } from '@/utils/documentNumbers';
 import { Invoice, LineItem, Customer, Payment } from '@/types';
 import DocumentPreview, { printDocument } from '@/components/DocumentPreview';
@@ -17,13 +17,19 @@ import SignatureUploadField from '@/components/SignatureUploadField';
 
 const emptyItem = (): LineItem => ({ id: generateId(), description: '', quantity: 1, unitPrice: 0, total: 0 });
 const emptyPayment = (): Payment => ({ id: generateId(), date: new Date().toISOString().split('T')[0], method: 'Cash', description: '', amount: 0 });
+
 export default function InvoicesPage() {
   const navigate = useNavigate();
   const { action } = useParams();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [search, setSearch] = useState('');
 
-  const load = () => setInvoices(storage.getAll<Invoice>(KEYS.INVOICES));
+  const load = async () => {
+    try {
+      const data = await api.getInvoices() as Invoice[];
+      setInvoices(data);
+    } catch (err) { toast.error('Failed to load invoices'); }
+  };
   useEffect(() => { load(); }, [action]);
 
   if (action === 'new' || action?.startsWith('edit-')) {
@@ -36,11 +42,13 @@ export default function InvoicesPage() {
 
   const filtered = invoices.filter(i => i.invoiceNumber.toLowerCase().includes(search.toLowerCase()) || i.customerName.toLowerCase().includes(search.toLowerCase()));
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Delete this invoice?')) {
-      storage.remove<Invoice>(KEYS.INVOICES, id);
-      toast.success('Invoice deleted');
-      load();
+      try {
+        await api.deleteInvoice(id);
+        toast.success('Invoice deleted');
+        load();
+      } catch (err) { toast.error('Failed to delete invoice'); }
     }
   };
 
@@ -118,27 +126,71 @@ export default function InvoicesPage() {
 }
 
 function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
-  const customers = storage.getAll<Customer>(KEYS.CUSTOMERS);
-  const existing = editId ? storage.getById<Invoice>(KEYS.INVOICES, editId) : null;
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [existing, setExisting] = useState<Invoice | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [allInvoices, setAllInvoices] = useState<Invoice[]>([]);
 
   const [form, setForm] = useState({
-    customerId: existing?.customerId || '',
-    customerName: existing?.customerName || '',
-    customerAddress: existing?.customerAddress || '',
-    customerPhone: existing?.customerPhone || '',
-    customerEmail: existing?.customerEmail || '',
-    date: existing?.date || new Date().toISOString().split('T')[0],
-    invoiceNumber: existing?.invoiceNumber || generateDocNumber('INV', storage.getAll<Invoice>(KEYS.INVOICES).map(i => i.invoiceNumber)),
-    items: existing?.items || [emptyItem()],
-    status: existing?.status || 'draft' as const,
-    tax: existing?.tax || 0,
-    payments: existing?.payments || [],
-    notes: existing?.notes || '',
-    amountInWords: existing?.amountInWords || '',
-    signatureReceived: existing?.signatureReceived || '',
-    signaturePrepared: existing?.signaturePrepared || '',
-    signatureAuthorize: existing?.signatureAuthorize || '',
+    customerId: '',
+    customerName: '',
+    customerAddress: '',
+    customerPhone: '',
+    customerEmail: '',
+    date: new Date().toISOString().split('T')[0],
+    invoiceNumber: '',
+    items: [emptyItem()],
+    status: 'draft' as const,
+    tax: 0,
+    payments: [] as Payment[],
+    notes: '',
+    amountInWords: '',
+    signatureReceived: '',
+    signaturePrepared: '',
+    signatureAuthorize: '',
   });
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        const [custs, invs] = await Promise.all([
+          api.getCustomers() as Promise<Customer[]>,
+          api.getInvoices() as Promise<Invoice[]>,
+        ]);
+        setCustomers(custs);
+        setAllInvoices(invs);
+
+        let editData: Invoice | null = null;
+        if (editId) {
+          editData = await api.getInvoice(editId) as Invoice;
+          setExisting(editData);
+        }
+
+        setForm({
+          customerId: editData?.customerId || '',
+          customerName: editData?.customerName || '',
+          customerAddress: editData?.customerAddress || '',
+          customerPhone: editData?.customerPhone || '',
+          customerEmail: editData?.customerEmail || '',
+          date: editData?.date || new Date().toISOString().split('T')[0],
+          invoiceNumber: editData?.invoiceNumber || generateDocNumber('INV', invs.map(i => i.invoiceNumber)),
+          items: editData?.items || [emptyItem()],
+          status: editData?.status || 'draft',
+          tax: editData?.tax || 0,
+          payments: editData?.payments || [],
+          notes: editData?.notes || '',
+          amountInWords: editData?.amountInWords || '',
+          signatureReceived: editData?.signatureReceived || '',
+          signaturePrepared: editData?.signaturePrepared || '',
+          signatureAuthorize: editData?.signatureAuthorize || '',
+        });
+      } catch (err) { toast.error('Failed to load data'); }
+      setLoading(false);
+    };
+    init();
+  }, [editId]);
+
+  if (loading) return <div className="p-8 text-center text-muted-foreground">Loading...</div>;
 
   const selectCustomer = (id: string) => {
     const c = customers.find(c => c.id === id);
@@ -161,25 +213,25 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
   const subtotal = form.items.reduce((s, i) => s + i.total, 0);
   const grandTotal = subtotal + (form.tax || 0);
   const totalPaid = form.payments.reduce((s, p) => s + p.amount, 0);
-
-  // Auto-detect status
   const autoStatus = totalPaid >= grandTotal && grandTotal > 0 ? 'paid' : totalPaid > 0 ? 'partial' : form.status;
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!form.customerName) { toast.error('Select a customer'); return; }
     if (form.items.every(i => !i.description)) { toast.error('Add at least one item'); return; }
-    const data: Invoice = { 
-      ...form, 
-      id: editId || generateId(), 
+    const data: Invoice = {
+      ...form,
+      id: editId || generateId(),
       totalAmount: subtotal,
       totalPaid,
       status: autoStatus as any,
-      createdAt: existing?.createdAt || new Date().toISOString() 
+      createdAt: existing?.createdAt || new Date().toISOString()
     };
-    if (editId) storage.update<Invoice>(KEYS.INVOICES, editId, data);
-    else storage.create<Invoice>(KEYS.INVOICES, data);
-    toast.success(editId ? 'Invoice updated' : 'Invoice created');
-    onDone();
+    try {
+      if (editId) await api.updateInvoice(editId, data);
+      else await api.createInvoice(data);
+      toast.success(editId ? 'Invoice updated' : 'Invoice created');
+      onDone();
+    } catch (err) { toast.error('Failed to save invoice'); }
   };
 
   return (
@@ -210,7 +262,6 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
               <div><label className="text-sm font-medium">Customer Address</label><Textarea value={form.customerAddress} onChange={(e) => setForm({ ...form, customerAddress: e.target.value })} placeholder="Address" rows={2} /></div>
             </div>
 
-            {/* Line Items */}
             <div>
               <div className="flex justify-between items-center mb-2">
                 <label className="text-sm font-medium">Line Items</label>
@@ -232,12 +283,9 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
               </div>
             </div>
 
-            {/* Tax */}
             <div><label className="text-sm font-medium">Tax Amount</label><Input type="number" value={form.tax} onChange={(e) => setForm({ ...form, tax: parseFloat(e.target.value) || 0 })} placeholder="0.00" /></div>
-            
             <div className="text-right text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
 
-            {/* Payments */}
             <div>
               <div className="flex justify-between items-center mb-2">
                 <label className="text-sm font-medium">Payments</label>
@@ -273,7 +321,6 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
 
             <div><label className="text-sm font-medium">Amount in Words</label><Input value={form.amountInWords} onChange={(e) => setForm({ ...form, amountInWords: e.target.value })} placeholder="Auto-generated if empty" /></div>
             
-            {/* Signature Uploads */}
             <div>
               <label className="text-sm font-medium mb-2 block">Signatures (optional - overrides company defaults)</label>
               <div className="grid grid-cols-3 gap-3">
@@ -320,7 +367,14 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
 
 function InvoiceView({ id, onBack }: { id: string; onBack: () => void }) {
   const navigate = useNavigate();
-  const inv = storage.getById<Invoice>(KEYS.INVOICES, id);
+  const [inv, setInv] = useState<Invoice | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.getInvoice(id).then((d: any) => { setInv(d); setLoading(false); }).catch(() => setLoading(false));
+  }, [id]);
+
+  if (loading) return <div className="p-8 text-center text-muted-foreground">Loading...</div>;
   if (!inv) return <div>Invoice not found</div>;
 
   const handleDownload = () => {

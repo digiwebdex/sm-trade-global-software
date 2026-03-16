@@ -1,19 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { FileText, FilePlus, Truck, ShoppingCart, Users, Package, TrendingUp, DollarSign, RefreshCw } from 'lucide-react';
-import { storage, KEYS, resetAllData } from '@/utils/storage';
+import { FileText, FilePlus, Truck, ShoppingCart, Users, Package, TrendingUp, DollarSign } from 'lucide-react';
+import { api } from '@/utils/api';
 import { Invoice, Quotation, Challan, PurchaseOrder, Customer, Product } from '@/types';
 
 export default function DashboardPage() {
   const navigate = useNavigate();
-  const invoices = storage.getAll<Invoice>(KEYS.INVOICES);
-  const quotations = storage.getAll<Quotation>(KEYS.QUOTATIONS);
-  const challans = storage.getAll<Challan>(KEYS.CHALLANS);
-  const purchaseOrders = storage.getAll<PurchaseOrder>(KEYS.PURCHASE_ORDERS);
-  const customers = storage.getAll<Customer>(KEYS.CUSTOMERS);
-  const products = storage.getAll<Product>(KEYS.PRODUCTS);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [quotations, setQuotations] = useState<Quotation[]>([]);
+  const [challans, setChallans] = useState<Challan[]>([]);
+  const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrder[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    Promise.all([
+      api.getInvoices().then((d: any) => setInvoices(d)).catch(() => {}),
+      api.getQuotations().then((d: any) => setQuotations(d)).catch(() => {}),
+      api.getChallans().then((d: any) => setChallans(d)).catch(() => {}),
+      api.getPurchaseOrders().then((d: any) => setPurchaseOrders(d)).catch(() => {}),
+      api.getCustomers().then((d: any) => setCustomers(d)).catch(() => {}),
+      api.getProducts().then((d: any) => setProducts(d)).catch(() => {}),
+    ]);
+  }, []);
 
   const totalRevenue = invoices.reduce((sum, inv) => sum + inv.totalAmount, 0);
   const paidInvoices = invoices.filter(i => i.status === 'paid').length;
@@ -36,14 +47,9 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-start">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground mt-1">Welcome back! Here's your business overview.</p>
-        </div>
-        <Button variant="outline" size="sm" onClick={() => { resetAllData(); window.location.reload(); }}>
-          <RefreshCw className="h-4 w-4 mr-2" /> Reset Sample Data
-        </Button>
+      <div>
+        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+        <p className="text-muted-foreground mt-1">Welcome back! Here's your business overview.</p>
       </div>
 
       {/* Stats */}

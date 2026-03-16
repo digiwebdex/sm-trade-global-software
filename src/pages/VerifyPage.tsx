@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { storage, KEYS, initializeData } from '@/utils/storage';
+import { api } from '@/utils/api';
 import { Invoice, Quotation, Challan, PurchaseOrder } from '@/types';
 import DocumentPreview from '@/components/DocumentPreview';
 import { CheckCircle, XCircle, FileText } from 'lucide-react';
@@ -15,40 +15,24 @@ export default function VerifyPage() {
   const [found, setFound] = useState(false);
 
   useEffect(() => {
-    initializeData();
-
-    const keyMap: Record<string, string> = {
-      invoice: KEYS.INVOICES,
-      quotation: KEYS.QUOTATIONS,
-      challan: KEYS.CHALLANS,
-      'purchase-order': KEYS.PURCHASE_ORDERS,
+    const fetchMap: Record<string, { fetch: () => Promise<unknown>; numberField: string }> = {
+      invoice: { fetch: () => api.getInvoices(), numberField: 'invoiceNumber' },
+      quotation: { fetch: () => api.getQuotations(), numberField: 'quotationNumber' },
+      challan: { fetch: () => api.getChallans(), numberField: 'challanNumber' },
+      'purchase-order': { fetch: () => api.getPurchaseOrders(), numberField: 'poNumber' },
     };
 
-    const storageKey = keyMap[type || ''];
-    if (!storageKey || !docId) {
+    const config = fetchMap[type || ''];
+    if (!config || !docId) { setLoading(false); return; }
+
+    config.fetch().then((docs: any) => {
+      const doc = docs.find((d: any) => {
+        const num = d[config.numberField]?.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+        return num === docId;
+      });
+      if (doc) { setDocument(doc); setFound(true); }
       setLoading(false);
-      return;
-    }
-
-    const numberFieldMap: Record<string, string> = {
-      invoice: 'invoiceNumber',
-      quotation: 'quotationNumber',
-      challan: 'challanNumber',
-      'purchase-order': 'poNumber',
-    };
-
-    const fieldName = numberFieldMap[type || ''];
-    const allDocs = storage.getAll<any>(storageKey);
-    const doc = allDocs.find((d: any) => {
-      const num = d[fieldName]?.toLowerCase().replace(/[^a-z0-9-]/g, '-');
-      return num === docId;
-    });
-
-    if (doc) {
-      setDocument(doc);
-      setFound(true);
-    }
-    setLoading(false);
+    }).catch(() => setLoading(false));
   }, [type, docId]);
 
   if (loading) {
@@ -58,8 +42,6 @@ export default function VerifyPage() {
       </div>
     );
   }
-
-  const settings = storage.getSettings();
 
   const typeLabel: Record<string, string> = {
     invoice: 'Invoice (Bill)',
@@ -77,7 +59,6 @@ export default function VerifyPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#f0f2f5', paddingBottom: '40px' }}>
-      {/* Verification Banner */}
       <div style={{
         background: found ? GREEN : '#dc2626',
         padding: '16px 24px',
@@ -86,11 +67,7 @@ export default function VerifyPage() {
         boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
-          {found ? (
-            <CheckCircle size={28} strokeWidth={2.5} />
-          ) : (
-            <XCircle size={28} strokeWidth={2.5} />
-          )}
+          {found ? <CheckCircle size={28} strokeWidth={2.5} /> : <XCircle size={28} strokeWidth={2.5} />}
           <div>
             <h1 style={{ fontSize: '20px', fontWeight: 'bold', margin: 0 }}>
               {found ? '✅ Document Verified' : '❌ Document Not Found'}
@@ -107,7 +84,6 @@ export default function VerifyPage() {
 
       {found && document && (
         <>
-          {/* Document Info Bar */}
           <div style={{
             maxWidth: '794px', margin: '20px auto 16px', padding: '12px 24px',
             background: 'white', borderRadius: '8px', boxShadow: '0 1px 4px rgba(0,0,0,0.1)',
@@ -123,15 +99,11 @@ export default function VerifyPage() {
               </span>
             </div>
             <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <div style={{
-                width: '8px', height: '8px', borderRadius: '50%',
-                backgroundColor: GREEN,
-              }} />
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: GREEN }} />
               <span style={{ fontSize: '12px', color: GREEN, fontWeight: 'bold' }}>Verified</span>
             </div>
           </div>
 
-          {/* Document Preview */}
           <div style={{ maxWidth: '840px', margin: '0 auto', padding: '0 20px' }}>
             <DocumentPreview
               type={docType[type || ''] as any}
@@ -162,7 +134,6 @@ export default function VerifyPage() {
         </>
       )}
 
-      {/* Footer */}
       <div style={{ textAlign: 'center', padding: '24px', fontSize: '12px', color: '#999' }}>
         © {new Date().getFullYear()} S. M. Trade International. All rights reserved.
       </div>

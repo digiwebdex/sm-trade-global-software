@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { storage, KEYS } from '@/utils/storage';
+import { api } from '@/utils/api';
 import { generateId, generateDocNumber } from '@/utils/documentNumbers';
 import { Challan, ChallanItem, Customer } from '@/types';
 import DocumentPreview, { printDocument } from '@/components/DocumentPreview';
@@ -23,7 +23,12 @@ export default function ChallansPage() {
   const [challans, setChallans] = useState<Challan[]>([]);
   const [search, setSearch] = useState('');
 
-  const load = () => setChallans(storage.getAll<Challan>(KEYS.CHALLANS));
+  const load = async () => {
+    try {
+      const data = await api.getChallans() as Challan[];
+      setChallans(data);
+    } catch (err) { toast.error('Failed to load challans'); }
+  };
   useEffect(() => { load(); }, [action]);
 
   if (action === 'new' || action?.startsWith('edit-')) {
@@ -35,8 +40,14 @@ export default function ChallansPage() {
 
   const filtered = challans.filter(c => c.challanNumber.toLowerCase().includes(search.toLowerCase()) || c.customerName.toLowerCase().includes(search.toLowerCase()));
 
-  const handleDelete = (id: string) => {
-    if (confirm('Delete?')) { storage.remove<Challan>(KEYS.CHALLANS, id); toast.success('Deleted'); load(); }
+  const handleDelete = async (id: string) => {
+    if (confirm('Delete?')) {
+      try {
+        await api.deleteChallan(id);
+        toast.success('Deleted');
+        load();
+      } catch (err) { toast.error('Failed to delete'); }
+    }
   };
 
   const statusBadge = (status: string) => {
@@ -107,25 +118,65 @@ export default function ChallansPage() {
     </div>
   );
 }
+
 function ChallanForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
-  const customers = storage.getAll<Customer>(KEYS.CUSTOMERS);
-  const existing = editId ? storage.getById<Challan>(KEYS.CHALLANS, editId) : null;
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [existing, setExisting] = useState<Challan | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const [form, setForm] = useState({
-    customerId: existing?.customerId || '',
-    customerName: existing?.customerName || '',
-    customerAddress: existing?.customerAddress || '',
-    customerPhone: existing?.customerPhone || '',
-    date: existing?.date || new Date().toISOString().split('T')[0],
-    challanNumber: existing?.challanNumber || generateDocNumber('CLN', storage.getAll<Challan>(KEYS.CHALLANS).map(c => c.challanNumber)),
-    orderNo: existing?.orderNo || '',
-    items: existing?.items || [emptyItem()],
-    status: existing?.status || 'draft' as 'draft' | 'delivered',
-    notes: existing?.notes || '',
-    signatureReceived: existing?.signatureReceived || '',
-    signaturePrepared: existing?.signaturePrepared || '',
-    signatureAuthorize: existing?.signatureAuthorize || '',
+    customerId: '',
+    customerName: '',
+    customerAddress: '',
+    customerPhone: '',
+    date: new Date().toISOString().split('T')[0],
+    challanNumber: '',
+    orderNo: '',
+    items: [emptyItem()],
+    status: 'draft' as 'draft' | 'delivered',
+    notes: '',
+    signatureReceived: '',
+    signaturePrepared: '',
+    signatureAuthorize: '',
   });
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        const [custs, chals] = await Promise.all([
+          api.getCustomers() as Promise<Customer[]>,
+          api.getChallans() as Promise<Challan[]>,
+        ]);
+        setCustomers(custs);
+
+        let editData: Challan | null = null;
+        if (editId) {
+          editData = await api.getChallan(editId) as Challan;
+          setExisting(editData);
+        }
+
+        setForm({
+          customerId: editData?.customerId || '',
+          customerName: editData?.customerName || '',
+          customerAddress: editData?.customerAddress || '',
+          customerPhone: editData?.customerPhone || '',
+          date: editData?.date || new Date().toISOString().split('T')[0],
+          challanNumber: editData?.challanNumber || generateDocNumber('CLN', chals.map(c => c.challanNumber)),
+          orderNo: editData?.orderNo || '',
+          items: editData?.items || [emptyItem()],
+          status: editData?.status || 'draft',
+          notes: editData?.notes || '',
+          signatureReceived: editData?.signatureReceived || '',
+          signaturePrepared: editData?.signaturePrepared || '',
+          signatureAuthorize: editData?.signatureAuthorize || '',
+        });
+      } catch (err) { toast.error('Failed to load data'); }
+      setLoading(false);
+    };
+    init();
+  }, [editId]);
+
+  if (loading) return <div className="p-8 text-center text-muted-foreground">Loading...</div>;
 
   const selectCustomer = (id: string) => {
     const c = customers.find(c => c.id === id);
@@ -140,13 +191,15 @@ function ChallanForm({ editId, onDone }: { editId?: string; onDone: () => void }
 
   const totalQuantity = form.items.reduce((s, i) => s + i.deliveryQty, 0);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!form.customerName) { toast.error('Select a customer'); return; }
     const data: Challan = { ...form, id: editId || generateId(), totalQuantity, createdAt: existing?.createdAt || new Date().toISOString() };
-    if (editId) storage.update<Challan>(KEYS.CHALLANS, editId, data);
-    else storage.create<Challan>(KEYS.CHALLANS, data);
-    toast.success(editId ? 'Updated' : 'Created');
-    onDone();
+    try {
+      if (editId) await api.updateChallan(editId, data);
+      else await api.createChallan(data);
+      toast.success(editId ? 'Updated' : 'Created');
+      onDone();
+    } catch (err) { toast.error('Failed to save challan'); }
   };
 
   return (
@@ -185,7 +238,6 @@ function ChallanForm({ editId, onDone }: { editId?: string; onDone: () => void }
               ))}
               <div className="text-right mt-3 font-bold">Total Delivery Qty: {totalQuantity}</div>
             </div>
-            {/* Signature Uploads */}
             <div>
               <label className="text-sm font-medium mb-2 block">Signatures</label>
               <div className="grid grid-cols-3 gap-3">
@@ -194,7 +246,6 @@ function ChallanForm({ editId, onDone }: { editId?: string; onDone: () => void }
                 ))}
               </div>
             </div>
-
             <div><label className="text-sm font-medium">Notes</label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
             <Button onClick={handleSave} className="w-full bg-secondary hover:bg-secondary/90">Save Challan</Button>
           </CardContent>
@@ -207,7 +258,14 @@ function ChallanForm({ editId, onDone }: { editId?: string; onDone: () => void }
 
 function ChallanView({ id, onBack }: { id: string; onBack: () => void }) {
   const navigate = useNavigate();
-  const c = storage.getById<Challan>(KEYS.CHALLANS, id);
+  const [c, setC] = useState<Challan | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.getChallan(id).then((d: any) => { setC(d); setLoading(false); }).catch(() => setLoading(false));
+  }, [id]);
+
+  if (loading) return <div className="p-8 text-center text-muted-foreground">Loading...</div>;
   if (!c) return <div>Not found</div>;
 
   const handleShare = async () => {

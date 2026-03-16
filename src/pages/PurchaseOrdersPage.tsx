@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { storage, KEYS } from '@/utils/storage';
+import { api } from '@/utils/api';
 import { generateId, generateDocNumber } from '@/utils/documentNumbers';
 import { PurchaseOrder, LineItem } from '@/types';
 import DocumentPreview, { printDocument } from '@/components/DocumentPreview';
@@ -23,7 +23,12 @@ export default function PurchaseOrdersPage() {
   const [orders, setOrders] = useState<PurchaseOrder[]>([]);
   const [search, setSearch] = useState('');
 
-  const load = () => setOrders(storage.getAll<PurchaseOrder>(KEYS.PURCHASE_ORDERS));
+  const load = async () => {
+    try {
+      const data = await api.getPurchaseOrders() as PurchaseOrder[];
+      setOrders(data);
+    } catch (err) { toast.error('Failed to load purchase orders'); }
+  };
   useEffect(() => { load(); }, [action]);
 
   if (action === 'new' || action?.startsWith('edit-')) {
@@ -35,8 +40,14 @@ export default function PurchaseOrdersPage() {
 
   const filtered = orders.filter(o => o.poNumber.toLowerCase().includes(search.toLowerCase()) || o.supplierName.toLowerCase().includes(search.toLowerCase()));
 
-  const handleDelete = (id: string) => {
-    if (confirm('Delete?')) { storage.remove<PurchaseOrder>(KEYS.PURCHASE_ORDERS, id); toast.success('Deleted'); load(); }
+  const handleDelete = async (id: string) => {
+    if (confirm('Delete?')) {
+      try {
+        await api.deletePurchaseOrder(id);
+        toast.success('Deleted');
+        load();
+      } catch (err) { toast.error('Failed to delete'); }
+    }
   };
 
   const statusBadge = (status: string) => {
@@ -108,24 +119,60 @@ export default function PurchaseOrdersPage() {
     </div>
   );
 }
+
 function POForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
-  const existing = editId ? storage.getById<PurchaseOrder>(KEYS.PURCHASE_ORDERS, editId) : null;
+  const [existing, setExisting] = useState<PurchaseOrder | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const [form, setForm] = useState({
-    supplierName: existing?.supplierName || '',
-    supplierAddress: existing?.supplierAddress || '',
-    supplierPhone: existing?.supplierPhone || '',
-    supplierEmail: existing?.supplierEmail || '',
-    date: existing?.date || new Date().toISOString().split('T')[0],
-    poNumber: existing?.poNumber || generateDocNumber('PO', storage.getAll<PurchaseOrder>(KEYS.PURCHASE_ORDERS).map(o => o.poNumber)),
-    items: existing?.items || [emptyItem()],
-    status: existing?.status || 'draft' as 'draft' | 'sent' | 'received',
-    notes: existing?.notes || '',
-    amountInWords: existing?.amountInWords || '',
-    signatureReceived: (existing as any)?.signatureReceived || '',
-    signaturePrepared: (existing as any)?.signaturePrepared || '',
-    signatureAuthorize: (existing as any)?.signatureAuthorize || '',
+    supplierName: '',
+    supplierAddress: '',
+    supplierPhone: '',
+    supplierEmail: '',
+    date: new Date().toISOString().split('T')[0],
+    poNumber: '',
+    items: [emptyItem()],
+    status: 'draft' as 'draft' | 'sent' | 'received',
+    notes: '',
+    amountInWords: '',
+    signatureReceived: '',
+    signaturePrepared: '',
+    signatureAuthorize: '',
   });
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        const pos = await api.getPurchaseOrders() as PurchaseOrder[];
+
+        let editData: PurchaseOrder | null = null;
+        if (editId) {
+          editData = await api.getPurchaseOrder(editId) as PurchaseOrder;
+          setExisting(editData);
+        }
+
+        setForm({
+          supplierName: editData?.supplierName || '',
+          supplierAddress: editData?.supplierAddress || '',
+          supplierPhone: editData?.supplierPhone || '',
+          supplierEmail: editData?.supplierEmail || '',
+          date: editData?.date || new Date().toISOString().split('T')[0],
+          poNumber: editData?.poNumber || generateDocNumber('PO', pos.map(o => o.poNumber)),
+          items: editData?.items || [emptyItem()],
+          status: editData?.status || 'draft',
+          notes: editData?.notes || '',
+          amountInWords: editData?.amountInWords || '',
+          signatureReceived: (editData as any)?.signatureReceived || '',
+          signaturePrepared: (editData as any)?.signaturePrepared || '',
+          signatureAuthorize: (editData as any)?.signatureAuthorize || '',
+        });
+      } catch (err) { toast.error('Failed to load data'); }
+      setLoading(false);
+    };
+    init();
+  }, [editId]);
+
+  if (loading) return <div className="p-8 text-center text-muted-foreground">Loading...</div>;
 
   const updateItem = (index: number, field: keyof LineItem, value: any) => {
     const items = [...form.items];
@@ -136,13 +183,15 @@ function POForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
 
   const totalAmount = form.items.reduce((s, i) => s + i.total, 0);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!form.supplierName) { toast.error('Supplier name is required'); return; }
     const data: PurchaseOrder = { ...form, id: editId || generateId(), totalAmount, createdAt: existing?.createdAt || new Date().toISOString() };
-    if (editId) storage.update<PurchaseOrder>(KEYS.PURCHASE_ORDERS, editId, data);
-    else storage.create<PurchaseOrder>(KEYS.PURCHASE_ORDERS, data);
-    toast.success(editId ? 'Updated' : 'Created');
-    onDone();
+    try {
+      if (editId) await api.updatePurchaseOrder(editId, data);
+      else await api.createPurchaseOrder(data);
+      toast.success(editId ? 'Updated' : 'Created');
+      onDone();
+    } catch (err) { toast.error('Failed to save PO'); }
   };
 
   return (
@@ -178,7 +227,6 @@ function POForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
               <div className="text-right mt-3 text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
             </div>
             <div><label className="text-sm font-medium">Amount in Words</label><Input value={form.amountInWords} onChange={(e) => setForm({ ...form, amountInWords: e.target.value })} placeholder="Auto-generated if empty" /></div>
-            {/* Signature Uploads */}
             <div>
               <label className="text-sm font-medium mb-2 block">Signatures</label>
               <div className="grid grid-cols-3 gap-3">
@@ -187,7 +235,6 @@ function POForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
                 ))}
               </div>
             </div>
-
             <div><label className="text-sm font-medium">Notes</label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
             <Button onClick={handleSave} className="w-full bg-secondary hover:bg-secondary/90">Save PO</Button>
           </CardContent>
@@ -199,8 +246,16 @@ function POForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
 }
 
 function POView({ id, onBack }: { id: string; onBack: () => void }) {
-  const o = storage.getById<PurchaseOrder>(KEYS.PURCHASE_ORDERS, id);
+  const [o, setO] = useState<PurchaseOrder | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.getPurchaseOrder(id).then((d: any) => { setO(d); setLoading(false); }).catch(() => setLoading(false));
+  }, [id]);
+
+  if (loading) return <div className="p-8 text-center text-muted-foreground">Loading...</div>;
   if (!o) return <div>Not found</div>;
+
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-4 no-print">

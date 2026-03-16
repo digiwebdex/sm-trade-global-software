@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
 import { CompanySettings, LineItem, ChallanItem, Payment } from '@/types';
 import { numberToWords } from '@/utils/numberToWords';
-import { storage } from '@/utils/storage';
+import { api } from '@/utils/api';
 import logoImg from '@/assets/logo.png';
 
 interface DocumentPreviewProps {
@@ -44,8 +44,31 @@ const NAVY = '#1B3A5C';
 const ORANGE = '#E8792B';
 const GREEN = '#16a34a';
 
+const defaultSettings: CompanySettings = {
+  name: 'S. M. Trade International',
+  tagline: '1st Class Govt. Contractor, Supplier & Importer',
+  address: 'House # 7, Road # 19/A, Sector # 4, Uttara, Dhaka-1230',
+  phone: '+8801886766688',
+  email: 'info@smtradeint.com',
+  website: 'www.smtradeint.com',
+  logo: '',
+};
+
+export function printDocument(docNumber: string) {
+  document.title = docNumber;
+  window.print();
+  document.title = 'S. M. Trade International';
+}
+
 export default function DocumentPreview(props: DocumentPreviewProps) {
-  const settings: CompanySettings = storage.getSettings();
+  const [settings, setSettings] = useState<CompanySettings>(defaultSettings);
+
+  useEffect(() => {
+    api.getSettings().then((d: any) => {
+      if (d && d.name) setSettings(d);
+    }).catch(() => {});
+  }, []);
+
   const { type, documentNumber, date, customerName, customerAddress, customerPhone, customerEmail, items, challanItems, totalAmount, totalQuantity, orderNo, notes, tax, totalPaid, payments } = props;
 
   const typeConfig: Record<string, { label: string; toLabel: string; dateLabel: string }> = {
@@ -57,7 +80,6 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
 
   const config = typeConfig[type];
 
-  // Generate real QR code linking to the document view
   const [qrDataUrl, setQrDataUrl] = useState('');
   useEffect(() => {
     const routeMap: Record<string, string> = {
@@ -70,6 +92,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
       .then(url => setQrDataUrl(url))
       .catch(() => setQrDataUrl(''));
   }, [documentNumber, type]);
+
   const isChallan = type === 'challan';
   const isInvoice = type === 'invoice';
 
@@ -91,8 +114,6 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
   };
 
   const statusInfo = statusConfig[props.status || 'draft'] || statusConfig.draft;
-
-  // QR code is now generated via useEffect above
 
   return (
     <div className="bg-white mx-auto shadow-lg document-preview-wrapper" id="document-preview" style={{ fontFamily: "'Segoe UI', Arial, sans-serif", color: '#333', fontSize: '13px', width: '794px', minHeight: '1123px', maxHeight: '1123px', overflow: 'hidden' }}>
@@ -153,10 +174,8 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
           </div>
         </div>
 
-        {/* Thin blue separator */}
         <div style={{ height: '2px', backgroundColor: NAVY, margin: '0 35px' }} />
 
-        {/* ===== CUSTOMER INFO + DATE ===== */}
         <div style={{ padding: '14px 35px 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div style={{ display: 'flex', alignItems: 'stretch' }}>
             <div style={{ width: '6px', backgroundColor: '#1f3b8a', borderRadius: '0px', marginRight: '12px', flexShrink: 0 }}></div>
@@ -182,10 +201,8 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
           </div>
         </div>
 
-        {/* ===== TABLE AREA ===== */}
         <div style={{ padding: '6px 35px 0', position: 'relative' }}>
           
-          {/* Watermark */}
           <div style={{
             position: 'absolute', top: '45%', left: '50%',
             transform: 'translate(-50%, -50%)', opacity: 0.06, zIndex: 0, pointerEvents: 'none',
@@ -194,7 +211,6 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
           </div>
 
           {isChallan && challanItems ? (
-            /* ===== CHALLAN TABLE ===== */
             <table style={{ width: '100%', borderCollapse: 'collapse', position: 'relative', zIndex: 1 }}>
               <thead>
                 <tr style={{ borderBottom: `2px solid ${NAVY}` }}>
@@ -226,7 +242,6 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
               </tbody>
             </table>
           ) : items ? (
-            /* ===== INVOICE / QUOTATION / PO TABLE ===== */
             <>
               <table style={{ width: '100%', borderCollapse: 'collapse', position: 'relative', zIndex: 1 }}>
                 <thead>
@@ -249,7 +264,6 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                 </tbody>
               </table>
 
-              {/* ===== TOTAL AMOUNT BAR ===== */}
               <div style={{ 
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                 marginTop: '12px', padding: '10px 16px',
@@ -262,14 +276,12 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
             </>
           ) : null}
 
-          {/* Amount in Words */}
           {totalAmount !== undefined && totalAmount > 0 && !isChallan && (
             <div style={{ textAlign: 'right', padding: '0', fontSize: '11px', color: NAVY, marginTop: '4px' }}>
               <strong>In Word :</strong> {props.amountInWords || numberToWords(isInvoice ? balance : subtotal)}.
             </div>
           )}
 
-          {/* ===== PAYMENT HISTORY (invoice only) ===== */}
           {isInvoice && payments && payments.length > 0 && (
             <div style={{ marginTop: '16px', position: 'relative', zIndex: 1 }}>
               <div style={{ border: '1px solid #e0e0e0', borderRadius: '6px', overflow: 'hidden' }}>
@@ -300,9 +312,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
           </div>
         )}
 
-        {/* ===== BOTTOM SECTION (always at page bottom) ===== */}
         <div style={{ marginTop: 'auto', breakInside: 'avoid', pageBreakInside: 'avoid' }}>
-          {/* ===== SIGNATURE SECTION ===== */}
           <div style={{ padding: '10px 35px 8px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
             {[
               { label: 'Received by', sig: props.signatureReceived || settings.signatureReceived },
@@ -323,9 +333,6 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
             ))}
           </div>
 
-
-
-          {/* ===== FOOTER ===== */}
           <div style={{ 
             borderTop: '2px solid #aaa', padding: '6px 35px 0', fontSize: '10px', color: '#555',
           }}>
@@ -333,33 +340,18 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
               <div style={{ marginBottom: '2px' }}>
                 <span style={{ color: '#1f3b8a' }}>{settings.email}</span>, <span style={{ color: '#1f3b8a' }}>{settings.website}</span>
               </div>
-              <p style={{ margin: '1px 0' }}>Address 1 : House # 7, Road # 19/A, Sector # 4, Uttara, Dhaka-1230</p>
-              <p style={{ margin: '1px 0' }}>Address 2 : B-25/4, Al-Baraka Super Market, Office # 9-10, Mojidpur Road, Savar, Dhaka-1340</p>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                <span>{settings.phone}</span>
+                <span style={{ color: '#ccc' }}>|</span>
+                <span>{settings.address}</span>
+              </div>
             </div>
-          </div>
-          {/* Phone bar with QR */}
-          <div style={{ 
-            padding: '4px 35px', fontSize: '10px', color: '#555',
-            display: 'flex', justifyContent: 'center', alignItems: 'center',
-            position: 'relative',
-          }}>
-            <span>+8802224446664, +8801867666888, +8801619959625, +8801619959626</span>
-            {qrDataUrl && (
-              <img src={qrDataUrl} alt="QR Code" style={{ position: 'absolute', right: '25px', width: '48px', height: '48px', borderRadius: '3px', top: '-30px' }} />
-            )}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '-18px' }}>
+              {qrDataUrl && <img src={qrDataUrl} alt="QR" style={{ width: '55px', height: '55px' }} />}
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
-}
-
-export function printDocument(docNumber?: string) {
-  if (docNumber) {
-    document.title = docNumber;
-  }
-  window.print();
-  if (docNumber) {
-    document.title = 'S. M. Trade International';
-  }
 }
