@@ -211,17 +211,36 @@ function QuotationForm({ editId, onDone }: { editId?: string; onDone: () => void
 }
 
 function QuotationView({ id, onBack }: { id: string; onBack: () => void }) {
+  const navigate = useNavigate();
   const q = storage.getById<Quotation>(KEYS.QUOTATIONS, id);
   if (!q) return <div>Not found</div>;
+
+  const handleShare = async () => {
+    const shareData = { title: `Quotation ${q.quotationNumber}`, text: `Quotation ${q.quotationNumber} - ${q.customerName} - BDT ${q.totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, url: window.location.href };
+    if (navigator.share) { try { await navigator.share(shareData); } catch {} }
+    else { await navigator.clipboard.writeText(window.location.href); toast.success('Link copied to clipboard!'); }
+  };
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4 no-print">
-        <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
-        <h1 className="text-2xl font-bold">{q.quotationNumber}</h1>
-        <Badge variant="outline" className={q.status === 'accepted' ? 'bg-emerald-100 text-emerald-700' : q.status === 'rejected' ? 'bg-red-100 text-red-700' : q.status === 'sent' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}>
-          {q.status.charAt(0).toUpperCase() + q.status.slice(1)}
-        </Badge>
-        <Button onClick={() => printDocument(q.quotationNumber)} variant="outline"><Printer className="h-4 w-4 mr-2" /> Print / PDF</Button>
+      <div className="no-print">
+        <div className="flex items-center gap-4 mb-4">
+          <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
+          <div>
+            <h1 className="text-2xl font-bold">{q.quotationNumber}</h1>
+            <p className="text-sm text-muted-foreground">Quotation Preview</p>
+          </div>
+          <Badge variant="outline" className={q.status === 'accepted' ? 'bg-emerald-100 text-emerald-700' : q.status === 'rejected' ? 'bg-red-100 text-red-700' : q.status === 'sent' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}>
+            {q.status.charAt(0).toUpperCase() + q.status.slice(1)}
+          </Badge>
+        </div>
+        <div className="flex flex-wrap gap-3 mb-4">
+          <Button onClick={() => printDocument(q.quotationNumber)} variant="outline" className="gap-2"><Printer className="h-4 w-4" /> Download Quotation</Button>
+          <Button onClick={() => printDocument(q.quotationNumber)} variant="outline" className="gap-2"><Printer className="h-4 w-4" /> Print</Button>
+          <Button onClick={handleShare} variant="outline" className="gap-2"><Eye className="h-4 w-4" /> Share</Button>
+          <Button onClick={() => navigate(`/quotations/edit-${id}`)} variant="outline" className="gap-2"><Pencil className="h-4 w-4" /> Quick Edit</Button>
+          <Button onClick={() => navigate(`/quotations/edit-${id}`)} className="bg-secondary hover:bg-secondary/90 gap-2"><Pencil className="h-4 w-4" /> Full Edit</Button>
+        </div>
       </div>
       <DocumentPreview type="quotation" documentNumber={q.quotationNumber} date={q.date} customerName={q.customerName} customerAddress={q.customerAddress} customerPhone={q.customerPhone} items={q.items} totalAmount={q.totalAmount} notes={q.notes} amountInWords={q.amountInWords} status={q.status} signatureReceived={q.signatureReceived} signaturePrepared={q.signaturePrepared} signatureAuthorize={q.signatureAuthorize} />
     </div>

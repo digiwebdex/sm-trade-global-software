@@ -206,17 +206,36 @@ function ChallanForm({ editId, onDone }: { editId?: string; onDone: () => void }
 }
 
 function ChallanView({ id, onBack }: { id: string; onBack: () => void }) {
+  const navigate = useNavigate();
   const c = storage.getById<Challan>(KEYS.CHALLANS, id);
   if (!c) return <div>Not found</div>;
+
+  const handleShare = async () => {
+    const shareData = { title: `Challan ${c.challanNumber}`, text: `Challan ${c.challanNumber} - ${c.customerName}`, url: window.location.href };
+    if (navigator.share) { try { await navigator.share(shareData); } catch {} }
+    else { await navigator.clipboard.writeText(window.location.href); toast.success('Link copied to clipboard!'); }
+  };
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4 no-print">
-        <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
-        <h1 className="text-2xl font-bold">{c.challanNumber}</h1>
-        <Badge variant="outline" className={c.status === 'delivered' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'}>
-          {c.status.charAt(0).toUpperCase() + c.status.slice(1)}
-        </Badge>
-        <Button onClick={() => printDocument(c.challanNumber)} variant="outline"><Printer className="h-4 w-4 mr-2" /> Print / PDF</Button>
+      <div className="no-print">
+        <div className="flex items-center gap-4 mb-4">
+          <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
+          <div>
+            <h1 className="text-2xl font-bold">{c.challanNumber}</h1>
+            <p className="text-sm text-muted-foreground">Challan Preview</p>
+          </div>
+          <Badge variant="outline" className={c.status === 'delivered' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'}>
+            {c.status.charAt(0).toUpperCase() + c.status.slice(1)}
+          </Badge>
+        </div>
+        <div className="flex flex-wrap gap-3 mb-4">
+          <Button onClick={() => printDocument(c.challanNumber)} variant="outline" className="gap-2"><Printer className="h-4 w-4" /> Download Challan</Button>
+          <Button onClick={() => printDocument(c.challanNumber)} variant="outline" className="gap-2"><Printer className="h-4 w-4" /> Print</Button>
+          <Button onClick={handleShare} variant="outline" className="gap-2"><Eye className="h-4 w-4" /> Share</Button>
+          <Button onClick={() => navigate(`/challans/edit-${id}`)} variant="outline" className="gap-2"><Pencil className="h-4 w-4" /> Quick Edit</Button>
+          <Button onClick={() => navigate(`/challans/edit-${id}`)} className="bg-secondary hover:bg-secondary/90 gap-2"><Pencil className="h-4 w-4" /> Full Edit</Button>
+        </div>
       </div>
       <DocumentPreview type="challan" documentNumber={c.challanNumber} date={c.date} customerName={c.customerName} customerAddress={c.customerAddress} customerPhone={c.customerPhone} challanItems={c.items} totalQuantity={c.totalQuantity} orderNo={c.orderNo} notes={c.notes} status={c.status} signatureReceived={c.signatureReceived} signaturePrepared={c.signaturePrepared} signatureAuthorize={c.signatureAuthorize} />
     </div>
