@@ -31,16 +31,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       return false;
     } catch {
-      // Fallback to localStorage for Lovable preview
-      const { storage, KEYS, initializeData } = await import('@/utils/storage');
-      initializeData();
-      const users = storage.getAll<User>(KEYS.USERS);
-      const found = users.find(u => u.username === username && u.password === password);
-      if (found) {
-        setUser(found);
-        localStorage.setItem('sm_current_user', JSON.stringify(found));
-        return true;
-      }
       return false;
     }
   };

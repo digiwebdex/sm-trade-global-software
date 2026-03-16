@@ -140,7 +140,7 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
     date: new Date().toISOString().split('T')[0],
     invoiceNumber: '',
     items: [emptyItem()],
-    status: 'draft' as const,
+    status: 'draft' as 'draft' | 'sent' | 'paid' | 'partial',
     tax: 0,
     payments: [] as Payment[],
     notes: '',
