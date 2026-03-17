@@ -157,7 +157,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   whiteSpace: 'nowrap',
                   textAlign: 'right',
                 }}>
-                  {config.label.split('').join('\u200A')}
+                  {config.label}
                 </h2>
                 <p style={{
                   color: ORANGE,
