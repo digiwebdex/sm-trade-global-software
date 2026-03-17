@@ -100,10 +100,10 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
   const isChallan = type === 'challan';
   const isInvoice = type === 'invoice';
 
-  const subtotal = totalAmount || 0;
-  const taxAmount = tax || 0;
+  const subtotal = Number(totalAmount) || 0;
+  const taxAmount = Number(tax) || 0;
   const grandTotal = subtotal + taxAmount;
-  const paidAmount = totalPaid || 0;
+  const paidAmount = Number(totalPaid) || 0;
   const balance = grandTotal - paidAmount;
 
   const statusConfig: Record<string, { color: string; bg: string; label: string }> = {

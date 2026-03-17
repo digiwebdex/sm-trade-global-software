@@ -9,11 +9,12 @@ function convertGroup(n: number): string {
   return ones[Math.floor(n / 100)] + ' Hundred' + (n % 100 ? ' ' + convertGroup(n % 100) : '');
 }
 
-export function numberToWords(amount: number): string {
-  if (amount === 0) return 'Zero Taka Only';
+export function numberToWords(amount: number | string): string {
+  const parsed = typeof amount === 'string' ? parseFloat(amount) : amount;
+  if (!parsed || isNaN(parsed) || parsed === 0) return 'Zero Taka Only';
   
-  const num = Math.floor(amount);
-  const decimal = Math.round((amount - num) * 100);
+  const num = Math.floor(parsed);
+  const decimal = Math.round((parsed - num) * 100);
   
   let result = '';
   
