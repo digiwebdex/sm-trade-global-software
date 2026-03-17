@@ -31,7 +31,11 @@ interface DocumentPreviewProps {
   signatureAuthorize?: string;
 }
 
-const formatNumber = (num: number) => num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const formatNumber = (num: number | string) => {
+  const n = typeof num === 'string' ? parseFloat(num) : num;
+  if (isNaN(n)) return '0.00';
+  return n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
 
 const formatDate = (dateStr: string) => {
   try {

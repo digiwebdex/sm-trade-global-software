@@ -17,17 +17,21 @@ export function numberToWords(amount: number): string {
   
   let result = '';
   
-  if (num >= 10000000) {
-    result += convertGroup(Math.floor(num / 10000000)) + ' Crore ';
+  const crore = Math.floor(num / 10000000);
+  if (crore > 0) {
+    result += convertGroup(crore) + ' Crore ';
   }
-  if (num >= 100000) {
-    result += convertGroup(Math.floor((num % 10000000) / 100000)) + ' Lakh ';
+  const lakh = Math.floor((num % 10000000) / 100000);
+  if (lakh > 0) {
+    result += convertGroup(lakh) + ' Lakh ';
   }
-  if (num >= 1000) {
-    result += convertGroup(Math.floor((num % 100000) / 1000)) + ' Thousand ';
+  const thousand = Math.floor((num % 100000) / 1000);
+  if (thousand > 0) {
+    result += convertGroup(thousand) + ' Thousand ';
   }
-  if (num >= 100) {
-    result += convertGroup(Math.floor((num % 1000) / 100)) + ' Hundred ';
+  const hundred = Math.floor((num % 1000) / 100);
+  if (hundred > 0) {
+    result += convertGroup(hundred) + ' Hundred ';
   }
   const remainder = num % 100;
   if (remainder > 0) {
