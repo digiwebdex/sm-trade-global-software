@@ -163,7 +163,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   color: ORANGE,
                   fontSize: '13px',
                   fontWeight: 'bold',
-                  margin: '3px 0 0',
+                  margin: '1px 0 0',
                   lineHeight: 1.1,
                   whiteSpace: 'nowrap',
                   textAlign: 'right',
