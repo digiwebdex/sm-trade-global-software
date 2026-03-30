@@ -106,7 +106,7 @@ export default function InvoicesPage() {
                     </div>
                   </TableCell>
                   <TableCell className="text-sm">{new Date(inv.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</TableCell>
-                  <TableCell className="text-right font-bold">৳{inv.totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</TableCell>
+                  <TableCell className="text-right font-bold">৳{Number(inv.totalAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</TableCell>
                   <TableCell className="text-center">{statusBadge(inv.status)}</TableCell>
                   <TableCell>
                     <div className="flex gap-1 justify-center" onClick={(e) => e.stopPropagation()}>
