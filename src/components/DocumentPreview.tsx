@@ -218,12 +218,12 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
             <table style={{ width: '100%', borderCollapse: 'collapse', position: 'relative', zIndex: 1 }}>
               <thead>
                 <tr style={{ borderBottom: `2px solid ${NAVY}` }}>
-                  <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, width: '35px' }}>SL.</th>
-                  <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: '11px', fontWeight: 'bold', color: NAVY }}>ITEM NAME & DETAILS</th>
-                  <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, width: '65px' }}>SIZE</th>
-                  <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, width: '90px' }}>DELIVERY QUANTITY</th>
-                  <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, width: '90px' }}>BALANCE QUANTITY</th>
-                  <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, width: '50px' }}>UNIT</th>
+                  <th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}>SL.</th>
+                  <th style={{ padding: '8px 6px', textAlign: 'left', fontSize: '11px', fontWeight: 'bold', color: NAVY, width: 'auto' }}>ITEM NAME & DETAILS</th>
+                  <th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}>SIZE</th>
+                  <th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}>DELIVERY<br/>QUANTITY</th>
+                  <th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}>BALANCE<br/>QUANTITY</th>
+                  <th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}>UNIT</th>
                 </tr>
               </thead>
               <tbody>
