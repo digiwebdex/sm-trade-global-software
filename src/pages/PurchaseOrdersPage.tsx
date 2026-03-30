@@ -177,11 +177,13 @@ function POForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
   const updateItem = (index: number, field: keyof LineItem, value: any) => {
     const items = [...form.items];
     (items[index] as any)[field] = value;
+    items[index].quantity = Number(items[index].quantity) || 0;
+    items[index].unitPrice = Number(items[index].unitPrice) || 0;
     items[index].total = items[index].quantity * items[index].unitPrice;
     setForm({ ...form, items });
   };
 
-  const totalAmount = form.items.reduce((s, i) => s + i.total, 0);
+  const totalAmount = form.items.reduce((s, i) => s + (Number(i.total) || 0), 0);
 
   const handleSave = async () => {
     if (!form.supplierName) { toast.error('Supplier name is required'); return; }

@@ -227,7 +227,7 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
 
   const subtotal = form.items.reduce((s, i) => s + (Number(i.total) || 0), 0);
   const grandTotal = subtotal + (form.tax || 0);
-  const totalPaid = form.payments.reduce((s, p) => s + p.amount, 0);
+  const totalPaid = form.payments.reduce((s, p) => s + (Number(p.amount) || 0), 0);
   const autoStatus = totalPaid >= grandTotal && grandTotal > 0 ? 'paid' : totalPaid > 0 ? 'partial' : form.status;
 
   const handleSave = async () => {
