@@ -106,7 +106,7 @@ export default function InvoicesPage() {
                     </div>
                   </TableCell>
                   <TableCell className="text-sm">{new Date(inv.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</TableCell>
-                  <TableCell className="text-right font-bold">৳{inv.totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</TableCell>
+                  <TableCell className="text-right font-bold">৳{Number(inv.totalAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</TableCell>
                   <TableCell className="text-center">{statusBadge(inv.status)}</TableCell>
                   <TableCell>
                     <div className="flex gap-1 justify-center" onClick={(e) => e.stopPropagation()}>
@@ -174,10 +174,10 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
           customerEmail: editData?.customerEmail || '',
           date: editData?.date || new Date().toISOString().split('T')[0],
           invoiceNumber: editData?.invoiceNumber || generateDocNumber('INV', invs.map(i => i.invoiceNumber)),
-          items: editData?.items || [emptyItem()],
+          items: editData?.items ? editData.items.map(i => ({ ...i, quantity: Number(i.quantity) || 0, unitPrice: Number(i.unitPrice) || 0, total: Number(i.total) || 0 })) : [emptyItem()],
           status: editData?.status || 'draft',
-          tax: editData?.tax || 0,
-          payments: editData?.payments || [],
+          tax: Number(editData?.tax) || 0,
+          payments: editData?.payments ? editData.payments.map(p => ({ ...p, amount: Number(p.amount) || 0 })) : [],
           notes: editData?.notes || '',
           amountInWords: editData?.amountInWords || '',
           signatureReceived: editData?.signatureReceived || '',
@@ -197,9 +197,23 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
     if (c) setForm({ ...form, customerId: c.id, customerName: c.name, customerAddress: `${c.organization}\n${c.address}`, customerPhone: c.phone, customerEmail: c.email });
   };
 
+  const parseItems = (items: LineItem[]): LineItem[] => items.map(i => ({
+    ...i,
+    quantity: Number(i.quantity) || 0,
+    unitPrice: Number(i.unitPrice) || 0,
+    total: Number(i.total) || 0,
+  }));
+
+  const parsePayments = (payments: Payment[]): Payment[] => payments.map(p => ({
+    ...p,
+    amount: Number(p.amount) || 0,
+  }));
+
   const updateItem = (index: number, field: keyof LineItem, value: any) => {
     const items = [...form.items];
     (items[index] as any)[field] = value;
+    items[index].quantity = Number(items[index].quantity) || 0;
+    items[index].unitPrice = Number(items[index].unitPrice) || 0;
     items[index].total = items[index].quantity * items[index].unitPrice;
     setForm({ ...form, items });
   };
@@ -207,12 +221,13 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
   const updatePayment = (index: number, field: keyof Payment, value: any) => {
     const payments = [...form.payments];
     (payments[index] as any)[field] = value;
+    if (field === 'amount') payments[index].amount = Number(payments[index].amount) || 0;
     setForm({ ...form, payments });
   };
 
-  const subtotal = form.items.reduce((s, i) => s + i.total, 0);
+  const subtotal = form.items.reduce((s, i) => s + (Number(i.total) || 0), 0);
   const grandTotal = subtotal + (form.tax || 0);
-  const totalPaid = form.payments.reduce((s, p) => s + p.amount, 0);
+  const totalPaid = form.payments.reduce((s, p) => s + (Number(p.amount) || 0), 0);
   const autoStatus = totalPaid >= grandTotal && grandTotal > 0 ? 'paid' : totalPaid > 0 ? 'partial' : form.status;
 
   const handleSave = async () => {
