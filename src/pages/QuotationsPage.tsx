@@ -165,7 +165,7 @@ function QuotationForm({ editId, onDone }: { editId?: string; onDone: () => void
           customerPhone: editData?.customerPhone || '',
           date: editData?.date || new Date().toISOString().split('T')[0],
           quotationNumber: editData?.quotationNumber || generateDocNumber('QTS', quots.map(q => q.quotationNumber)),
-          items: editData?.items || [emptyItem()],
+          items: editData?.items ? editData.items.map(i => ({ ...i, quantity: Number(i.quantity) || 0, unitPrice: Number(i.unitPrice) || 0, total: Number(i.total) || 0 })) : [emptyItem()],
           status: editData?.status || 'draft',
           validUntil: editData?.validUntil || '',
           notes: editData?.notes || '',
