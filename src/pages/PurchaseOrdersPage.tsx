@@ -158,7 +158,7 @@ function POForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
           supplierEmail: editData?.supplierEmail || '',
           date: editData?.date || new Date().toISOString().split('T')[0],
           poNumber: editData?.poNumber || generateDocNumber('PO', pos.map(o => o.poNumber)),
-          items: editData?.items || [emptyItem()],
+          items: editData?.items ? editData.items.map(i => ({ ...i, quantity: Number(i.quantity) || 0, unitPrice: Number(i.unitPrice) || 0, total: Number(i.total) || 0 })) : [emptyItem()],
           status: editData?.status || 'draft',
           notes: editData?.notes || '',
           amountInWords: editData?.amountInWords || '',
