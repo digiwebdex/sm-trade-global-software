@@ -237,12 +237,17 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                     <td style={{ padding: '6px 8px', textAlign: 'center', fontSize: '12px' }}>{item.unit}</td>
                   </tr>
                 ))}
-                <tr style={{ backgroundColor: NAVY }}>
-                  <td colSpan={3} style={{ padding: '8px', textAlign: 'right', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>Total Quantity</td>
-                  <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>{totalQuantity} PCS</td>
-                  <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>00</td>
-                  <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>Unit</td>
-                </tr>
+                {(() => {
+                  const totalBalance = challanItems.reduce((sum, item) => sum + (Number(item.balanceQty) || 0), 0);
+                  return (
+                    <tr style={{ backgroundColor: NAVY }}>
+                      <td colSpan={3} style={{ padding: '8px', textAlign: 'right', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>Total Quantity</td>
+                      <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>{formatNumber(totalQuantity || 0)} PCS</td>
+                      <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>{formatNumber(totalBalance)}</td>
+                      <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>Unit</td>
+                    </tr>
+                  );
+                })()}
               </tbody>
             </table>
           ) : items ? (
