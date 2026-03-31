@@ -155,7 +155,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   letterSpacing: type === 'invoice' ? '4px' : '2px',
                   lineHeight: 1.05,
                   whiteSpace: 'nowrap',
-                  textAlign: 'right',
+                  textAlign: 'center',
                 }}>
                   {config.label}
                 </h2>
@@ -166,7 +166,8 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   margin: '1px 0 0',
                   lineHeight: 1.1,
                   whiteSpace: 'nowrap',
-                  textAlign: 'right',
+                  textAlign: 'center',
+                  width: '100%',
                 }}>
                   {documentNumber}
                 </p>
@@ -237,12 +238,17 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                     <td style={{ padding: '6px 8px', textAlign: 'center', fontSize: '12px' }}>{item.unit}</td>
                   </tr>
                 ))}
-                <tr style={{ backgroundColor: NAVY }}>
-                  <td colSpan={3} style={{ padding: '8px', textAlign: 'right', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>Total Quantity</td>
-                  <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>{totalQuantity} PCS</td>
-                  <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>00</td>
-                  <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>Unit</td>
-                </tr>
+                {(() => {
+                  const totalBalance = challanItems.reduce((sum, item) => sum + (Number(item.balanceQty) || 0), 0);
+                  return (
+                    <tr style={{ backgroundColor: NAVY }}>
+                      <td colSpan={3} style={{ padding: '8px', textAlign: 'right', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>Total Quantity</td>
+                      <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>{formatNumber(totalQuantity || 0)} PCS</td>
+                      <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>{formatNumber(totalBalance)}</td>
+                      <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>Unit</td>
+                    </tr>
+                  );
+                })()}
               </tbody>
             </table>
           ) : items ? (
