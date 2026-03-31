@@ -172,7 +172,7 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
           customerAddress: editData?.customerAddress || '',
           customerPhone: editData?.customerPhone || '',
           customerEmail: editData?.customerEmail || '',
-          date: editData?.date || new Date().toISOString().split('T')[0],
+          date: editData?.date ? editData.date.split('T')[0] : new Date().toISOString().split('T')[0],
           invoiceNumber: editData?.invoiceNumber || generateDocNumber('INV', invs.map(i => i.invoiceNumber)),
           items: editData?.items ? editData.items.map(i => ({ ...i, quantity: Number(i.quantity) || 0, unitPrice: Number(i.unitPrice) || 0, total: Number(i.total) || 0 })) : [emptyItem()],
           status: editData?.status || 'draft',
