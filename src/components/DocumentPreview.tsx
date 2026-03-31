@@ -152,7 +152,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   color: NAVY,
                   margin: 0,
                   fontFamily: "Arial, Helvetica, sans-serif",
-                  letterSpacing: type === 'invoice' ? '4px' : '2px',
+                  letterSpacing: type === 'invoice' ? '4px' : '0px',
                   lineHeight: 1.05,
                   whiteSpace: 'nowrap',
                   textAlign: 'center',
