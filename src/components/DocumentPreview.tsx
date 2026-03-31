@@ -243,7 +243,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   return (
                     <tr style={{ backgroundColor: NAVY }}>
                       <td colSpan={4} style={{ padding: '8px', textAlign: 'right', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>Total Quantity</td>
-                      <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>{formatNumber(totalQuantity || 0)} PCS</td>
+                      <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>{formatNumber(totalQuantity || 0)} Pcs</td>
                       <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>{formatNumber(totalBalance)} Pcs</td>
                     </tr>
                   );
