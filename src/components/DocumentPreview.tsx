@@ -147,7 +147,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                 <h2 style={{
-                  fontSize: type === 'invoice' ? '32px' : '20px',
+                  fontSize: type === 'invoice' ? '32px' : '16px',
                   fontWeight: '900',
                   color: NAVY,
                   margin: 0,
@@ -243,7 +243,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   return (
                     <tr style={{ backgroundColor: NAVY }}>
                       <td colSpan={4} style={{ padding: '8px', textAlign: 'right', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>Total Quantity</td>
-                      <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>{formatNumber(totalQuantity || 0)} PCS</td>
+                      <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>{formatNumber(totalQuantity || 0)} Pcs</td>
                       <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold', color: 'white', fontSize: '12px' }}>{formatNumber(totalBalance)} Pcs</td>
                     </tr>
                   );
