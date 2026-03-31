@@ -155,7 +155,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   letterSpacing: type === 'invoice' ? '4px' : '2px',
                   lineHeight: 1.05,
                   whiteSpace: 'nowrap',
-                  textAlign: 'right',
+                  textAlign: 'center',
                 }}>
                   {config.label}
                 </h2>
@@ -166,7 +166,8 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   margin: '1px 0 0',
                   lineHeight: 1.1,
                   whiteSpace: 'nowrap',
-                  textAlign: 'right',
+                  textAlign: 'center',
+                  width: '100%',
                 }}>
                   {documentNumber}
                 </p>
