@@ -255,10 +255,10 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
               <table style={{ width: '100%', borderCollapse: 'collapse', position: 'relative', zIndex: 1 }}>
                 <thead>
                   <tr style={{ borderBottom: `2px solid ${NAVY}` }}>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: '11px', fontWeight: 'bold', color: '#888', textTransform: 'uppercase' }}>DESCRIPTION</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: '#888', textTransform: 'uppercase', width: '80px' }}>QTY</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: '#888', textTransform: 'uppercase', width: '110px' }}>UNIT PRICE</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'right', fontSize: '11px', fontWeight: 'bold', color: '#888', textTransform: 'uppercase', width: '120px' }}>TOTAL</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: '11px', fontWeight: 'bold', color: '#888', textTransform: 'uppercase', width: '45%' }}>DESCRIPTION</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: '#888', textTransform: 'uppercase', width: '15%' }}>QTY</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: '#888', textTransform: 'uppercase', width: '20%' }}>UNIT PRICE</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'right', fontSize: '11px', fontWeight: 'bold', color: '#888', textTransform: 'uppercase', width: '20%' }}>TOTAL</th>
                   </tr>
                 </thead>
                 <tbody>
