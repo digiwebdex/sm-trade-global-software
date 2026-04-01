@@ -236,7 +236,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                     <td style={{ padding: '6px 8px', textAlign: 'center', fontSize: '12px' }}>{item.size}</td>
                     <td style={{ padding: '6px 8px', textAlign: 'center', fontSize: '12px' }}>{item.unit}</td>
                     <td style={{ padding: '6px 8px', textAlign: 'center', fontSize: '12px' }}>{formatNumber(item.deliveryQty)}</td>
-                    <td style={{ padding: '6px 8px', textAlign: 'center', fontSize: '12px' }}>{item.balanceQty}</td>
+                    <td style={{ padding: '6px 8px', textAlign: 'center', fontSize: '12px' }}>{formatNumber(item.balanceQty)}</td>
                   </tr>
                 ))}
                 {(() => {
