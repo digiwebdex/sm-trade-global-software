@@ -327,9 +327,9 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
               ))}
               {totalPaid > 0 && (
                 <div className="flex justify-between text-sm mt-2">
-                  <span className="text-muted-foreground">Total Paid: ৳{totalPaid.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                  <span className="text-muted-foreground">Total Paid: ৳{formatBDT(totalPaid)}</span>
                   <span className={`font-bold ${grandTotal - totalPaid > 0 ? 'text-destructive' : 'text-emerald-600'}`}>
-                    Balance: ৳{(grandTotal - totalPaid).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                    Balance: ৳{formatBDT(grandTotal - totalPaid)}
                   </span>
                 </div>
               )}
