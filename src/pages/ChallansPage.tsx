@@ -53,6 +53,8 @@ export default function ChallansPage() {
   const statusBadge = (status: string) => {
     const variants: Record<string, { className: string; label: string }> = {
       delivered: { className: 'bg-emerald-100 text-emerald-700 border-emerald-200', label: 'Delivered' },
+      processing: { className: 'bg-yellow-100 text-yellow-700 border-yellow-200', label: 'Processing' },
+      complete: { className: 'bg-teal-100 text-teal-700 border-teal-200', label: 'Complete' },
       draft: { className: 'bg-gray-100 text-gray-600 border-gray-200', label: 'Draft' },
     };
     const v = variants[status] || variants.draft;
