@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { api } from '@/utils/api';
+import { formatBDT } from '@/lib/utils';
 import { generateId, generateDocNumber } from '@/utils/documentNumbers';
 import { Quotation, LineItem, Customer } from '@/types';
 import DocumentPreview, { printDocument } from '@/components/DocumentPreview';
@@ -102,7 +103,7 @@ export default function QuotationsPage() {
                     </div>
                   </TableCell>
                   <TableCell className="text-sm">{new Date(q.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</TableCell>
-                  <TableCell className="text-right font-bold">৳{q.totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</TableCell>
+                  <TableCell className="text-right font-bold">৳{formatBDT(q.totalAmount)}</TableCell>
                   <TableCell className="text-center">{statusBadge(q.status)}</TableCell>
                   <TableCell>
                     <div className="flex gap-1 justify-center" onClick={(e) => e.stopPropagation()}>
@@ -239,11 +240,11 @@ function QuotationForm({ editId, onDone }: { editId?: string; onDone: () => void
                   <Input className="col-span-5" placeholder="Description" value={item.description} onChange={(e) => updateItem(i, 'description', e.target.value)} />
                   <Input className="col-span-2" type="number" value={item.quantity} onChange={(e) => updateItem(i, 'quantity', parseFloat(e.target.value) || 0)} />
                   <Input className="col-span-2" type="number" value={item.unitPrice} onChange={(e) => updateItem(i, 'unitPrice', parseFloat(e.target.value) || 0)} />
-                  <div className="col-span-2 text-right text-sm font-medium">৳{item.total.toLocaleString()}</div>
+                  <div className="col-span-2 text-right text-sm font-medium">৳{formatBDT(item.total)}</div>
                   <Button size="icon" variant="ghost" className="col-span-1 text-destructive" onClick={() => setForm({ ...form, items: form.items.filter((_, j) => j !== i) })}><Trash2 className="h-3 w-3" /></Button>
                 </div>
               ))}
-              <div className="text-right mt-3 text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+              <div className="text-right mt-3 text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{formatBDT(totalAmount)}</div>
             </div>
             <div><label className="text-sm font-medium">Amount in Words</label><Input value={form.amountInWords} onChange={(e) => setForm({ ...form, amountInWords: e.target.value })} placeholder="Auto-generated if empty" /></div>
             <div>
@@ -277,7 +278,7 @@ function QuotationView({ id, onBack }: { id: string; onBack: () => void }) {
   if (!q) return <div>Not found</div>;
 
   const handleShare = async () => {
-    const shareData = { title: `Quotation ${q.quotationNumber}`, text: `Quotation ${q.quotationNumber} - ${q.customerName} - BDT ${q.totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, url: window.location.href };
+    const shareData = { title: `Quotation ${q.quotationNumber}`, text: `Quotation ${q.quotationNumber} - ${q.customerName} - BDT ${formatBDT(q.totalAmount)}`, url: window.location.href };
     if (navigator.share) { try { await navigator.share(shareData); } catch {} }
     else { await navigator.clipboard.writeText(window.location.href); toast.success('Link copied to clipboard!'); }
   };

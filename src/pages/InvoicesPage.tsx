@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { api } from '@/utils/api';
+import { formatBDT } from '@/lib/utils';
 import { generateId, generateDocNumber } from '@/utils/documentNumbers';
 import { Invoice, LineItem, Customer, Payment } from '@/types';
 import DocumentPreview, { printDocument } from '@/components/DocumentPreview';
@@ -106,7 +107,7 @@ export default function InvoicesPage() {
                     </div>
                   </TableCell>
                   <TableCell className="text-sm">{new Date(inv.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</TableCell>
-                  <TableCell className="text-right font-bold">৳{Number(inv.totalAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</TableCell>
+                  <TableCell className="text-right font-bold">৳{formatBDT(Number(inv.totalAmount))}</TableCell>
                   <TableCell className="text-center">{statusBadge(inv.status)}</TableCell>
                   <TableCell>
                     <div className="flex gap-1 justify-center" onClick={(e) => e.stopPropagation()}>
@@ -288,18 +289,18 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
                     <Input className="col-span-5" placeholder="Description" value={item.description} onChange={(e) => updateItem(i, 'description', e.target.value)} />
                     <Input className="col-span-2" type="number" placeholder="Qty" value={item.quantity} onChange={(e) => updateItem(i, 'quantity', parseFloat(e.target.value) || 0)} />
                     <Input className="col-span-2" type="number" placeholder="Price" value={item.unitPrice} onChange={(e) => updateItem(i, 'unitPrice', parseFloat(e.target.value) || 0)} />
-                    <div className="col-span-2 text-right text-sm font-medium">৳{item.total.toLocaleString()}</div>
+                    <div className="col-span-2 text-right text-sm font-medium">৳{formatBDT(item.total)}</div>
                     <Button size="icon" variant="ghost" className="col-span-1 text-destructive" onClick={() => setForm({ ...form, items: form.items.filter((_, j) => j !== i) })}><Trash2 className="h-3 w-3" /></Button>
                   </div>
                 ))}
               </div>
               <div className="text-right mt-3 text-sm" style={{ color: '#1B3A5C' }}>
-                <div>Subtotal: ৳{subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+                <div>Subtotal: ৳{formatBDT(subtotal)}</div>
               </div>
             </div>
 
             <div><label className="text-sm font-medium">Tax Amount</label><Input type="number" value={form.tax} onChange={(e) => setForm({ ...form, tax: parseFloat(e.target.value) || 0 })} placeholder="0.00" /></div>
-            <div className="text-right text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+            <div className="text-right text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{formatBDT(grandTotal)}</div>
 
             <div>
               <div className="flex justify-between items-center mb-2">
@@ -326,9 +327,9 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
               ))}
               {totalPaid > 0 && (
                 <div className="flex justify-between text-sm mt-2">
-                  <span className="text-muted-foreground">Total Paid: ৳{totalPaid.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                  <span className="text-muted-foreground">Total Paid: ৳{formatBDT(totalPaid)}</span>
                   <span className={`font-bold ${grandTotal - totalPaid > 0 ? 'text-destructive' : 'text-emerald-600'}`}>
-                    Balance: ৳{(grandTotal - totalPaid).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                    Balance: ৳{formatBDT(grandTotal - totalPaid)}
                   </span>
                 </div>
               )}
@@ -401,7 +402,7 @@ function InvoiceView({ id, onBack }: { id: string; onBack: () => void }) {
   const handleShare = async () => {
     const shareData = {
       title: `Invoice ${inv.invoiceNumber}`,
-      text: `Invoice ${inv.invoiceNumber} - ${inv.customerName} - BDT ${inv.totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
+      text: `Invoice ${inv.invoiceNumber} - ${inv.customerName} - BDT ${formatBDT(inv.totalAmount)}`,
       url: window.location.href,
     };
     if (navigator.share) {

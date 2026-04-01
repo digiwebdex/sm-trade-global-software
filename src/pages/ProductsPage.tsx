@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { api } from '@/utils/api';
+import { formatBDT } from '@/lib/utils';
 import { Product } from '@/types';
 import { toast } from 'sonner';
 import { Plus, Search, Pencil, Trash2 } from 'lucide-react';
@@ -102,7 +103,7 @@ export default function ProductsPage() {
                 <TableRow key={p.id}>
                   <TableCell className="font-medium">{p.name}</TableCell>
                   <TableCell className="max-w-[200px] truncate">{p.description}</TableCell>
-                  <TableCell>৳{p.unitPrice.toLocaleString()}</TableCell>
+                  <TableCell>৳{formatBDT(p.unitPrice)}</TableCell>
                   <TableCell>{p.unitType}</TableCell>
                   <TableCell>
                     <div className="flex gap-1">
