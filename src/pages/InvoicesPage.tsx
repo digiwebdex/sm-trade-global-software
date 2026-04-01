@@ -402,7 +402,7 @@ function InvoiceView({ id, onBack }: { id: string; onBack: () => void }) {
   const handleShare = async () => {
     const shareData = {
       title: `Invoice ${inv.invoiceNumber}`,
-      text: `Invoice ${inv.invoiceNumber} - ${inv.customerName} - BDT ${inv.totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`,
+      text: `Invoice ${inv.invoiceNumber} - ${inv.customerName} - BDT ${formatBDT(inv.totalAmount)}`,
       url: window.location.href,
     };
     if (navigator.share) {
