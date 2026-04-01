@@ -226,7 +226,7 @@ function POForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
                   <Button size="icon" variant="ghost" className="col-span-1 text-destructive" onClick={() => setForm({ ...form, items: form.items.filter((_, j) => j !== i) })}><Trash2 className="h-3 w-3" /></Button>
                 </div>
               ))}
-              <div className="text-right mt-3 text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+              <div className="text-right mt-3 text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{formatBDT(totalAmount)}</div>
             </div>
             <div><label className="text-sm font-medium">Amount in Words</label><Input value={form.amountInWords} onChange={(e) => setForm({ ...form, amountInWords: e.target.value })} placeholder="Auto-generated if empty" /></div>
             <div>

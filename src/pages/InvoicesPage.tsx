@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { api } from '@/utils/api';
+import { formatBDT } from '@/lib/utils';
 import { generateId, generateDocNumber } from '@/utils/documentNumbers';
 import { Invoice, LineItem, Customer, Payment } from '@/types';
 import DocumentPreview, { printDocument } from '@/components/DocumentPreview';

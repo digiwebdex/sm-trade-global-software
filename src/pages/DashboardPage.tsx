@@ -111,7 +111,7 @@ export default function DashboardPage() {
                       <p className="text-xs text-muted-foreground">{inv.customerName}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium text-sm">৳{inv.totalAmount.toLocaleString()}</p>
+                      <p className="font-medium text-sm">৳{formatBDT(inv.totalAmount)}</p>
                       <span className={`text-xs px-2 py-0.5 rounded-full ${
                         inv.status === 'paid' ? 'bg-success/20 text-success' :
                         inv.status === 'sent' ? 'bg-info/20 text-info' : 'bg-muted text-muted-foreground'

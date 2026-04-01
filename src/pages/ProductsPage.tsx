@@ -102,7 +102,7 @@ export default function ProductsPage() {
                 <TableRow key={p.id}>
                   <TableCell className="font-medium">{p.name}</TableCell>
                   <TableCell className="max-w-[200px] truncate">{p.description}</TableCell>
-                  <TableCell>৳{p.unitPrice.toLocaleString()}</TableCell>
+                  <TableCell>৳{formatBDT(p.unitPrice)}</TableCell>
                   <TableCell>{p.unitType}</TableCell>
                   <TableCell>
                     <div className="flex gap-1">
