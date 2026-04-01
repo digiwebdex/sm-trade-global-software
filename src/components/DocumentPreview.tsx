@@ -236,7 +236,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                     <td style={{ padding: '6px 8px', textAlign: 'center', fontSize: '12px' }}>{item.size}</td>
                     <td style={{ padding: '6px 8px', textAlign: 'center', fontSize: '12px' }}>{item.unit}</td>
                     <td style={{ padding: '6px 8px', textAlign: 'center', fontSize: '12px' }}>{formatNumber(item.deliveryQty)}</td>
-                    <td style={{ padding: '6px 8px', textAlign: 'center', fontSize: '12px' }}>{item.balanceQty}</td>
+                    <td style={{ padding: '6px 8px', textAlign: 'center', fontSize: '12px' }}>{formatNumber(item.balanceQty)}</td>
                   </tr>
                 ))}
                 {(() => {
@@ -266,7 +266,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   {items.map((item) => (
                     <tr key={item.id} style={{ borderBottom: '1px solid #e8e8e8' }}>
                       <td style={{ padding: '7px 8px', fontSize: '12px' }}>{item.description}</td>
-                      <td style={{ padding: '7px 8px', textAlign: 'center', fontSize: '12px' }}>{item.quantity}</td>
+                      <td style={{ padding: '7px 8px', textAlign: 'center', fontSize: '12px' }}>{formatNumber(item.quantity)}</td>
                       <td style={{ padding: '7px 8px', textAlign: 'center', fontSize: '12px' }}>{formatNumber(item.unitPrice)}</td>
                       <td style={{ padding: '7px 8px', textAlign: 'right', fontSize: '12px', fontWeight: 'bold' }}>{formatNumber(item.total)}</td>
                     </tr>
