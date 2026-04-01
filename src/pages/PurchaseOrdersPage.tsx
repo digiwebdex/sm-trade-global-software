@@ -217,7 +217,7 @@ function POForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
               <div><label className="text-sm font-medium">Email</label><Input value={form.supplierEmail} onChange={(e) => setForm({ ...form, supplierEmail: e.target.value })} /></div>
             </div>
             <div><label className="text-sm font-medium">Status</label>
-              <Select value={form.status} onValueChange={(v: any) => setForm({ ...form, status: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="draft">Draft</SelectItem><SelectItem value="sent">Sent</SelectItem><SelectItem value="received">Received</SelectItem></SelectContent></Select></div>
+              <Select value={form.status} onValueChange={(v: any) => setForm({ ...form, status: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="draft">Draft</SelectItem><SelectItem value="processing">Processing</SelectItem><SelectItem value="sent">Sent</SelectItem><SelectItem value="received">Received</SelectItem><SelectItem value="complete">Complete</SelectItem></SelectContent></Select></div>
             <div>
               <div className="flex justify-between items-center mb-2"><label className="text-sm font-medium">Items</label><Button size="sm" variant="outline" onClick={() => setForm({ ...form, items: [...form.items, emptyItem()] })}><Plus className="h-3 w-3 mr-1" /> Add</Button></div>
               {form.items.map((item, i) => (
