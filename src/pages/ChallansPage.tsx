@@ -53,6 +53,8 @@ export default function ChallansPage() {
   const statusBadge = (status: string) => {
     const variants: Record<string, { className: string; label: string }> = {
       delivered: { className: 'bg-emerald-100 text-emerald-700 border-emerald-200', label: 'Delivered' },
+      processing: { className: 'bg-yellow-100 text-yellow-700 border-yellow-200', label: 'Processing' },
+      complete: { className: 'bg-teal-100 text-teal-700 border-teal-200', label: 'Complete' },
       draft: { className: 'bg-gray-100 text-gray-600 border-gray-200', label: 'Draft' },
     };
     const v = variants[status] || variants.draft;
@@ -222,7 +224,7 @@ function ChallanForm({ editId, onDone }: { editId?: string; onDone: () => void }
               <div><label className="text-sm font-medium">Customer Phone</label><Input value={form.customerPhone} onChange={(e) => setForm({ ...form, customerPhone: e.target.value })} placeholder="Phone" /></div>
             </div>
             <div><label className="text-sm font-medium">Status</label>
-              <Select value={form.status} onValueChange={(v: any) => setForm({ ...form, status: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="draft">Draft</SelectItem><SelectItem value="delivered">Delivered</SelectItem></SelectContent></Select></div>
+              <Select value={form.status} onValueChange={(v: any) => setForm({ ...form, status: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="draft">Draft</SelectItem><SelectItem value="processing">Processing</SelectItem><SelectItem value="delivered">Delivered</SelectItem><SelectItem value="complete">Complete</SelectItem></SelectContent></Select></div>
             <div>
               <div className="flex justify-between items-center mb-2"><label className="text-sm font-medium">Items</label><Button size="sm" variant="outline" onClick={() => setForm({ ...form, items: [...form.items, emptyItem()] })}><Plus className="h-3 w-3 mr-1" /> Add</Button></div>
               {form.items.map((item, i) => (

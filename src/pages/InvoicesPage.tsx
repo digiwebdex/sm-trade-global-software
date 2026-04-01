@@ -57,6 +57,8 @@ export default function InvoicesPage() {
     const variants: Record<string, { className: string; label: string }> = {
       paid: { className: 'bg-emerald-100 text-emerald-700 border-emerald-200', label: 'Paid' },
       partial: { className: 'bg-orange-100 text-orange-700 border-orange-200', label: 'Partial' },
+      processing: { className: 'bg-yellow-100 text-yellow-700 border-yellow-200', label: 'Processing' },
+      complete: { className: 'bg-teal-100 text-teal-700 border-teal-200', label: 'Complete' },
       sent: { className: 'bg-blue-100 text-blue-700 border-blue-200', label: 'Due' },
       draft: { className: 'bg-gray-100 text-gray-600 border-gray-200', label: 'Draft' },
     };
