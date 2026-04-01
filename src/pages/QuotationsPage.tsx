@@ -239,7 +239,7 @@ function QuotationForm({ editId, onDone }: { editId?: string; onDone: () => void
                   <Input className="col-span-5" placeholder="Description" value={item.description} onChange={(e) => updateItem(i, 'description', e.target.value)} />
                   <Input className="col-span-2" type="number" value={item.quantity} onChange={(e) => updateItem(i, 'quantity', parseFloat(e.target.value) || 0)} />
                   <Input className="col-span-2" type="number" value={item.unitPrice} onChange={(e) => updateItem(i, 'unitPrice', parseFloat(e.target.value) || 0)} />
-                  <div className="col-span-2 text-right text-sm font-medium">৳{item.total.toLocaleString()}</div>
+                  <div className="col-span-2 text-right text-sm font-medium">৳{formatBDT(item.total)}</div>
                   <Button size="icon" variant="ghost" className="col-span-1 text-destructive" onClick={() => setForm({ ...form, items: form.items.filter((_, j) => j !== i) })}><Trash2 className="h-3 w-3" /></Button>
                 </div>
               ))}
