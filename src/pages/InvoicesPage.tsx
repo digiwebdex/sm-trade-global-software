@@ -295,7 +295,7 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
                 ))}
               </div>
               <div className="text-right mt-3 text-sm" style={{ color: '#1B3A5C' }}>
-                <div>Subtotal: ৳{subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+                <div>Subtotal: ৳{formatBDT(subtotal)}</div>
               </div>
             </div>
 
