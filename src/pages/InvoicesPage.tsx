@@ -303,6 +303,8 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
 
             <div><label className="text-sm font-medium">Tax Amount</label><Input type="number" value={form.tax} onChange={(e) => setForm({ ...form, tax: parseFloat(e.target.value) || 0 })} placeholder="0.00" /></div>
             <div className="text-right text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{formatBDT(grandTotal)}</div>
+            <div><label className="text-sm font-medium">Status</label>
+              <Select value={form.status} onValueChange={(v: any) => setForm({ ...form, status: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="draft">Draft</SelectItem><SelectItem value="processing">Processing</SelectItem><SelectItem value="sent">Due</SelectItem><SelectItem value="partial">Partial</SelectItem><SelectItem value="complete">Complete</SelectItem><SelectItem value="paid">Paid</SelectItem></SelectContent></Select></div>
 
             <div>
               <div className="flex justify-between items-center mb-2">
