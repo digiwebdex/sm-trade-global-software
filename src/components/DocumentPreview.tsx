@@ -220,11 +220,11 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
               <thead>
                 <tr style={{ borderBottom: `2px solid ${NAVY}` }}>
                   <th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}>SL.</th>
-                  <th style={{ padding: '8px 6px', textAlign: 'left', fontSize: '11px', fontWeight: 'bold', color: NAVY, width: 'auto' }}>ITEM NAME & DETAILS</th>
+                  <th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY }}>ITEM NAME & DETAILS</th>
                   <th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}>SIZE</th>
                   <th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}>UNIT</th>
-                  <th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}><th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}>DELIVERY<br/>QTY</th></th>
-                  <th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}><th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}>BALANCE<br/>QTY</th></th>
+                  <th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}>DELIVERY QTY</th>
+                  <th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}>BALANCE QTY</th>
                 </tr>
               </thead>
               <tbody>
