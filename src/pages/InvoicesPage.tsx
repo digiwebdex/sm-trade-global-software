@@ -300,7 +300,7 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
             </div>
 
             <div><label className="text-sm font-medium">Tax Amount</label><Input type="number" value={form.tax} onChange={(e) => setForm({ ...form, tax: parseFloat(e.target.value) || 0 })} placeholder="0.00" /></div>
-            <div className="text-right text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+            <div className="text-right text-lg font-bold" style={{ color: '#1B3A5C' }}>Total: ৳{formatBDT(grandTotal)}</div>
 
             <div>
               <div className="flex justify-between items-center mb-2">
