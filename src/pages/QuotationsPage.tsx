@@ -278,7 +278,7 @@ function QuotationView({ id, onBack }: { id: string; onBack: () => void }) {
   if (!q) return <div>Not found</div>;
 
   const handleShare = async () => {
-    const shareData = { title: `Quotation ${q.quotationNumber}`, text: `Quotation ${q.quotationNumber} - ${q.customerName} - BDT ${q.totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, url: window.location.href };
+    const shareData = { title: `Quotation ${q.quotationNumber}`, text: `Quotation ${q.quotationNumber} - ${q.customerName} - BDT ${formatBDT(q.totalAmount)}`, url: window.location.href };
     if (navigator.share) { try { await navigator.share(shareData); } catch {} }
     else { await navigator.clipboard.writeText(window.location.href); toast.success('Link copied to clipboard!'); }
   };
