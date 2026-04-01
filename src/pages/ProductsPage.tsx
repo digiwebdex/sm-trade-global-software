@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { api } from '@/utils/api';
+import { formatBDT } from '@/lib/utils';
 import { Product } from '@/types';
 import { toast } from 'sonner';
 import { Plus, Search, Pencil, Trash2 } from 'lucide-react';

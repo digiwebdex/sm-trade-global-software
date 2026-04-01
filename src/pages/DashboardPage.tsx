@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { FileText, FilePlus, Truck, ShoppingCart, Users, Package, TrendingUp, DollarSign } from 'lucide-react';
 import { api } from '@/utils/api';
+import { formatBDT } from '@/lib/utils';
 import { Invoice, Quotation, Challan, PurchaseOrder, Customer, Product } from '@/types';
 
 export default function DashboardPage() {
