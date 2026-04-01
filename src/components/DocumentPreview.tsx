@@ -224,7 +224,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
                   <th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}>SIZE</th>
                   <th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}>UNIT</th>
                   <th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}><th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}>DELIVERY<br/>QTY</th></th>
-                  <th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}>BALANCE<br/>QUANTITY</th>
+                  <th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}><th style={{ padding: '8px 6px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: NAVY, whiteSpace: 'nowrap' }}>BALANCE<br/>QTY</th></th>
                 </tr>
               </thead>
               <tbody>
