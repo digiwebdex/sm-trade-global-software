@@ -33,7 +33,8 @@ interface DocumentPreviewProps {
 
 const formatNumber = (num: number | string) => {
   const n = typeof num === 'string' ? parseFloat(num) : num;
-  if (isNaN(n)) return '0.00';
+  if (isNaN(n)) return '0';
+  if (Number.isInteger(n)) return n.toLocaleString('en-IN');
   return n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
 
