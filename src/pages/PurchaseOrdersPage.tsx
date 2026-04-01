@@ -54,6 +54,8 @@ export default function PurchaseOrdersPage() {
   const statusBadge = (status: string) => {
     const variants: Record<string, { className: string; label: string }> = {
       received: { className: 'bg-emerald-100 text-emerald-700 border-emerald-200', label: 'Received' },
+      processing: { className: 'bg-yellow-100 text-yellow-700 border-yellow-200', label: 'Processing' },
+      complete: { className: 'bg-teal-100 text-teal-700 border-teal-200', label: 'Complete' },
       sent: { className: 'bg-blue-100 text-blue-700 border-blue-200', label: 'Sent' },
       draft: { className: 'bg-gray-100 text-gray-600 border-gray-200', label: 'Draft' },
     };
