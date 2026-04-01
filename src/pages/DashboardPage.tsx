@@ -33,7 +33,7 @@ export default function DashboardPage() {
     { title: 'Total Invoices', value: invoices.length, icon: FileText, color: 'bg-primary' },
     { title: 'Quotations', value: quotations.length, icon: FilePlus, color: 'bg-secondary' },
     { title: 'Challans', value: challans.length, icon: Truck, color: 'bg-info' },
-    { title: 'Revenue', value: `৳${totalRevenue.toLocaleString()}`, icon: DollarSign, color: 'bg-success' },
+    { title: 'Revenue', value: `৳${formatBDT(totalRevenue)}`, icon: DollarSign, color: 'bg-success' },
   ];
 
   const quickActions = [
